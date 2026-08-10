@@ -13,6 +13,7 @@ const ALTURA := 92.0
 
 var id_personaje: String = ""
 var nombre_mostrado: String = "Pirata"
+var identidad: Identidad = null
 var casa: Vector2i = Vector2i.ZERO
 var trabajo: Vector2i = Vector2i.ZERO
 var taberna: Vector2i = Vector2i.ZERO
@@ -37,9 +38,14 @@ var _rnd := RandomNumberGenerator.new()
 
 func montar(p_id: String, p_nombre: String, p_casa: Vector2i, p_taberna: Vector2i,
 		semilla: int, p_horario_id: String = "tripulacion",
-		p_trabajo: Vector2i = Vector2i(-1, -1)) -> void:
+		p_trabajo: Vector2i = Vector2i(-1, -1), p_clave: String = "") -> void:
 	id_personaje = p_id
 	nombre_mostrado = p_nombre
+	var clave := p_clave if p_clave != "" else p_id
+	if clave == "":
+		clave = "marinero_%d" % semilla
+	identidad = Entidades.identificar("npc", p_id if p_id != "" else "marinero", "npc:" + clave)
+	Entidades.vincular(identidad, self)
 	casa = p_casa
 	trabajo = p_casa if p_trabajo == Vector2i(-1, -1) else p_trabajo
 	taberna = p_taberna
@@ -58,7 +64,33 @@ func montar(p_id: String, p_nombre: String, p_casa: Vector2i, p_taberna: Vector2
 	color_ropa = paleta[_rnd.randi() % paleta.size()]
 	color_panuelo = [Color("c9a227"), Color("b23a3a"), Color("d9d2c5")][_rnd.randi() % 3]
 	_aplicar_posicion()
+	_gestor_npcs().call("registrar", self)
 	queue_redraw()
+
+func aplicar_estado(datos: Dictionary) -> void:
+	var p: Variant = datos.get("pos_tile", {})
+	if p is Dictionary:
+		pos_tile = Vector2(float(p.get("x", pos_tile.x)), float(p.get("y", pos_tile.y)))
+	var d: Variant = datos.get("direccion", {})
+	if d is Dictionary:
+		direccion = Vector2(float(d.get("x", direccion.x)), float(d.get("y", direccion.y)))
+	var objetivo: Variant = datos.get("destino", {})
+	if objetivo is Dictionary:
+		destino = Vector2(float(objetivo.get("x", pos_tile.x)), float(objetivo.get("y", pos_tile.y)))
+	tarea = int(datos.get("tarea", tarea))
+	estado = str(datos.get("estado", estado))
+	_aplicar_posicion()
+	queue_redraw()
+
+func serializar() -> Dictionary:
+	return {
+		"definicion": id_personaje,
+		"pos_tile": {"x": pos_tile.x, "y": pos_tile.y},
+		"direccion": {"x": direccion.x, "y": direccion.y},
+		"destino": {"x": destino.x, "y": destino.y},
+		"tarea": tarea,
+		"estado": estado,
+	}
 
 ## La rutina sale del estado real del juego, no de un temporizador ciego.
 func actualizar(delta: float, _nivel: int) -> void:
@@ -66,10 +98,12 @@ func actualizar(delta: float, _nivel: int) -> void:
 	var distancia := destino - pos_tile
 	if distancia.length() <= 0.08:
 		estado = "idle"
+		_anotar_estado()
 		return
 	# Actor resuelve la colisión y actualiza dirección/posición. Si un edificio
 	# bloquea la línea directa, el pirata no atraviesa la estructura.
 	mover(distancia, delta)
+	_anotar_estado()
 
 func _pensar(delta: float) -> void:
 	_espera -= delta
@@ -106,6 +140,14 @@ func _pensar(delta: float) -> void:
 
 func _punto_cerca(t: Vector2i, radio: float) -> Vector2:
 	return Vector2(t) + Vector2(_rnd.randf_range(-radio, radio), _rnd.randf_range(-radio, radio))
+
+func _anotar_estado() -> void:
+	var gestor := _gestor_npcs()
+	if gestor != null:
+		gestor.call("anotar", self)
+
+func _gestor_npcs() -> Node:
+	return get_node_or_null("/root/NpcsMundo")
 
 func _opciones_figura() -> Dictionary:
 	var op := super()

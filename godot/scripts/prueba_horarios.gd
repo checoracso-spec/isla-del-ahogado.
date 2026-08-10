@@ -59,6 +59,20 @@ func _ready() -> void:
 		11, "herrero", Vector2i(8, 8))
 	_comprobar("la rutina acepta un destino de trabajo separado",
 		pirata.casa == Vector2i(2, 2) and pirata.trabajo == Vector2i(8, 8))
+	_comprobar("el pirata tiene identidad estable", pirata.identidad != null)
+	var estado_npc: Dictionary = pirata.serializar()
+	var pos_guardada := pirata.pos_tile
+	pirata.colocar(Vector2(1.5, 1.5))
+	pirata.aplicar_estado(estado_npc)
+	_comprobar("el estado plano restaura la posición del pirata",
+		pirata.pos_tile.is_equal_approx(pos_guardada))
+	var registro_npcs: Dictionary = NpcsMundo._serializar()
+	_comprobar("NpcsMundo registra estados sin nodos",
+		registro_npcs.get("estados", {}).has(pirata.identidad.instancia))
+	pirata.colocar(Vector2(1.5, 1.5))
+	NpcsMundo._cargar(registro_npcs)
+	_comprobar("NpcsMundo aplica estados a los NPC vivos",
+		pirata.pos_tile.is_equal_approx(pos_guardada))
 	var rejilla := TransitableRejilla.new(10, 10)
 	rejilla.bloquear(Vector2i(5, 4), "muro de prueba")
 	pirata.transitable = rejilla

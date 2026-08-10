@@ -38,7 +38,7 @@ const SECCIONES := {
 	"barcos": true,
 	"muelle": true,
 	"animales_mundo": true,
-	"npcs": false,
+	"npcs": true,
 	"animales": false,
 	"edificios": false,
 	"economia": false,

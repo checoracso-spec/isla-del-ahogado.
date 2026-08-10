@@ -710,7 +710,8 @@ func _montar_logistica() -> void:
 		var p := Pirata.new()
 		_objetos.add_child(p)
 		p.transitable = transitable
-		p.montar("", "Marinero", _puerta_de(destinos[i % destinos.size()]), taberna, semilla)
+		p.montar("", "Marinero", _puerta_de(destinos[i % destinos.size()]), taberna,
+			semilla, "tripulacion", Vector2i(-1, -1), "marinero_%d" % i)
 		piratas.append(p)
 		semilla += 31
 
