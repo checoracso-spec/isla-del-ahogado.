@@ -41,6 +41,36 @@ func _ejecutar() -> void:
 		fuente.cantidad() == 0)
 	_comprobar("la recolectora emite el lote", lotes.size() == 1)
 
+	var puestos_muelle: Array = []
+	for pirata in mundo.piratas:
+		if pirata.puesto_id == "muelle_grua":
+			puestos_muelle.append(pirata)
+			pirata.tarea = Pirata.Tarea.DURMIENDO
+			NpcsMundo.anotar(pirata)
+	var trabajador_muelle: Pirata = null
+	if puestos_muelle.is_empty():
+		trabajador_muelle = Pirata.new()
+		add_child(trabajador_muelle)
+		trabajador_muelle.montar("prueba_estibador", "Estibador de Prueba",
+			Vector2i(2, 2), Vector2i(3, 3), 991, "tripulacion",
+			Vector2i(3, 3), "prueba_estibador", "muelle_grua")
+	else:
+		trabajador_muelle = puestos_muelle[0] as Pirata
+	trabajador_muelle.tarea = Pirata.Tarea.TRABAJANDO
+	NpcsMundo.anotar(trabajador_muelle)
+	recolector.usar_trabajadores_npc = true
+	_comprobar("la grua consulta estibadores activos",
+		recolector.trabajadores_efectivos() == 1)
+	var serializado := recolector.serializar()
+	_comprobar("el modo de trabajadores NPC se guarda",
+		bool(serializado.get("usar_trabajadores_npc", false)))
+	trabajador_muelle.tarea = Pirata.Tarea.DURMIENDO
+	NpcsMundo.anotar(trabajador_muelle)
+	_comprobar("la grua se detiene sin estibadores activos",
+		recolector.trabajadores_efectivos() == 0)
+	trabajador_muelle.tarea = Pirata.Tarea.TRABAJANDO
+	NpcsMundo.anotar(trabajador_muelle)
+
 	# Un almacén con poco volumen rechaza el lote completo y no consume la
 	# fuente; esta es la protección contra extracciones parciales.
 	Almacen.vaciar()

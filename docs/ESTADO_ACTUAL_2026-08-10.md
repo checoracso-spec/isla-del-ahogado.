@@ -6,7 +6,7 @@
 - Rejilla isométrica 128×64; `scripts/mapa/iso.gd` no se ha modificado.
 - API pública de `scripts/autoload/almacen.gd` intacta.
 - 26 escenas `prueba_*.tscn` ejecutadas en headless.
-- 701 comprobaciones instrumentadas en verde; persistencia A/B, viaje global y
+- 704 comprobaciones instrumentadas en verde; persistencia A/B, viaje global y
   profundidad
   arrancan sin errores reales.
 - La escena principal `res://escenas/mundo.tscn` arranca sin `SCRIPT ERROR`,
@@ -121,7 +121,7 @@ antiguas a `montar()` siguen funcionando y usan la casa como destino laboral
 por compatibilidad. Barbanegra ya demuestra el caso real: vive en la cabana
 del capitan y trabaja en la herreria.
 
-El bloque se verifico con 26 suites y 701 comprobaciones, incluido el arranque
+El bloque se verifico con 26 suites y 704 comprobaciones, incluido el arranque
 de `mundo.tscn`, sin modificar `iso.gd` ni la API publica de `Almacen`.
 
 ## Contenido remoto incorporado en este checkpoint
@@ -221,4 +221,16 @@ destinos.
 Checkpoint de codigo: `bfc0949` valida tambiÃ©n que el jugador recolecta una
 veta y siembra tabaco dentro de la zona remota usando las interacciones
 existentes.
+
+## Automatizacion de recoleccion del muelle
+
+`RecolectorRecurso` conserva el modo estatico para escenas aisladas, pero puede
+activar `usar_trabajadores_npc` para consultar `NpcsMundo.trabajadores_activos()`.
+La red de arrastre del muelle usa este modo: si no hay estibadores activos, no
+extrae restos; cuando un NPC vuelve a la tarea `TRABAJANDO`, la capacidad vuelve
+a estar disponible. La prueba de recoleccion verifica tambien que esta decision
+y su configuracion se serializan como datos planos.
+
+Checkpoint de recoleccion: pendiente de sustituir por el hash despues del
+commit de este bloque.
 5. Ejecutar las 26 suites y buscar errores reales después de cada bloque.

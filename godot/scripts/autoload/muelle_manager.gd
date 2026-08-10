@@ -75,6 +75,9 @@ func _montar_recolector() -> void:
 	_recolector.name = "Recolector_Red_Arrastre"
 	add_child(_recolector)
 	_recolector.montar(fuente_instancia, "muelle_grua", 3, INTERVALO_HORAS)
+	# En la isla, la grÃºa necesita estibadores vivos del muelle. El recolector
+	# conserva el modo estÃ¡tico para pruebas y zonas sin poblaciÃ³n.
+	_recolector.usar_trabajadores_npc = true
 	if not _estado_recolector.is_empty():
 		_recolector.cargar(_estado_recolector)
 	_recolector.lote_recolectado.connect(func(_r, productos):
