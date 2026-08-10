@@ -255,7 +255,8 @@ const TABLA_PERSONAJES := [
 	  "rol": "Especialista en Intimidación",
 	  "habilidad": "Acelera la producción en la herrería mediante el miedo.",
 	  "efecto": { "tipo": "velocidad_produccion", "valor": 0.30, "ambito": "herreria" },
-	  "horario": "herrero", "puesto": "herreria", "casa": "cabana_capitan" },
+	  "horario": "herrero", "puesto": "herreria", "casa": "cabana_capitan",
+	  "inventario_inicial": { "herramienta": 1, "ron": 1 }, "oro_inicial": 25 },
 
 	{ "id": "anne_bonny", "nombre": "Anne Bonny", "titulo": "",
 	  "rol": "Maestra del Contrabando",
@@ -272,7 +273,8 @@ const TABLA_PERSONAJES := [
 	  "rol": "Gestor de la Taberna",
 	  "habilidad": "Mantiene el motín a raya gastando menos ron.",
 	  "efecto": { "tipo": "consumo_ron", "valor": -0.30, "ambito": "taberna" },
-	  "horario": "tabernero", "puesto": "taberna", "casa": "taberna" },
+	  "horario": "tabernero", "puesto": "taberna", "casa": "taberna",
+	  "inventario_inicial": { "ron": 2 }, "oro_inicial": 12 },
 
 	{ "id": "henry_morgan", "nombre": "Henry Morgan", "titulo": "Sir",
 	  "rol": "Gobernador del Sindicato",
@@ -355,6 +357,7 @@ const TABLA_PERSONAJES := [
 	  "habilidad": "Estira las raciones: la tripulación come un 15% menos.",
 	  "efecto": { "tipo": "consumo_raciones", "valor": -0.15 },
 	  "puesto": "corrales", "casa": "corrales",
+	  "inventario_inicial": { "raciones": 3 }, "oro_inicial": 8,
 	  "historico": false },
 
 	{ "id": "ojo_vidrio", "nombre": "Ojo de Vidrio", "titulo": "",

@@ -20,6 +20,9 @@ extends Resource
 @export var horario_id: String = "tripulacion"
 @export var puesto_id: String = ""
 @export var casa_id: String = ""
+@export var inventario_inicial: Dictionary = {}
+@export var oro_inicial: int = 0
+@export var necesidades_iniciales: Dictionary = {}
 
 static func desde_dic(d: Dictionary) -> PersonajeData:
 	var p := PersonajeData.new()
@@ -34,5 +37,8 @@ static func desde_dic(d: Dictionary) -> PersonajeData:
 	p.horario_id = str(d.get("horario", "tripulacion"))
 	p.puesto_id = str(d.get("puesto", ""))
 	p.casa_id = str(d.get("casa", ""))
+	p.inventario_inicial = (d.get("inventario_inicial", {}) as Dictionary).duplicate(true)
+	p.oro_inicial = int(d.get("oro_inicial", 0))
+	p.necesidades_iniciales = (d.get("necesidades_iniciales", {}) as Dictionary).duplicate(true)
 	p.resource_name = p.nombre
 	return p

@@ -25,6 +25,8 @@ func _ready() -> void:
 	npc.direccion = Vector2.RIGHT
 	npc.tarea = Pirata.Tarea.DURMIENDO
 	npc.estado = "idle"
+	npc.inventario().vaciar()
+	npc.oro_personal = 0
 	npc.inventario().anadir("ron", Datos.RON)
 	npc.oro_personal = Datos.ORO
 	npc.hambre = Datos.HAMBRE

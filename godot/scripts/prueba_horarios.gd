@@ -19,6 +19,9 @@ func _ready() -> void:
 	_comprobar("Barbanegra declara puesto y casa en datos",
 		barbanegra != null and barbanegra.puesto_id == "herreria"
 		and barbanegra.casa_id == "cabana_capitan")
+	_comprobar("PersonajeData declara carga inicial opcional",
+		barbanegra != null and barbanegra.inventario_inicial.get("ron", 0) == 1
+		and barbanegra.oro_inicial == 25)
 	if horario != null:
 		_comprobar("02:00 dormir", horario.actividad_en(2.0) == "dormir")
 		_comprobar("07:30 casa", horario.actividad_en(7.5) == "casa")

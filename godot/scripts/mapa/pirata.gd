@@ -159,9 +159,21 @@ func montar(p_id: String, p_nombre: String, p_casa: Vector2i, p_taberna: Vector2
 	]
 	color_ropa = paleta[_rnd.randi() % paleta.size()]
 	color_panuelo = [Color("c9a227"), Color("b23a3a"), Color("d9d2c5")][_rnd.randi() % 3]
+	_aplicar_carga_inicial()
 	_aplicar_posicion()
 	_gestor_npcs().call("registrar", self)
 	queue_redraw()
+
+func _aplicar_carga_inicial() -> void:
+	var datos: PersonajeData = BaseDeDatos.personaje(id_personaje)
+	if datos == null:
+		return
+	inventario_personal.vaciar()
+	for id in datos.inventario_inicial:
+		inventario_personal.anadir(str(id), int(datos.inventario_inicial[id]))
+	oro_personal = datos.oro_inicial
+	for id in datos.necesidades_iniciales:
+		_asignar_necesidad(str(id), clampf(float(datos.necesidades_iniciales[id]), 0.0, 100.0))
 
 func aplicar_estado(datos: Dictionary) -> void:
 	var inventario_datos: Variant = datos.get("inventario", {})
