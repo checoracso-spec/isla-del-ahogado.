@@ -16,29 +16,76 @@ func _ready() -> void:
 	get_tree().quit(0 if fallos == 0 else 1)
 
 func _ejecutar() -> void:
-	_comprobar("el mundo crea una fuente costera", mundo.fuentes_recurso.size() == 1)
-	if mundo.fuentes_recurso.is_empty():
+	_comprobar("el mundo crea cuatro fuentes de recursos", mundo.fuentes_recurso.size() == 4)
+	if mundo.fuentes_recurso.size() < 4:
 		return
-	var fuente = mundo.fuentes_recurso[0]
-	_comprobar("la fuente está sobre terreno transitable",
-		mundo.transitable.puede_pisar(fuente.casilla()))
-	_comprobar("la fuente está junto al agua", _junto_a_agua(fuente.casilla()))
-	_comprobar("la fuente tiene identidad estable", fuente.identidad != null
-		and fuente.identidad.clave == "isla:restos_naufragio@%d,%d" % [fuente.casilla().x, fuente.casilla().y])
+
+	var por_tipo := {}
+	for fuente in mundo.fuentes_recurso:
+		por_tipo[fuente.definicion_id] = fuente
+		print("  posición %s: %s" % [fuente.definicion_id, fuente.casilla()])
+		_comprobar("fuente %s sobre terreno transitable" % fuente.definicion_id,
+			mundo.transitable.puede_pisar(fuente.casilla()))
+	_comprobar("existe el naufragio", por_tipo.has("restos_naufragio"))
+	_comprobar("existe el manglar", por_tipo.has("arbol_manglar"))
+	_comprobar("existe el semillero", por_tipo.has("semillero_isla"))
+	_comprobar("existe la veta", por_tipo.has("veta_azufre"))
+	_comprobar("las fuentes se generan desde datos",
+		BaseDeDatos.fuente("restos_naufragio").generar_en_mundo
+		and BaseDeDatos.fuente("arbol_manglar").generar_en_mundo
+		and BaseDeDatos.fuente("semillero_isla").generar_en_mundo
+		and BaseDeDatos.fuente("veta_azufre").generar_en_mundo)
+	_comprobar("las cuatro fuentes ocupan casillas distintas",
+			por_tipo.size() == 4 and _casillas_distintas(por_tipo.values()))
+	_comprobar("la bitácora orienta hacia los recursos",
+			mundo._resumen_fuentes_exploracion().contains("Restos de Naufragio"))
+
+	var naufragio = por_tipo["restos_naufragio"]
+	_comprobar("el naufragio está junto al agua", _junto_a_agua(naufragio.casilla()))
+	_comprobar("la identidad del naufragio es estable", naufragio.identidad != null
+		and naufragio.identidad.clave == "isla:restos_naufragio@%d,%d" % [naufragio.casilla().x, naufragio.casilla().y])
 
 	Bolsa.mochila.vaciar()
-	var antes: int = int(fuente.cantidad())
-	var resultado: Dictionary = fuente.recolectar(mundo.jugador.inventario())
-	_comprobar("el jugador puede recolectar", int(resultado.get("ciclos", 0)) == 1)
-	_comprobar("la madera llega a la mochila", Bolsa.mochila.cantidad("madera_naufragio") == 2)
-	_comprobar("la pólvora llega a la mochila", Bolsa.mochila.cantidad("polvora_humeda") == 1)
-	_comprobar("la fuente queda agotada", antes == 1 and fuente.cantidad() == 0)
+	naufragio.interactuar(mundo.jugador)
+	_comprobar("el jugador recolecta el naufragio", Bolsa.mochila.cantidad("madera_naufragio") == 2)
+	_comprobar("la madera del naufragio llega a la mochila", Bolsa.mochila.cantidad("madera_naufragio") == 2)
+	_comprobar("la pólvora del naufragio llega a la mochila", Bolsa.mochila.cantidad("polvora_humeda") == 1)
+
+	var arbol = por_tipo["arbol_manglar"]
+	arbol.interactuar(mundo.jugador)
+	_comprobar("el jugador recolecta el manglar", Bolsa.mochila.cantidad("madera_naufragio") == 5)
+	_comprobar("el manglar entrega madera y carbón",
+		Bolsa.mochila.cantidad("madera_naufragio") == 5 and Bolsa.mochila.cantidad("carbon") == 1)
+
+	var veta = por_tipo["veta_azufre"]
+	veta.interactuar(mundo.jugador)
+	_comprobar("el jugador recolecta la veta", Bolsa.mochila.cantidad("azufre_volcanico") == 2)
+	_comprobar("la veta entrega azufre", Bolsa.mochila.cantidad("azufre_volcanico") == 2)
+
+	var semillero = por_tipo["semillero_isla"]
+	semillero.interactuar(mundo.jugador)
+	_comprobar("el jugador recolecta el semillero",
+		Bolsa.mochila.cantidad("semilla_citrico") == 1)
+	_comprobar("el semillero entrega las tres semillas",
+		Bolsa.mochila.cantidad("semilla_citrico") == 1
+		and Bolsa.mochila.cantidad("semilla_cana") == 1
+		and Bolsa.mochila.cantidad("semilla_tabaco") == 1)
 
 	var serial: Dictionary = RecursosMundo._serializar()
 	RecursosMundo.reiniciar()
 	RecursosMundo._cargar(serial)
-	_comprobar("el agotamiento se conserva en datos planos", fuente.cantidad() == 0)
-	_comprobar("el recurso sigue registrado tras cargar", serial.get("estados", {}).size() == 1)
+	_comprobar("el agotamiento se conserva en datos planos", naufragio.cantidad() == 0
+		and arbol.cantidad() == 2 and veta.cantidad() == 1 and semillero.cantidad() == 0)
+	_comprobar("las cuatro fuentes siguen registradas tras cargar", serial.get("estados", {}).size() == 4)
+
+func _casillas_distintas(fuentes: Array) -> bool:
+	var vistas := {}
+	for fuente in fuentes:
+		var c: Vector2i = fuente.casilla()
+		if vistas.has(c):
+			return false
+		vistas[c] = true
+	return true
 
 func _junto_a_agua(casilla: Vector2i) -> bool:
 	for d: Vector2i in [Vector2i(1, 0), Vector2i(-1, 0), Vector2i(0, 1), Vector2i(0, -1)]:

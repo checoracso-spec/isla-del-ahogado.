@@ -66,6 +66,19 @@ func _ready() -> void:
 	_comprobar("el día es el guardado", Reloj.dia == D.DIA, str(Reloj.dia))
 	_comprobar("la hora es la guardada", is_equal_approx(Reloj.hora, D.HORA), str(Reloj.hora))
 
+	var semillero = null
+	var parcela = null
+	for fuente in mundo.fuentes_recurso:
+		if fuente.definicion_id == D.FUENTE_GUARDADA:
+			semillero = fuente
+	for candidata in mundo.parcelas_cultivo:
+		if candidata.definicion_id == D.CULTIVO_GUARDADO:
+			parcela = candidata
+	_comprobar("la fuente agotada sigue agotada tras cargar",
+		semillero != null and semillero.cantidad() == 0)
+	_comprobar("la parcela sembrada conserva su etapa tras cargar",
+		parcela != null and CultivosMundo.etapa(parcela.identidad.instancia) == D.ETAPA_CULTIVO_GUARDADA)
+
 	# Bajar antes de revisar el cofre: el que vació A pertenece a la planta baja,
 	# no al cofre independiente de la planta alta.
 	var bajada := Interiores.activo.actores.get_node_or_null(

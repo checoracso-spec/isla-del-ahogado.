@@ -1,5 +1,6 @@
 extends Node
 const FuenteRecursoDataScript := preload("res://scripts/datos/fuente_recurso_data.gd")
+const CultivoDataScript := preload("res://scripts/datos/cultivo_data.gd")
 const DestinoDataScript := preload("res://scripts/datos/destino_data.gd")
 const RutaGlobalDataScript := preload("res://scripts/datos/ruta_global_data.gd")
 ## AUTOLOAD: BaseDeDatos
@@ -93,6 +94,18 @@ const TABLA_ITEMS := [
 	  "peso": 0.7, "volumen": 1.0, "valor": 8, "desc": "[extra] De las cabras de montaña." },
 	{ "id": "carne_salada", "nombre": "Carne Salada", "tipo": "comida",
 	  "peso": 0.9, "volumen": 0.9, "valor": 10, "comida": 40.0, "desc": "[extra] De los corrales." },
+	{ "id": "semilla_citrico", "nombre": "Semillas de Cítrico", "tipo": "semilla",
+	  "peso": 0.1, "volumen": 0.1, "valor": 2, "desc": "Semillas resistentes de los árboles costeros." },
+	{ "id": "semilla_cana", "nombre": "Semillas de Caña de Azúcar", "tipo": "semilla",
+	  "peso": 0.1, "volumen": 0.1, "valor": 2, "desc": "La futura materia prima del ron." },
+	{ "id": "semilla_tabaco", "nombre": "Semillas de Tabaco", "tipo": "semilla",
+	  "peso": 0.1, "volumen": 0.1, "valor": 3, "desc": "Moneda de cambio para tratos discretos." },
+	{ "id": "citricos", "nombre": "Cítricos", "tipo": "cultivo",
+	  "peso": 0.4, "volumen": 0.4, "valor": 9, "desc": "Evitan el escorbuto de la tripulación." },
+	{ "id": "cana_azucar", "nombre": "Caña de Azúcar", "tipo": "cultivo",
+	  "peso": 0.6, "volumen": 0.7, "valor": 5, "desc": "Se destila para producir ron." },
+	{ "id": "tabaco", "nombre": "Tabaco", "tipo": "cultivo",
+	  "peso": 0.3, "volumen": 0.5, "valor": 14, "desc": "Un buen soborno abre más puertas que una llave." },
 	{ "id": "fertilizante", "nombre": "Fertilizante de Marisma", "tipo": "procesado",
 	  "peso": 1.3, "volumen": 1.5, "valor": 7, "desc": "[extra] Para los cultivos de cítricos y caña." },
 
@@ -533,17 +546,35 @@ const TABLA_ANIMALES := [
 
 const TABLA_FUENTES := [
 	{ "id": "restos_naufragio", "nombre": "Restos de Naufragio",
-	  "tipo": "naufragio", "zona": "costa",
+	  "tipo": "naufragio", "zona": "costa", "generar_en_mundo": true,
+	  "orden_mundo": 10,
 	  "productos": { "madera_naufragio": 2, "polvora_humeda": 1 },
 	  "ciclos_maximos": 1, "regeneracion_horas": 24.0 },
 	{ "id": "arbol_manglar", "nombre": "Manglar Aprovechable",
-	  "tipo": "arbol", "zona": "bosque",
+	  "tipo": "arbol", "zona": "bosque", "generar_en_mundo": true,
+	  "orden_mundo": 20, "espesura_min": 0.25, "espesura_max": 1.0,
 	  "productos": { "madera_naufragio": 3, "carbon": 1 },
 	  "ciclos_maximos": 3, "regeneracion_horas": 48.0 },
+	{ "id": "semillero_isla", "nombre": "Semillero de la Isla",
+	  "tipo": "semillero", "zona": "huerta", "generar_en_mundo": true,
+	  "orden_mundo": 25, "espesura_min": 0.0, "espesura_max": 0.35,
+	  "productos": { "semilla_citrico": 1, "semilla_cana": 1,
+		"semilla_tabaco": 1 },
+	  "ciclos_maximos": 1, "regeneracion_horas": 24.0 },
 	{ "id": "veta_azufre", "nombre": "Veta de Azufre Volcanico",
-	  "tipo": "veta", "zona": "montana",
+	  "tipo": "veta", "zona": "montana", "generar_en_mundo": true,
+	  "orden_mundo": 30, "espesura_min": 0.0, "espesura_max": 0.55,
 	  "productos": { "azufre_volcanico": 2 },
 	  "ciclos_maximos": 2, "regeneracion_horas": 72.0 },
+]
+
+const TABLA_CULTIVOS := [
+	{ "id": "citricos", "nombre": "Cítricos", "semilla": "semilla_citrico",
+	  "cosecha": { "citricos": 3 }, "horas_crecimiento": 18.0 },
+	{ "id": "cana_azucar", "nombre": "Caña de Azúcar", "semilla": "semilla_cana",
+	  "cosecha": { "cana_azucar": 4 }, "horas_crecimiento": 20.0 },
+	{ "id": "tabaco", "nombre": "Tabaco", "semilla": "semilla_tabaco",
+	  "cosecha": { "tabaco": 3 }, "horas_crecimiento": 24.0 },
 ]
 
 const TABLA_DESTINOS := [
@@ -623,6 +654,7 @@ var animales: Dictionary = {}     ## id -> AnimalData
 var interiores: Dictionary = {}   ## id -> InteriorDefinicion
 var horarios: Dictionary = {}     ## id -> HorarioData
 var fuentes: Dictionary = {}      ## id -> FuenteRecursoData
+var cultivos: Dictionary = {}     ## id -> CultivoData
 var destinos: Dictionary = {}     ## id -> DestinoData
 var rutas: Dictionary = {}        ## id -> RutaGlobalData
 
@@ -651,6 +683,9 @@ func _ready() -> void:
 	for d in TABLA_FUENTES:
 		var f = FuenteRecursoDataScript.desde_dic(d)
 		fuentes[f.id] = f
+	for d in TABLA_CULTIVOS:
+		var cultivo = CultivoDataScript.desde_dic(d)
+		cultivos[cultivo.id] = cultivo
 	for d in TABLA_DESTINOS:
 		var destino = DestinoDataScript.desde_dic(d)
 		destinos[destino.id] = destino
@@ -708,13 +743,16 @@ func interior(id: String) -> InteriorDefinicion:
 func horario(id: String) -> HorarioData:
 	return horarios.get(id, horarios.get("tripulacion"))
 
-func fuente(id: String) -> Resource:
+func fuente(id: String) -> FuenteRecursoData:
 	return fuentes.get(id)
 
-func destino(id: String) -> Resource:
+func cultivo(id: String) -> CultivoData:
+	return cultivos.get(id)
+
+func destino(id: String) -> DestinoData:
 	return destinos.get(id)
 
-func ruta(id: String) -> Resource:
+func ruta(id: String) -> RutaGlobalData:
 	return rutas.get(id)
 
 func nombre_item(id: String) -> String:

@@ -33,6 +33,7 @@ const SECCIONES := {
 	"mercado": true,
 	"taberna": true,
 	"recursos_mundo": true,
+	"cultivos": true,
 	"mapa_global": true,
 	"npcs": false,
 	"animales": false,

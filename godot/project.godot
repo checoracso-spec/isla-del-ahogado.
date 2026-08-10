@@ -40,6 +40,8 @@ Ubicacion="*res://scripts/autoload/ubicacion.gd"
 Contenedores="*res://scripts/autoload/contenedores.gd"
 Interiores="*res://scripts/autoload/interiores.gd"
 RecursosMundo="*res://scripts/autoload/recursos_mundo.gd"
+CultivosMundo="*res://scripts/autoload/cultivos_mundo.gd"
+DioramasExternos="*res://scripts/autoload/dioramas_externos.gd"
 MapaGlobal="*res://scripts/autoload/mapa_global.gd"
 
 [display]

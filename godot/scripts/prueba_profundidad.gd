@@ -20,6 +20,13 @@ var _etiqueta: Label
 var _objetos: Node2D
 
 func _ready() -> void:
+	# Esta escena existe para inspección visual. En headless no hay una
+	# superficie de presentación fiable para capturar el viewport; salir limpio
+	# mantiene la regresión automática separada de la prueba manual de arte.
+	if DisplayServer.get_name() == "headless":
+		print("Prueba de profundidad: captura omitida en headless; usar ventana para revisar PNGs.")
+		get_tree().quit(0)
+		return
 	_montar()
 	await _capturar_estados()
 	get_tree().quit(0)

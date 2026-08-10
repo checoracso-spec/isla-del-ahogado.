@@ -7,6 +7,7 @@ const PanelTabernaScript := preload("res://scripts/ui/panel_taberna.gd")
 const PanelMuelleScript := preload("res://scripts/ui/panel_muelle.gd")
 const PuestoMuelleScript := preload("res://scripts/interiores/puesto_muelle.gd")
 const FuenteRecursoScript := preload("res://scripts/mapa/fuente_recurso.gd")
+const ParcelaCultivoScript := preload("res://scripts/mapa/parcela_cultivo.gd")
 ## La isla en pantalla, enchufada a la logística que ya existía.
 ##
 ## Aquí no se inventa ninguna regla nueva: los edificios humean porque su
@@ -58,6 +59,7 @@ var estaciones: Array[EstacionTrabajo] = []
 var piratas: Array[Pirata] = []
 var puertas: Array[Puerta] = []
 var fuentes_recurso: Array = []
+var parcelas_cultivo: Array = []
 
 var _terreno: TileMapLayer
 var _suelo_pueblo: TileMapLayer
@@ -68,10 +70,12 @@ var _hud: Control
 var _bajo_raton: EdificioVisual = null
 
 func _ready() -> void:
+	RenderingServer.set_default_clear_color(GlobalColors.PALETA["azul_noche"])
 	_construir_mundo()
 	_montar_logistica()
 	_montar_hud()
 	_conectar()
+	_apuntar(_resumen_fuentes_exploracion())
 	_preparar_captura()
 
 ## Modo captura, para revisar el aspecto sin tener que mirar la ventana:
@@ -167,6 +171,7 @@ func _construir_mundo() -> void:
 	_crear_jugador()
 	_crear_puertas()
 	_crear_fuentes_recurso()
+	_crear_parcela_cultivo()
 	Interiores.usar_exterior(self, self)
 
 	_tinte = CanvasModulate.new()
@@ -267,6 +272,10 @@ func _crear_puertas() -> void:
 ## terreno, no de una coordenada frágil: playa pisable, junto a agua y libre
 ## de edificios. La clave natural mantiene su instance_id entre partidas.
 func _crear_fuentes_recurso() -> void:
+	_crear_fuentes_recurso_ampliadas()
+	return
+	# Compatibilidad con el primer prototipo; la versión ampliada de arriba
+	# conserva la misma identidad natural del naufragio.
 	var casilla := _buscar_costa_libre()
 	if casilla.x < 0:
 		push_warning("No se encontró una casilla costera para restos de naufragio")
@@ -279,6 +288,64 @@ func _crear_fuentes_recurso() -> void:
 		fuentes_recurso.append(fuente)
 	else:
 		fuente.queue_free()
+
+func _crear_fuentes_recurso_ampliadas() -> void:
+	var ubicadas: Array[Vector2i] = []
+	var definiciones: Array = BaseDeDatos.fuentes.values()
+	definiciones.sort_custom(func(a, b): return int(a.orden_mundo) < int(b.orden_mundo))
+	for def: FuenteRecursoData in definiciones:
+		if not def.generar_en_mundo:
+			continue
+		var casilla := Vector2i(-1, -1)
+		if def.zona == "costa":
+			casilla = _buscar_costa_libre()
+		else:
+			# El mapa actual aún no tiene biomas de bosque/montaña separados.
+			# El criterio queda en datos para cambiarlo cuando se amplíe el mapa.
+			casilla = _buscar_tierra_libre(def.espesura_min, def.espesura_max, ubicadas)
+		if casilla.x < 0:
+			push_warning("Diagnóstico: no hay casilla candidata para %s" % def.id)
+			continue
+		_montar_fuente_recurso(def.id, casilla)
+		ubicadas.append(casilla)
+
+func _montar_fuente_recurso(definicion_id: String, casilla: Vector2i) -> void:
+	var fuente = FuenteRecursoScript.new()
+	fuente.name = "Fuente_%s" % definicion_id
+	_objetos.add_child(fuente)
+	var clave := Entidades.clave_en(definicion_id, casilla)
+	if fuente.montar(definicion_id, clave, casilla):
+		fuentes_recurso.append(fuente)
+	else:
+		push_warning("No se pudo montar la fuente '%s' en %s" % [definicion_id, casilla])
+		fuente.queue_free()
+
+func _buscar_tierra_libre(espesura_min: float, espesura_max: float,
+		excluir: Array[Vector2i]) -> Vector2i:
+	for y in range(2, ALTO - 2):
+		for x in range(2, ANCHO - 2):
+			var t := Vector2i(x, y)
+			if t in excluir or transitable.ocupadas.has(t):
+				continue
+			if not isla.es_transitable(x, y) or isla.es_explanada(x, y):
+				continue
+			var espesura := isla.espesura(x, y)
+			if espesura < espesura_min or espesura > espesura_max:
+				continue
+			if Vector2(t - isla.centro_plaza).length() < 10.0:
+				continue
+			return t
+	# Fallback deliberado: un mapa pequeño o muy edificado puede no cumplir el
+	# criterio de bioma, pero la fuente sigue necesitando una instancia visible.
+	for y in range(2, ALTO - 2):
+		for x in range(2, ANCHO - 2):
+			var t := Vector2i(x, y)
+			if t in excluir or transitable.ocupadas.has(t):
+				continue
+			if not isla.es_transitable(x, y):
+				continue
+			return t
+	return Vector2i(-1, -1)
 
 func _buscar_costa_libre() -> Vector2i:
 	for y in range(1, ALTO - 1):
@@ -301,6 +368,25 @@ func _buscar_costa_libre() -> Vector2i:
 			if junto_agua:
 				return t
 	return Vector2i(-1, -1)
+
+func _crear_parcela_cultivo() -> void:
+	var excluir: Array[Vector2i] = []
+	for fuente in fuentes_recurso:
+		excluir.append(fuente.casilla())
+	for definicion_id in ["citricos", "cana_azucar", "tabaco"]:
+		var casilla := _buscar_tierra_libre(0.0, 1.0, excluir)
+		if casilla.x < 0:
+			push_warning("No se encontró una casilla para la parcela '%s'" % definicion_id)
+			continue
+		var parcela = ParcelaCultivoScript.new()
+		parcela.name = "Parcela_Cultivo_%s" % definicion_id
+		_objetos.add_child(parcela)
+		var clave := Entidades.clave_en(definicion_id, casilla)
+		if parcela.montar(definicion_id, clave, casilla):
+			parcelas_cultivo.append(parcela)
+			excluir.append(casilla)
+		else:
+			parcela.queue_free()
 
 ## Clave base del kit para un edificio, o "" si sigue con el arte antiguo.
 ## Comprueba que la pieza exista de verdad: un dato que apunte a un asset
@@ -904,6 +990,10 @@ func _ficha() -> String:
 # ---------------------------------------------------------------------------
 
 func _conectar() -> void:
+	for fuente in fuentes_recurso:
+		fuente.recolectado.connect(_al_recolectar_recurso)
+	for parcela in parcelas_cultivo:
+		parcela.accion_realizada.connect(_al_accion_parcela)
 	Almacen.cuello_de_botella.connect(func(est, insumo, faltan):
 		_apuntar("[color=#c0392b]%s necesita %d× %s[/color]"
 			% [_nombre(est), faltan, BaseDeDatos.nombre_item(insumo)]))
@@ -920,6 +1010,46 @@ func _conectar() -> void:
 			% [n, BaseDeDatos.nombre_item(id)]))
 	Reloj.nuevo_dia.connect(func(d): _apuntar("[b]— Día %d —[/b]" % d))
 	_apuntar("La guarida despierta. Rueda del ratón para acercar, botón derecho para mover.")
+
+func _resumen_fuentes_exploracion() -> String:
+	var lineas: Array[String] = []
+	for fuente in fuentes_recurso:
+		if fuente.cantidad() <= 0:
+			continue
+		var def: Resource = fuente.definicion()
+		var nombre: String = str(def.nombre if def != null else fuente.definicion_id)
+		lineas.append("%s al %s" % [nombre, _direccion_fuente(fuente.casilla())])
+	if lineas.is_empty():
+		return "[color=#7d8798]No hay recursos silvestres disponibles.[/color]"
+	return "[color=#5cb2b5]Rastreo de la isla: %s.[/color]" % ", ".join(lineas)
+
+func _direccion_fuente(casilla: Vector2i) -> String:
+	var delta: Vector2 = Vector2(casilla) + Vector2(0.5, 0.5) - jugador.pos_tile
+	if delta.length_squared() < 0.01:
+		return "aquí"
+	if abs(delta.x) >= abs(delta.y):
+		return "el este" if delta.x > 0 else "el oeste"
+	return "el sur" if delta.y > 0 else "el norte"
+
+func _al_recolectar_recurso(fuente: FuenteRecurso, ciclos: int, productos: Dictionary) -> void:
+	var entregas: Array[String] = []
+	for id in productos:
+		entregas.append("%d× %s" % [int(productos[id]), BaseDeDatos.nombre_item(str(id))])
+	entregas.sort()
+	_apuntar("[color=#f5c051]Recolectado en %s: %s[/color]"
+		% [fuente.definicion().nombre, ", ".join(entregas)])
+
+func _al_accion_parcela(parcela: ParcelaCultivo, accion: String, productos: Dictionary) -> void:
+	var def: Resource = parcela.definicion()
+	if accion == "sembrar":
+		_apuntar("[color=#82b06b]Sembraste %s. Estará listo en %.0f horas.[/color]"
+			% [def.nombre, def.horas_crecimiento])
+		return
+	var entregas: Array[String] = []
+	for id in productos:
+		entregas.append("%d× %s" % [int(productos[id]), BaseDeDatos.nombre_item(str(id))])
+	entregas.sort()
+	_apuntar("[color=#f5c051]Cosecha de %s: %s[/color]" % [def.nombre, ", ".join(entregas)])
 
 func _apuntar(t: String) -> void:
 	_bitacora.append("[color=#7d8798]%s[/color]  %s" % [Reloj.texto(), t])

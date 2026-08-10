@@ -15,6 +15,9 @@ const DIA := 13
 const HORA := 18.5
 const RON_EN_MOCHILA := 3
 const ZONA_INTERIOR := "interior_capitania_pa"
+const FUENTE_GUARDADA := "semillero_isla"
+const CULTIVO_GUARDADO := "citricos"
+const ETAPA_CULTIVO_GUARDADA := 3
 
 ## Casilla concreta del interior donde se coloca el jugador antes de guardar.
 ## Elegida a mano para que esté libre de muebles en `interior_casa_a`.

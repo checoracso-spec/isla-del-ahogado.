@@ -11,8 +11,8 @@ const ScriptDestino := preload("res://scripts/datos/destino_data.gd")
 @export var puerto: bool = false
 @export var descripcion: String = ""
 
-static func desde_dic(d: Dictionary) -> Resource:
-	var destino = ScriptDestino.new()
+static func desde_dic(d: Dictionary) -> DestinoData:
+	var destino := DestinoData.new()
 	destino.id = str(d.get("id", ""))
 	destino.nombre = str(d.get("nombre", destino.id))
 	destino.tipo = str(d.get("tipo", "isla"))

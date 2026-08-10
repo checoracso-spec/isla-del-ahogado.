@@ -1,0 +1,6 @@
+[gd_scene load_steps=2 format=3]
+
+[ext_resource path="res://scripts/prueba_cultivos_mundo.gd" type="Script" id="1"]
+
+[node name="PruebaCultivosMundo" type="Node"]
+script = ExtResource("1")

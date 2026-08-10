@@ -1,0 +1,31 @@
+[gd_scene load_steps=3 format=3]
+
+[ext_resource type="Script" path="res://scripts/galeria_diorama.gd" id="1_script"]
+[ext_resource type="Script" path="res://scripts/visual/diorama_preview.gd" id="2_preview"]
+
+[node name="GaleriaDiorama" type="Node2D"]
+script = ExtResource("1_script")
+
+[node name="HerreriaReferencia" type="Sprite2D" parent="."]
+position = Vector2(640, 365)
+script = ExtResource("2_preview")
+clave_catalogo = "herreria_ref"
+escala_visual = 2.0
+
+[node name="Titulo" type="Label" parent="."]
+offset_left = 32.0
+offset_top = 24.0
+offset_right = 900.0
+offset_bottom = 72.0
+theme_override_colors/font_color = Color(0.96, 0.75, 0.32, 1)
+theme_override_font_sizes/font_size = 28
+text = "Referencia de Herrería · Pack externo · 302×256"
+
+[node name="Aviso" type="Label" parent="."]
+offset_left = 32.0
+offset_top = 680.0
+offset_right = 1200.0
+offset_bottom = 712.0
+theme_override_colors/font_color = Color(0.76, 0.82, 0.88, 1)
+theme_override_font_sizes/font_size = 16
+text = "Vista de validación artística: todavía no sustituye el interior jugable ni define colisiones."

@@ -61,6 +61,61 @@ func casilla() -> Vector2i:
 	return casilla_pos
 
 func _draw() -> void:
-	var color := Color("8f5c3b") if cantidad() > 0 else Color("3d3d52")
-	draw_circle(Vector2(0, -10), 9.0, color)
-	draw_line(Vector2(-8, 0), Vector2(8, 0), Color("c48d5f"), 2.0)
+	if cantidad() <= 0:
+		draw_ellipse(Vector2.ZERO, 15.0, 6.0,
+			GlobalColors.con_alpha("gris_base", 0.45))
+		return
+	var sombra: Color = GlobalColors.PALETA["marron_profundo"]
+	draw_ellipse(Vector2(0, 3), 17.0, 7.0, sombra)
+	match definicion_id:
+		"restos_naufragio":
+			# Silueta grande y contrastada: tablones, proa rota y herraje.
+			draw_colored_polygon(PackedVector2Array([
+				Vector2(-17, -2), Vector2(-8, -12), Vector2(12, -10),
+				Vector2(17, -3), Vector2(6, 4), Vector2(-10, 4)]),
+				GlobalColors.PALETA["madera_oscura"])
+			draw_line(Vector2(-15, -3), Vector2(9, -7),
+			GlobalColors.PALETA["madera_clara"], 4.0)
+			draw_line(Vector2(-10, 1), Vector2(14, -3),
+			GlobalColors.PALETA["arena_madera"], 3.0)
+			draw_line(Vector2(-5, -10), Vector2(-1, 2),
+			GlobalColors.PALETA["madera_base"], 2.0)
+			draw_circle(Vector2(9, -11), 4.0, GlobalColors.PALETA["acero_gris"])
+			draw_circle(Vector2(9, -11), 2.0, GlobalColors.PALETA["plata_salitre"])
+			draw_line(Vector2(-18, -4), Vector2(-22, -12),
+			GlobalColors.PALETA["oro_llama"], 2.0)
+			draw_circle(Vector2(-22, -13), 2.0, GlobalColors.PALETA["espuma_marina"])
+			# Mástil roto y bandera: el punto de recolección debe leerse
+			# desde lejos sin convertirse en un marcador de depuración.
+			draw_line(Vector2(-3, -5), Vector2(-7, -34),
+			GlobalColors.PALETA["madera_oscura"], 3.0)
+			draw_colored_polygon(PackedVector2Array([
+				Vector2(-7, -34), Vector2(4, -30), Vector2(-7, -26)]),
+				GlobalColors.PALETA["rojo_calido"])
+			draw_line(Vector2(-7, -34), Vector2(1, -31),
+			GlobalColors.PALETA["oro_llama"], 1.0)
+		"arbol_manglar":
+			draw_rect(Rect2(-3, -17, 6, 18), GlobalColors.PALETA["madera_oscura"])
+			draw_circle(Vector2(-7, -18), 8.0, GlobalColors.PALETA["verde_base"])
+			draw_circle(Vector2(5, -21), 9.0, GlobalColors.PALETA["verde_claro"])
+			draw_circle(Vector2(0, -28), 8.0, GlobalColors.PALETA["verde_brillo"])
+		"veta_azufre":
+			draw_colored_polygon(PackedVector2Array([
+				Vector2(-13, 0), Vector2(-7, -11), Vector2(2, -14),
+				Vector2(13, -5), Vector2(9, 4), Vector2(-5, 7)]),
+				GlobalColors.PALETA["gris_base"])
+			draw_circle(Vector2(-2, -7), 3.0, GlobalColors.PALETA["oro_llama"])
+			draw_circle(Vector2(6, -3), 2.0, GlobalColors.PALETA["naranja_fuego"])
+		"semillero_isla":
+			draw_colored_polygon(PackedVector2Array([
+				Vector2(-9, -1), Vector2(-7, -13), Vector2(7, -13),
+				Vector2(10, -1), Vector2(5, 4), Vector2(-6, 4)]),
+				GlobalColors.PALETA["arena_madera"])
+			draw_line(Vector2(-7, -11), Vector2(7, -11),
+				GlobalColors.PALETA["madera_oscura"], 2.0)
+			draw_line(Vector2(-2, -13), Vector2(-4, -22),
+				GlobalColors.PALETA["verde_base"], 2.0)
+			draw_line(Vector2(1, -13), Vector2(5, -21),
+				GlobalColors.PALETA["verde_claro"], 2.0)
+		_:
+			draw_circle(Vector2(0, -10), 9.0, GlobalColors.PALETA["madera_clara"])

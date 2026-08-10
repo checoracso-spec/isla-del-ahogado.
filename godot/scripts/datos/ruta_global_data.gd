@@ -11,8 +11,8 @@ const ScriptRuta := preload("res://scripts/datos/ruta_global_data.gd")
 @export var riesgo: float = 0.0
 @export var descripcion: String = ""
 
-static func desde_dic(d: Dictionary) -> Resource:
-	var ruta = ScriptRuta.new()
+static func desde_dic(d: Dictionary) -> RutaGlobalData:
+	var ruta := RutaGlobalData.new()
 	ruta.id = str(d.get("id", ""))
 	ruta.origen = str(d.get("origen", ""))
 	ruta.destino = str(d.get("destino", ""))

@@ -61,6 +61,9 @@ func recolectar(instancia: String, destino: Inventario, ciclos: int = 1) -> Dict
 		estado["proxima"] = _hora_total() + def.regeneracion_horas
 	_estados[instancia] = estado
 	fuente_cambiada.emit(instancia, int(estado["cantidad"]))
+	var viva = _vivas.get(instancia)
+	if viva != null and is_instance_valid(viva):
+		viva.queue_redraw()
 	return {"ciclos": posibles, "productos": productos}
 
 func _process(_delta: float) -> void:

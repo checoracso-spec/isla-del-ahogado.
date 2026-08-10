@@ -31,6 +31,26 @@ func _ready() -> void:
 	print("  puerta      : %s (edificio %s)" % [puerta.identidad.instancia, puerta.edificio_instancia])
 	print("  casilla ext : %s" % puerta.casilla_exterior)
 
+	# Agotar una fuente y sembrar una parcela antes del cierre. El proceso B
+	# comprobará que no se reconstruyen desde su estado inicial.
+	var semillero = null
+	var parcela = null
+	for fuente in mundo.fuentes_recurso:
+		if fuente.definicion_id == D.FUENTE_GUARDADA:
+			semillero = fuente
+	for candidata in mundo.parcelas_cultivo:
+		if candidata.definicion_id == D.CULTIVO_GUARDADO:
+			parcela = candidata
+	if semillero == null or parcela == null:
+		printerr("A: faltan fuente o parcela para persistencia")
+		get_tree().quit(1)
+		return
+	Bolsa.mochila.vaciar()
+	semillero.interactuar(mundo.jugador)
+	parcela.interactuar(mundo.jugador)
+	print("  semillero   : %d ciclos restantes" % semillero.cantidad())
+	print("  parcela      : etapa %d" % CultivosMundo.etapa(parcela.identidad.instancia))
+
 	# Entrar y vaciar el cofre
 	mundo.recibir_jugador(mundo.jugador, Vector2(puerta.casilla_exterior) + Vector2(0.5, 0.5))
 	if not Interiores.entrar(puerta, mundo.jugador):
