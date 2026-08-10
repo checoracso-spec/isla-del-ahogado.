@@ -90,8 +90,7 @@ pendientes.
   y la bodega ya admite mercancías mediante el contenedor base, pero todavía
   no implementa tripulación persistente ni capacidad de flota avanzada.
 - La fauna visible está limitada por ahora a la población mínima de prueba;
-  todavía no hay reproducción, producción diaria, domesticación ni manadas
-  dinámicas.
+  todavía no hay reproducción, domesticación ni manadas dinámicas.
 - No hay combate naval, economía dinámica completa ni NPCs con inventario y
   relaciones avanzadas.
 - El arte definitivo sólo está integrado en una parte de los edificios; los
