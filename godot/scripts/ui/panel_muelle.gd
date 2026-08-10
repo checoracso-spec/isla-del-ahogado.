@@ -14,6 +14,7 @@ var _grua_boton: Button
 var _ruta_id := "portobello"
 var _interceptado_id := ""
 var _aviso := ""
+var _estacion_abierta := false
 
 func _ready() -> void:
 	visible = false
@@ -113,6 +114,7 @@ func _ready() -> void:
 func abrir(estado: String = "abierta") -> void:
 	_aviso = ""
 	visible = true
+	_estacion_abierta = estado == "abierta"
 	_estado.text = "Abierto" if estado == "abierta" else "Detenido por la noche"
 	_descargar_boton.disabled = estado != "abierta"
 	_zarpar_boton.disabled = estado != "abierta"
@@ -135,7 +137,7 @@ func _actualizar_grua() -> void:
 		return
 	_grua_boton.text = "Red de arrastre instalada" if MuelleManager.grua_activa else \
 		"Instalar red (%d tablones, %d doblones)" % [MuelleManager.COSTE_TABLONES, MuelleManager.COSTE_DOBLONES]
-	_grua_boton.disabled = MuelleManager.grua_activa
+	_grua_boton.disabled = MuelleManager.grua_activa or not _estacion_abierta
 
 func cerrar_panel() -> void:
 	visible = false

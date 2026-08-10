@@ -33,6 +33,8 @@ func _ready() -> void:
 	panel.abrir("detenida")
 	var boton: Button = panel.find_child("DescargarPuerto", true, false) as Button
 	_comprobar("la descarga queda bloqueada de noche", boton.disabled)
+	var grua: Button = panel.find_child("ActivarGrua", true, false) as Button
+	_comprobar("la instalación de la red queda bloqueada de noche", grua.disabled)
 	panel.abrir("abierta")
 	_comprobar("la descarga se habilita de dia", not boton.disabled)
 	var selector: OptionButton = panel.find_child("SelectorRuta", true, false) as OptionButton
