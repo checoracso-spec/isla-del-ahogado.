@@ -6,7 +6,7 @@
 - Rejilla isométrica 128×64; `scripts/mapa/iso.gd` no se ha modificado.
 - API pública de `scripts/autoload/almacen.gd` intacta.
 - 26 escenas `prueba_*.tscn` ejecutadas en headless.
-- 712 comprobaciones instrumentadas en verde; persistencia A/B, viaje global y
+- 713 comprobaciones instrumentadas en verde; persistencia A/B, viaje global y
   profundidad
   arrancan sin errores reales.
 - La escena principal `res://escenas/mundo.tscn` arranca sin `SCRIPT ERROR`,
@@ -121,7 +121,7 @@ antiguas a `montar()` siguen funcionando y usan la casa como destino laboral
 por compatibilidad. Barbanegra ya demuestra el caso real: vive en la cabana
 del capitan y trabaja en la herreria.
 
-El bloque se verifico con 26 suites y 712 comprobaciones, incluido el arranque
+El bloque se verifico con 26 suites y 713 comprobaciones, incluido el arranque
 de `mundo.tscn`, sin modificar `iso.gd` ni la API publica de `Almacen`.
 
 ## Contenido remoto incorporado en este checkpoint
@@ -256,4 +256,7 @@ precios ya consultan el indice de oferta respecto al stock objetivo inicial.
 Las bandas de escasez y abundancia modifican compra y venta sin mezclar el
 mercado con `Almacen`; la prueba de mercado verifica que vaciar el stock de ron
 eleva su precio y que el stock sigue guardandose.
+
+La bitacora del mundo distingue ahora fertilizacion de siembra y cosecha, y la
+prueba de cultivos comprueba el mensaje de esa accion.
 5. Ejecutar las 26 suites y buscar errores reales después de cada bloque.

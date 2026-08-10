@@ -1284,6 +1284,9 @@ func _desactivar_rastrillo_marea() -> void:
 
 func _al_accion_parcela(parcela: ParcelaCultivo, accion: String, productos: Dictionary) -> void:
 	var def: Resource = parcela.definicion()
+	if accion == "fertilizar":
+		_apuntar("[color=#82b06b]Fertilizaste %s. Crecera mas rapido.[/color]" % def.nombre)
+		return
 	if accion == "sembrar":
 		_apuntar("[color=#82b06b]Sembraste %s. Estará listo en %.0f horas.[/color]"
 			% [def.nombre, def.horas_crecimiento])

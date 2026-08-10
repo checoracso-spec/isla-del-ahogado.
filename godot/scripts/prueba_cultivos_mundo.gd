@@ -51,6 +51,8 @@ func _ejecutar() -> void:
 	parcela.interactuar(mundo.jugador)
 	var estado_fertilizado := CultivosMundo.estado(parcela.identidad.instancia)
 	_comprobar("fertilizar consume un abono", Bolsa.mochila.cantidad("fertilizante") == 0)
+	_comprobar("fertilizar deja aviso correcto en la bitacora",
+		_bitacora_contiene(mundo, "Fertilizaste"))
 	_comprobar("el abono acelera y queda guardado en datos",
 		bool(estado_fertilizado.get("fertilizada", false))
 		and float(estado_fertilizado.get("lista_en", 0.0)) < lista_sin_fertilizante)
