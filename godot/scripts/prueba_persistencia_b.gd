@@ -39,6 +39,8 @@ func _ready() -> void:
 	if puerta == null:
 		_terminar()
 		return
+	_comprobar("la red empieza desactivada antes de cargar", not MuelleManager.grua_activa)
+
 	# El cofre se acaba de sembrar con 3 rones en este proceso nuevo: si tras
 	# cargar sigue con 3, es que la carga no funcionó.
 	print("  puerta      : %s (edificio %s)" % [puerta.identidad.instancia, puerta.edificio_instancia])
@@ -65,6 +67,10 @@ func _ready() -> void:
 	_comprobar("la energía es la guardada", is_equal_approx(Bolsa.energia, D.ENERGIA), str(Bolsa.energia))
 	_comprobar("el día es el guardado", Reloj.dia == D.DIA, str(Reloj.dia))
 	_comprobar("la hora es la guardada", is_equal_approx(Reloj.hora, D.HORA), str(Reloj.hora))
+	_comprobar("la red del muelle se recupera tras cargar",
+		MuelleManager.grua_activa == D.GRUA_ACTIVA)
+	_comprobar("la receta antigua sigue desactivada tras cargar",
+		_notas_rastrillo_activo())
 
 	var semillero = null
 	var parcela = null
@@ -120,6 +126,12 @@ func _comprobar(nombre: String, condicion: bool, detalle: String = "") -> void:
 	else:
 		fallos += 1
 		print("  FALLO %s   %s" % [nombre, detalle])
+
+func _notas_rastrillo_activo() -> bool:
+	for estacion in mundo.estaciones:
+		if estacion.edificio_id == "muelle_grua" and estacion.receta_id == "rastrillar_marea":
+			return not estacion.activa
+	return false
 
 func _terminar() -> void:
 	print("\n=== %d/%d correctas ===" % [pruebas - fallos, pruebas])

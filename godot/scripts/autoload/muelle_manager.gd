@@ -96,6 +96,7 @@ func _cargar(datos: Dictionary) -> void:
 	_estado_recolector = (datos.get("recolector", {}) as Dictionary).duplicate(true)
 	if _montado and grua_activa:
 		_montar_recolector()
+		grua_activada.emit()
 
 func reiniciar() -> void:
 	grua_activa = false

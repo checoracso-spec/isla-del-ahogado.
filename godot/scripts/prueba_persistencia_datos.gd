@@ -18,6 +18,7 @@ const ZONA_INTERIOR := "interior_capitania_pa"
 const FUENTE_GUARDADA := "semillero_isla"
 const CULTIVO_GUARDADO := "citricos"
 const ETAPA_CULTIVO_GUARDADA := 3
+const GRUA_ACTIVA := true
 
 ## Casilla concreta del interior donde se coloca el jugador antes de guardar.
 ## Elegida a mano para que esté libre de muebles en `interior_casa_a`.

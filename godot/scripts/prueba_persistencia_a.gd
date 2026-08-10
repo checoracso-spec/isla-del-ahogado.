@@ -21,6 +21,12 @@ func _ready() -> void:
 	Reloj.pausado = true
 
 	Guardado.borrar(D.RANURA)
+	Almacen.anadir("tablon_tratado", MuelleManager.COSTE_TABLONES, "prueba_red_muelle")
+	if not MuelleManager.grua_activa and not MuelleManager.activar_grua():
+		printerr("A: no se pudo instalar la red del muelle")
+		get_tree().quit(1)
+		return
+	print("  red muelle  : instalada")
 
 	if mundo.puertas.is_empty():
 		printerr("A: el mundo no generó puertas")
