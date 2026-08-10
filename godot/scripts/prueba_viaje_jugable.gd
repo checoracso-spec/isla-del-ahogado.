@@ -36,6 +36,15 @@ func _ejecutar() -> void:
 	_comprobar("la zona remota conserva el destino global",
 		MapaGlobal.ubicacion_actual == "isla_ceniza"
 		and Ubicacion.zona == "global:isla_ceniza")
+	_comprobar("la llegada monta los recursos del destino",
+		mundo.zona_global_activa != null
+		and mundo.zona_global_activa.fuentes_recurso.size() == 2)
+	_comprobar("la llegada monta los cultivos del destino",
+		mundo.zona_global_activa != null
+		and mundo.zona_global_activa.parcelas_cultivo.size() == 1
+		and mundo.zona_global_activa.parcelas_cultivo[0].definicion_id == "tabaco")
+	_comprobar("el HUD identifica el rastreo de la zona",
+		mundo._lbl_recursos.text.contains("RASTREO DE LA ZONA"))
 	_comprobar("la zona remota crea un embarque de regreso",
 		mundo.zona_global_activa.get("transiciones").size() == 1)
 

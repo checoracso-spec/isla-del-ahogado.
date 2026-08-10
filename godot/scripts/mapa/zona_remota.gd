@@ -9,11 +9,15 @@ const COLOR_SUELO := Color("3d5b4a")
 const COLOR_SUELO_ALT := Color("4d6c52")
 const COLOR_CAMINO := Color("8f6b4b")
 const TransicionGlobalScript := preload("res://scripts/mapa/transicion_global.gd")
+const FuenteRecursoScript := preload("res://scripts/mapa/fuente_recurso.gd")
+const ParcelaCultivoScript := preload("res://scripts/mapa/parcela_cultivo.gd")
 
 var destino_id: String = ""
 var ancho: int = 1
 var alto: int = 1
 var transiciones: Array = []
+var fuentes_recurso: Array = []
+var parcelas_cultivo: Array = []
 
 func construir(p_destino_id: String, p_ancho: int = 16, p_alto: int = 12) -> void:
 	destino_id = p_destino_id
@@ -27,6 +31,68 @@ func construir(p_destino_id: String, p_ancho: int = 16, p_alto: int = 12) -> voi
 	var entrada_borde := Vector2i(ancho / 2, alto - 1)
 	transitable.liberar(entrada_borde)
 	queue_redraw()
+
+## Monta el contenido recolectable declarado por el destino. Los nodos son
+## representaciones temporales; RecursosMundo y CultivosMundo conservan el
+## estado real y las identidades naturales mantienen la persistencia.
+func montar_contenido() -> void:
+	if actores == null:
+		return
+	for fuente in fuentes_recurso:
+		if fuente != null and is_instance_valid(fuente):
+			fuente.queue_free()
+	for parcela in parcelas_cultivo:
+		if parcela != null and is_instance_valid(parcela):
+			parcela.queue_free()
+	fuentes_recurso.clear()
+	parcelas_cultivo.clear()
+	var destino: Resource = BaseDeDatos.destino(destino_id)
+	if destino == null:
+		return
+	var usadas: Array = []
+	for i in destino.fuentes.size():
+		var casilla := _casilla_contenido(i, usadas)
+		if casilla.x < 0:
+			continue
+		var fuente = FuenteRecursoScript.new()
+		fuente.name = "Recurso_%s_%d" % [str(destino.fuentes[i]), i]
+		actores.add_child(fuente)
+		var clave := "zona:%s:recurso:%s@%d,%d" % [destino_id,
+			str(destino.fuentes[i]), casilla.x, casilla.y]
+		if fuente.montar(str(destino.fuentes[i]), clave, casilla):
+			fuentes_recurso.append(fuente)
+			usadas.append(casilla)
+		else:
+			fuente.queue_free()
+	for i in destino.cultivos.size():
+		var casilla := _casilla_contenido(20 + i, usadas)
+		if casilla.x < 0:
+			continue
+		var parcela = ParcelaCultivoScript.new()
+		parcela.name = "Parcela_%s_%d" % [str(destino.cultivos[i]), i]
+		actores.add_child(parcela)
+		var clave := "zona:%s:parcela:%s@%d,%d" % [destino_id,
+			str(destino.cultivos[i]), casilla.x, casilla.y]
+		if parcela.montar(str(destino.cultivos[i]), clave, casilla):
+			parcelas_cultivo.append(parcela)
+			usadas.append(casilla)
+		else:
+			parcela.queue_free()
+	queue_redraw()
+
+func _casilla_contenido(semilla: int, usadas: Array) -> Vector2i:
+	var margen := 2
+	var ancho_util := maxi(1, ancho - margen * 2 - 1)
+	var alto_util := maxi(1, alto - margen * 2 - 2)
+	for intento in 12:
+		var x := margen + ((semilla * 5 + intento * 3) % ancho_util)
+		var y := margen + ((semilla * 3 + intento * 2) % alto_util)
+		var casilla := Vector2i(x, y)
+		if casilla in usadas:
+			continue
+		if transitable.cabe_en(Vector2(casilla) + Vector2(0.5, 0.5), Huella.cuadrada(0.52)):
+			return casilla
+	return Vector2i(-1, -1)
 
 func entrada() -> Vector2:
 	return Vector2(ancho / 2, alto - 2) + Vector2(0.5, 0.5)

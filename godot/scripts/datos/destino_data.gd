@@ -10,6 +10,8 @@ const ScriptDestino := preload("res://scripts/datos/destino_data.gd")
 @export var coordenadas: Vector2 = Vector2.ZERO
 @export var puerto: bool = false
 @export var descripcion: String = ""
+@export var fuentes: Array[String] = []
+@export var cultivos: Array[String] = []
 
 static func desde_dic(d: Dictionary) -> DestinoData:
 	var destino := DestinoData.new()
@@ -21,5 +23,9 @@ static func desde_dic(d: Dictionary) -> DestinoData:
 	destino.coordenadas = c if c is Vector2 else Vector2.ZERO
 	destino.puerto = bool(d.get("puerto", false))
 	destino.descripcion = str(d.get("descripcion", ""))
+	for id_fuente in d.get("fuentes", []):
+		destino.fuentes.append(str(id_fuente))
+	for id_cultivo in d.get("cultivos", []):
+		destino.cultivos.append(str(id_cultivo))
 	destino.resource_name = destino.nombre
 	return destino

@@ -482,6 +482,11 @@ func _activar_zona_global(destino_id: String) -> bool:
 		return false
 	zona_global_activa = nueva
 	add_child(zona_global_activa)
+	zona_global_activa.montar_contenido()
+	for fuente in zona_global_activa.fuentes_recurso:
+		fuente.recolectado.connect(_al_recolectar_recurso)
+	for parcela in zona_global_activa.parcelas_cultivo:
+		parcela.accion_realizada.connect(_al_accion_parcela)
 	mostrar_exterior(false)
 	var rutas: Array = MapaGlobal.rutas_desde(destino_id)
 	if not rutas.is_empty():
@@ -1074,9 +1079,13 @@ func _actualizar_hud() -> void:
 			flota = " [color=#5b9bd5]· %d · %d[/color]" % [g["puerto"], g["mar"]]
 		lineas.append("%s  [b]%d[/b]%s" % [BaseDeDatos.nombre_item(id), g["cofres"], flota])
 	lineas.append("")
-	lineas.append("[color=#f5c051][b]RASTREO DE LA ISLA[/b][/color]")
-	lineas.append(_resumen_fuentes_exploracion())
-	lineas.append(_resumen_cultivos_exploracion())
+	if zona_global_activa != null:
+		lineas.append("[color=#f5c051][b]RASTREO DE LA ZONA[/b][/color]")
+		lineas.append(_resumen_zona_global())
+	else:
+		lineas.append("[color=#f5c051][b]RASTREO DE LA ISLA[/b][/color]")
+		lineas.append(_resumen_fuentes_exploracion())
+		lineas.append(_resumen_cultivos_exploracion())
 	_lbl_recursos.text = "\n".join(lineas)
 
 	_lbl_ficha.text = _ficha()
@@ -1179,6 +1188,27 @@ func _resumen_cultivos_exploracion() -> String:
 	if lineas.is_empty():
 		return "[color=#7d8798]No hay parcelas registradas.[/color]"
 	return "[color=#82b06b]Cultivos: %s[/color]" % ", ".join(lineas)
+
+func _resumen_zona_global() -> String:
+	if zona_global_activa == null:
+		return "[color=#7d8798]No hay zona remota activa.[/color]"
+	var fuentes: Array[String] = []
+	for fuente in zona_global_activa.fuentes_recurso:
+		if fuente != null and is_instance_valid(fuente) and fuente.cantidad() > 0:
+			var def: Resource = fuente.definicion()
+			fuentes.append(str(def.nombre if def != null else fuente.definicion_id))
+	var cultivos: Array[String] = []
+	for parcela in zona_global_activa.parcelas_cultivo:
+		if parcela == null or not is_instance_valid(parcela):
+			continue
+		var def: Resource = parcela.definicion()
+		cultivos.append(str(def.nombre if def != null else parcela.definicion_id))
+	var lineas: Array[String] = []
+	lineas.append("[color=#5cb2b5]Recursos: %s[/color]" % ", ".join(fuentes)
+		if not fuentes.is_empty() else "[color=#7d8798]Recursos: ninguno disponible.[/color]")
+	lineas.append("[color=#82b06b]Cultivos: %s[/color]" % ", ".join(cultivos)
+		if not cultivos.is_empty() else "[color=#7d8798]Cultivos: ninguno registrado.[/color]")
+	return "\n".join(lineas)
 
 func _direccion_fuente(casilla: Vector2i) -> String:
 	var delta: Vector2 = Vector2(casilla) + Vector2(0.5, 0.5) - jugador.pos_tile

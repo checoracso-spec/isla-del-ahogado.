@@ -25,6 +25,8 @@ const BARCO_GUARDADO := "balandra_001"
 const RANURA_ZONA_GLOBAL := 97
 const ANIMAL_GUARDADO := "cerdo_salvaje"
 const POS_ANIMAL := Vector2(3.5, 3.5)
+const FUENTE_ZONA_GUARDADA := "veta_azufre"
+const CICLOS_FUENTE_ZONA_DESPUES := 1
 
 ## Casilla concreta del interior donde se coloca el jugador antes de guardar.
 ## Elegida a mano para que esté libre de muebles en `interior_casa_a`.

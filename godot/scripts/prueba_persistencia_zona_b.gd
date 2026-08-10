@@ -24,6 +24,14 @@ func _ready() -> void:
 	_comprobar("recoloca al jugador en la zona remota",
 		mundo.zona_global_activa != null
 		and mundo.jugador.get_parent() == mundo.zona_global_activa.actores)
+	var fuente_zona = null
+	if mundo.zona_global_activa != null:
+		for candidata in mundo.zona_global_activa.fuentes_recurso:
+			if candidata.definicion_id == D.FUENTE_ZONA_GUARDADA:
+				fuente_zona = candidata
+				break
+	_comprobar("reconstruye la fuente remota guardada",
+		fuente_zona != null and fuente_zona.cantidad() == D.CICLOS_FUENTE_ZONA_DESPUES)
 	_comprobar("Ubicacion conserva la zona global", Ubicacion.zona == "global:isla_ceniza")
 	_comprobar("la nave queda atracada en la isla remota",
 		FlotaMundo.estado("balandra_001").get("estado", "") == "puerto"

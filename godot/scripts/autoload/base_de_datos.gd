@@ -604,13 +604,17 @@ const TABLA_DESTINOS := [
 	  "descripcion": "La guarida corsaria y su puerto principal." },
 	{ "id": "portobello", "nombre": "Portobello", "tipo": "ciudad",
 	  "mapa_id": "isla_portobello", "coordenadas": Vector2(1, -1), "puerto": true,
-	  "descripcion": "Ciudad mercante donde opera el mercado negro." },
+	  "descripcion": "Ciudad mercante donde opera el mercado negro.",
+	  "fuentes": ["restos_naufragio"] },
 	{ "id": "isla_ceniza", "nombre": "Isla Ceniza", "tipo": "isla",
 	  "mapa_id": "isla_ceniza", "coordenadas": Vector2(-1, 1), "puerto": true,
-	  "descripcion": "Isla volcánica rica en azufre." },
+	  "descripcion": "Isla volcánica rica en azufre.",
+	  "fuentes": ["veta_azufre", "restos_naufragio"],
+	  "cultivos": ["tabaco"] },
 	{ "id": "fortaleza_corona", "nombre": "Fortaleza de la Corona", "tipo": "fortaleza",
 	  "mapa_id": "fortaleza_corona", "coordenadas": Vector2(2, 1), "puerto": true,
-	  "descripcion": "Puesto naval imperial y objetivo de alto riesgo." },
+	  "descripcion": "Puesto naval imperial y objetivo de alto riesgo.",
+	  "fuentes": ["restos_naufragio"] },
 ]
 
 const TABLA_RUTAS_GLOBALES := [

@@ -6,7 +6,7 @@
 - Rejilla isométrica 128×64; `scripts/mapa/iso.gd` no se ha modificado.
 - API pública de `scripts/autoload/almacen.gd` intacta.
 - 24 escenas `prueba_*.tscn` ejecutadas en headless.
-- 636 comprobaciones instrumentadas en verde; persistencia A/B, viaje global y
+- 653 comprobaciones instrumentadas en verde; persistencia A/B, viaje global y
   profundidad
   arrancan sin errores reales.
 - La escena principal `res://escenas/mundo.tscn` arranca sin `SCRIPT ERROR`,
@@ -111,4 +111,22 @@ manadas grandes ni comportamiento social.
 2. No cambiar la API pública de `Almacen`.
 3. No mezclar `Bolsa` con `Almacen`.
 4. Guardar datos planos, nunca referencias a nodos.
+
+## Contenido remoto incorporado en este checkpoint
+
+Los destinos globales ya pueden declarar `fuentes` y `cultivos` en
+`BaseDeDatos.TABLA_DESTINOS`. `ZonaRemota.montar_contenido()` los instancia al
+llegar, reutilizando `FuenteRecurso`, `ParcelaCultivo`, `RecursosMundo`,
+`CultivosMundo` y `Entidades`; no existe un segundo sistema de recoleccion.
+
+La configuracion actual es:
+
+- `portobello`: restos de naufragio.
+- `isla_ceniza`: veta de azufre, restos de naufragio y tabaco.
+- `fortaleza_corona`: restos de naufragio.
+
+El HUD muestra el rastreo de la zona activa. La prueba de viaje verifica el
+contenido de Isla Ceniza y la prueba A/B recolecta una veta en el proceso A y
+confirma su cantidad restante tras cargar en el proceso B. El checkpoint queda
+en 24 suites y 653 comprobaciones, sin errores reales de Godot.
 5. Ejecutar las 24 suites y buscar errores reales después de cada bloque.
