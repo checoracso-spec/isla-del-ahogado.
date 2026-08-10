@@ -254,7 +254,7 @@ const TABLA_PERSONAJES := [
 	  "rol": "Especialista en Intimidación",
 	  "habilidad": "Acelera la producción en la herrería mediante el miedo.",
 	  "efecto": { "tipo": "velocidad_produccion", "valor": 0.30, "ambito": "herreria" },
-	  "horario": "herrero" },
+	  "horario": "herrero", "puesto": "herreria", "casa": "cabana_capitan" },
 
 	{ "id": "anne_bonny", "nombre": "Anne Bonny", "titulo": "",
 	  "rol": "Maestra del Contrabando",
@@ -270,12 +270,13 @@ const TABLA_PERSONAJES := [
 	  "rol": "Gestor de la Taberna",
 	  "habilidad": "Mantiene el motín a raya gastando menos ron.",
 	  "efecto": { "tipo": "consumo_ron", "valor": -0.30, "ambito": "taberna" },
-	  "horario": "tabernero" },
+	  "horario": "tabernero", "puesto": "taberna", "casa": "taberna" },
 
 	{ "id": "henry_morgan", "nombre": "Henry Morgan", "titulo": "Sir",
 	  "rol": "Gobernador del Sindicato",
 	  "habilidad": "Mejora los precios de venta en el mercado negro.",
-	  "efecto": { "tipo": "precio_venta", "valor": 0.20 } },
+	  "efecto": { "tipo": "precio_venta", "valor": 0.20 },
+	  "puesto": "mercado", "casa": "cabana_capitan" },
 
 	{ "id": "ching_shih", "nombre": "Ching Shih", "titulo": "",
 	  "rol": "Almirante de Flota",
@@ -331,7 +332,8 @@ const TABLA_PERSONAJES := [
 	{ "id": "black_sam", "nombre": "Black Sam", "titulo": "Samuel Bellamy",
 	  "rol": "Robin Hood del Mar",
 	  "habilidad": "Aumenta drásticamente la moral global.",
-	  "efecto": { "tipo": "moral_global", "valor": 0.40 } },
+	  "efecto": { "tipo": "moral_global", "valor": 0.40 },
+	  "puesto": "taberna", "casa": "taberna" },
 
 	{ "id": "woodes_rogers", "nombre": "Woodes Rogers", "titulo": "",
 	  "rol": "Espía Infiltrado",
@@ -343,18 +345,21 @@ const TABLA_PERSONAJES := [
 	  "habilidad": "Coordina la madera: menos paradas en el muelle.",
 	  "efecto": { "tipo": "velocidad_produccion", "valor": 0.20, "ambito": "muelle_grua" },
 	  "horario": "muelle",
+	  "puesto": "muelle_grua", "casa": "muelle_grua",
 	  "historico": false },
 
 	{ "id": "dientes_oro", "nombre": "Dientes de Oro", "titulo": "",
 	  "rol": "Cocinero Principal",
 	  "habilidad": "Estira las raciones: la tripulación come un 15% menos.",
 	  "efecto": { "tipo": "consumo_raciones", "valor": -0.15 },
+	  "puesto": "corrales", "casa": "corrales",
 	  "historico": false },
 
 	{ "id": "ojo_vidrio", "nombre": "Ojo de Vidrio", "titulo": "",
 	  "rol": "Vigía del Faro",
 	  "habilidad": "Menos naufragios propios al volver a puerto.",
 	  "efecto": { "tipo": "riesgo_naufragio", "valor": -0.35, "ambito": "faro" },
+	  "puesto": "faro", "casa": "faro",
 	  "historico": false },
 ]
 

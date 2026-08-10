@@ -124,6 +124,14 @@ func _p3_jugador_aparece() -> void:
 		mundo.transitable.puede_pisar(jugador.casilla()), str(jugador.casilla()))
 	_comprobar("la cámara le sigue",
 		mundo._camara.objetivo == jugador and mundo._camara.modo == CamaraIsla.Modo.SEGUIR)
+	var barbanegra: Pirata = null
+	for tripulante in mundo.piratas:
+		if tripulante.id_personaje == "barbanegra":
+			barbanegra = tripulante
+			break
+	_comprobar("Barbanegra se monta desde la base de datos", barbanegra != null)
+	_comprobar("la rutina separa casa y puesto de trabajo",
+		barbanegra != null and barbanegra.casa != barbanegra.trabajo)
 
 func _p4_jugador_se_mueve() -> void:
 	print("4. El jugador se mueve")

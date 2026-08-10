@@ -16,6 +16,9 @@ func _ready() -> void:
 	_comprobar("existe el horario del herrero", herrero != null)
 	_comprobar("Barbanegra usa el horario del herrero",
 		barbanegra != null and barbanegra.horario_id == "herrero")
+	_comprobar("Barbanegra declara puesto y casa en datos",
+		barbanegra != null and barbanegra.puesto_id == "herreria"
+		and barbanegra.casa_id == "cabana_capitan")
 	if horario != null:
 		_comprobar("02:00 dormir", horario.actividad_en(2.0) == "dormir")
 		_comprobar("07:30 casa", horario.actividad_en(7.5) == "casa")
@@ -50,6 +53,12 @@ func _ready() -> void:
 	_comprobar("el pirata reutiliza el actor base", pirata is Actor)
 	_comprobar("el pirata conserva su posición en pos_tile",
 		pirata.pos == pirata.pos_tile)
+	_comprobar("el montaje antiguo conserva trabajo igual a casa",
+		pirata.trabajo == pirata.casa)
+	pirata.montar("prueba_rutina", "Pirata Rutina", Vector2i(2, 2), Vector2i(6, 6),
+		11, "herrero", Vector2i(8, 8))
+	_comprobar("la rutina acepta un destino de trabajo separado",
+		pirata.casa == Vector2i(2, 2) and pirata.trabajo == Vector2i(8, 8))
 	var rejilla := TransitableRejilla.new(10, 10)
 	rejilla.bloquear(Vector2i(5, 4), "muro de prueba")
 	pirata.transitable = rejilla

@@ -18,6 +18,8 @@ extends Resource
 @export var efecto_extra: Dictionary = {}    ## para los que tienen contrapartida (Stede Bonnet)
 @export var historico: bool = true
 @export var horario_id: String = "tripulacion"
+@export var puesto_id: String = ""
+@export var casa_id: String = ""
 
 static func desde_dic(d: Dictionary) -> PersonajeData:
 	var p := PersonajeData.new()
@@ -30,5 +32,7 @@ static func desde_dic(d: Dictionary) -> PersonajeData:
 	p.efecto_extra = d.get("efecto_extra", {}).duplicate(true)
 	p.historico = bool(d.get("historico", true))
 	p.horario_id = str(d.get("horario", "tripulacion"))
+	p.puesto_id = str(d.get("puesto", ""))
+	p.casa_id = str(d.get("casa", ""))
 	p.resource_name = p.nombre
 	return p

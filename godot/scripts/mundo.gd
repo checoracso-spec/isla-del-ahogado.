@@ -667,8 +667,12 @@ func _montar_logistica() -> void:
 		Almacen.anadir(par[0], par[1], "inicio")
 
 	for id in PUESTOS:
+		var datos: PersonajeData = BaseDeDatos.personaje(id)
+		var puesto_id: String = str(PUESTOS[id])
+		if datos != null and datos.puesto_id != "":
+			puesto_id = datos.puesto_id
 		Plantel.reclutar(id)
-		Plantel.asignar(id, PUESTOS[id])
+		Plantel.asignar(id, puesto_id)
 
 	_abrir("taberna", "servicio_taberna", 3, "tabernero", ["trabajar", "taberna"])
 	_abrir("herreria", "forjar_canon", 4, "herrero")
@@ -687,8 +691,16 @@ func _montar_logistica() -> void:
 		_objetos.add_child(p)
 		p.transitable = transitable
 		var datos: PersonajeData = BaseDeDatos.personaje(id)
-		p.montar(id, datos.nombre if datos != null else id, _puerta_de(PUESTOS[id]), taberna,
-			semilla, datos.horario_id if datos != null else "tripulacion")
+		var puesto_id: String = str(PUESTOS[id])
+		var casa_id: String = puesto_id
+		if datos != null:
+			if datos.puesto_id != "":
+				puesto_id = datos.puesto_id
+			if datos.casa_id != "":
+				casa_id = datos.casa_id
+		p.montar(id, datos.nombre if datos != null else id, _puerta_de(casa_id), taberna,
+			semilla, datos.horario_id if datos != null else "tripulacion",
+			_puerta_de(puesto_id))
 		piratas.append(p)
 		semilla += 31
 

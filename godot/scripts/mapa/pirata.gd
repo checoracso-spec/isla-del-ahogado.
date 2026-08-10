@@ -14,6 +14,7 @@ const ALTURA := 92.0
 var id_personaje: String = ""
 var nombre_mostrado: String = "Pirata"
 var casa: Vector2i = Vector2i.ZERO
+var trabajo: Vector2i = Vector2i.ZERO
 var taberna: Vector2i = Vector2i.ZERO
 var horario_id: String = "tripulacion"
 var horario: HorarioData = null
@@ -35,10 +36,12 @@ var _espera := 0.0
 var _rnd := RandomNumberGenerator.new()
 
 func montar(p_id: String, p_nombre: String, p_casa: Vector2i, p_taberna: Vector2i,
-		semilla: int, p_horario_id: String = "tripulacion") -> void:
+		semilla: int, p_horario_id: String = "tripulacion",
+		p_trabajo: Vector2i = Vector2i(-1, -1)) -> void:
 	id_personaje = p_id
 	nombre_mostrado = p_nombre
 	casa = p_casa
+	trabajo = p_casa if p_trabajo == Vector2i(-1, -1) else p_trabajo
 	taberna = p_taberna
 	horario_id = p_horario_id
 	horario = BaseDeDatos.horario(horario_id)
@@ -96,7 +99,7 @@ func _pensar(delta: float) -> void:
 			destino = _punto_cerca(taberna, 2.5)
 		"trabajar":
 			tarea = Tarea.TRABAJANDO
-			destino = _punto_cerca(casa, 1.8)
+			destino = _punto_cerca(trabajo, 1.8)
 		_:
 			tarea = Tarea.PASEANDO
 			destino = _punto_cerca(taberna, 4.0)
