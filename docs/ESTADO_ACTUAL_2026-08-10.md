@@ -95,7 +95,7 @@ manadas grandes ni comportamiento social.
 - `9684618` — población mínima de fauna data-driven y posición del cerdo
   verificada entre procesos.
 - `e030b18` — transición jugable entre isla y zonas globales provisionales.
-- `pendiente` — persistencia entre procesos de la zona global activa.
+- `6df3249` — persistencia entre procesos de la zona global activa.
 
 ## Reglas de continuidad
 
