@@ -43,7 +43,7 @@ const SECCIONES := {
 	"edificios": false,
 	"economia": false,
 	"misiones": false,
-	"eventos": false,
+	"eventos": true,
 }
 
 ## Verdadero mientras se está guardando o cargando. Evita la reentrada: que la

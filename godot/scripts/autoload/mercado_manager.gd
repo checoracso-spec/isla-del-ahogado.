@@ -46,15 +46,16 @@ func indice_oferta(id: String) -> float:
 
 func multiplicador_oferta(id: String) -> float:
 	var oferta := indice_oferta(id)
+	var evento := EventosMundo.multiplicador_oferta(id)
 	if oferta <= 0.25:
-		return 1.50
+		return 1.50 * evento
 	if oferta <= 0.50:
-		return 1.25
+		return 1.25 * evento
 	if oferta >= 1.50:
-		return 0.75
+		return 0.75 * evento
 	if oferta >= 1.25:
-		return 0.90
-	return 1.0
+		return 0.90 * evento
+	return evento
 
 func precio_compra(id: String) -> int:
 	var item: ItemData = BaseDeDatos.item(id)

@@ -5,6 +5,7 @@ const DestinoDataScript := preload("res://scripts/datos/destino_data.gd")
 const RutaGlobalDataScript := preload("res://scripts/datos/ruta_global_data.gd")
 const BarcoDataScript := preload("res://scripts/datos/barco_data.gd")
 const NecesidadDataScript := preload("res://scripts/datos/necesidad_data.gd")
+const EventoMundoDataScript := preload("res://scripts/datos/evento_mundo_data.gd")
 ## AUTOLOAD: BaseDeDatos
 ##
 ## Todo el contenido del juego vive aquí, en tablas de diccionarios.
@@ -647,6 +648,20 @@ const TABLA_RUTAS_GLOBALES := [
 	  "barco": "balandra", "dias": 2, "riesgo": 0.25 },
 ]
 
+const TABLA_EVENTOS := [
+	{ "id": "tormenta_costera", "nombre": "Tormenta Costera", "tipo": "clima",
+	  "duracion_horas": 12.0, "multiplicador_riesgo_viaje": 1.35,
+	  "desc": "El mar embravecido eleva el riesgo de las travesías." },
+	{ "id": "bloqueo_corona", "nombre": "Bloqueo de la Corona", "tipo": "bloqueo",
+	  "duracion_horas": 48.0, "multiplicador_riesgo_viaje": 1.10,
+	  "multiplicadores_oferta": { "acero_imperial": 1.35, "polvora_seca": 1.20 },
+	  "desc": "Las rutas imperiales escasean de acero y pólvora seca." },
+	{ "id": "marea_de_naufragios", "nombre": "Marea de Naufragios", "tipo": "naufragio",
+	  "duracion_horas": 24.0, "multiplicador_riesgo_viaje": 1.0,
+	  "multiplicadores_oferta": { "madera_naufragio": 0.75 },
+	  "desc": "Una corriente trae restos a las costas y abarata la madera." },
+]
+
 const TABLA_HORARIOS := [
 	{ "id": "tripulacion", "nombre": "Rutina de tripulación",
 	  "tramos": [
@@ -718,6 +733,7 @@ var destinos: Dictionary = {}     ## id -> DestinoData
 var rutas: Dictionary = {}        ## id -> RutaGlobalData
 var barcos: Dictionary = {}       ## id -> BarcoData
 var necesidades: Dictionary = {}  ## id -> NecesidadData
+var eventos: Dictionary = {}      ## id -> EventoMundoData
 
 func _ready() -> void:
 	for d in TABLA_ITEMS:
@@ -759,6 +775,9 @@ func _ready() -> void:
 	for d in TABLA_RUTAS_GLOBALES:
 		var ruta = RutaGlobalDataScript.desde_dic(d)
 		rutas[ruta.id] = ruta
+	for d in TABLA_EVENTOS:
+		var evento = EventoMundoDataScript.desde_dic(d)
+		eventos[evento.id] = evento
 	_validar()
 	print("[BaseDeDatos] %d ítems, %d recetas, %d edificios, %d personajes, %d animales."
 		% [items.size(), recetas.size(), edificios.size(), personajes.size(), animales.size()])
@@ -827,6 +846,9 @@ func ruta(id: String) -> RutaGlobalData:
 
 func barco(id: String):
 	return barcos.get(id)
+
+func evento(id: String):
+	return eventos.get(id)
 
 func nombre_item(id: String) -> String:
 	var it: ItemData = items.get(id)
