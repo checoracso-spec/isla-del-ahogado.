@@ -121,6 +121,11 @@ pendientes.
 
 ## Ultimos checkpoints adicionales
 
+- `d31da10` — marea de naufragios conectada con disponibilidad real de recursos.
+- `52418aa` — naufragio principal acercado a la ruta inicial de exploración.
+- `303fe30` — fuentes, parcelas y automatizadores asociados a chunks.
+- `5c6bd63` — activación automática de chunks cercanos al jugador.
+- `29922ac` — contenedor y estado guardable de chunks remotos.
 - `31dc933` — formalizacion de la isla como `ZonaExterior`.
 - `0206419` — persistencia de viajes globales entre procesos.
 - `97d35b4` — entidades animales guardables basadas en `Actor`.
