@@ -69,6 +69,11 @@ func _ejecutar() -> void:
 		and FlotaMundo.estado("balandra_001").get("estado", "") == "puerto")
 	_comprobar("se puede cancelar un viaje activo", MapaGlobal.iniciar_viaje("ceniza_principal")
 		and MapaGlobal.cancelar_viaje() and not MapaGlobal.viajando())
+	FlotaMundo.barcos["balandra_001"]["provisiones"] = 0
+	_comprobar("rechaza zarpar sin provisiones suficientes",
+		not MapaGlobal.iniciar_viaje("ceniza_principal"))
+	_comprobar("la nave sin provisiones sigue atracada",
+		FlotaMundo.estado("balandra_001").get("estado", "") == "puerto")
 	_comprobar("cancelar devuelve la nave al puerto de salida",
 		FlotaMundo.estado("balandra_001").get("posicion", "") == "isla_ceniza"
 		and FlotaMundo.estado("balandra_001").get("estado", "") == "puerto")

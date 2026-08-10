@@ -6,7 +6,7 @@
 - Rejilla isométrica 128×64; `scripts/mapa/iso.gd` no se ha modificado.
 - API pública de `scripts/autoload/almacen.gd` intacta.
 - 26 escenas `prueba_*.tscn` ejecutadas en headless.
-- 719 comprobaciones instrumentadas en verde; persistencia A/B, viaje global y
+- 721 comprobaciones instrumentadas en verde; persistencia A/B, viaje global y
   profundidad
   arrancan sin errores reales.
 - La escena principal `res://escenas/mundo.tscn` arranca sin `SCRIPT ERROR`,
@@ -40,6 +40,9 @@
   bodega basada en `Inventario`. Las rutas asignan automáticamente el barco
   compatible y el estado se guarda entre procesos; combate naval y abordaje
   siguen fuera de alcance.
+- Los viajes globales reservan las provisiones necesarias antes de zarpar y
+  rechazan la salida cuando la nave no puede cubrir la duración de la ruta;
+  una prueba negativa confirma que la nave permanece atracada.
 - La isla esta formalizada como `ZonaExterior` y comparte el contrato de
   `Zona` con interiores y zonas remotas; el adaptador es propiedad del mundo
   y se libera con el resto de la escena.
@@ -121,7 +124,7 @@ antiguas a `montar()` siguen funcionando y usan la casa como destino laboral
 por compatibilidad. Barbanegra ya demuestra el caso real: vive en la cabana
 del capitan y trabaja en la herreria.
 
-El bloque se verifico con 26 suites y 719 comprobaciones, incluido el arranque
+El bloque se verifico con 26 suites y 721 comprobaciones, incluido el arranque
 de `mundo.tscn`, sin modificar `iso.gd` ni la API publica de `Almacen`.
 
 ## Contenido remoto incorporado en este checkpoint
