@@ -8,6 +8,7 @@ extends Node
 signal barco_cambiado(instance_id: String)
 
 var barcos: Dictionary = {}
+var _inventarios: Dictionary = {} ## instance_id -> Inventario
 
 func _ready() -> void:
 	Guardado.registrar("barcos", _serializar, _cargar)
@@ -35,7 +36,11 @@ func _recrear_predeterminados() -> void:
 			"canones": 0,
 			"provisiones": 50,
 			"carga": {},
+			"capacidad_carga": float(definicion.get("capacidad_volumen")),
 		}
+		var inventario := Inventario.new()
+		inventario.capacidad = float(definicion.get("capacidad_volumen"))
+		_inventarios[instance_id] = inventario
 
 func ids() -> Array:
 	var resultado: Array = barcos.keys()
@@ -43,7 +48,36 @@ func ids() -> Array:
 	return resultado
 
 func estado(instance_id: String) -> Dictionary:
+	_sincronizar_carga(instance_id)
 	return (barcos.get(instance_id, {}) as Dictionary).duplicate(true)
+
+func inventario_de(instance_id: String) -> Inventario:
+	return _inventarios.get(instance_id)
+
+func cargar_mercancia(instance_id: String, item_id: String, cantidad: int) -> int:
+	var inv := inventario_de(instance_id)
+	if inv == null or not barcos.has(instance_id):
+		return 0
+	var aceptado := inv.anadir(item_id, cantidad)
+	_sincronizar_carga(instance_id)
+	return aceptado
+
+func descargar_mercancia(instance_id: String, item_id: String, cantidad: int) -> int:
+	var inv := inventario_de(instance_id)
+	if inv == null or not barcos.has(instance_id):
+		return 0
+	var retirado := inv.retirar_hasta(item_id, cantidad)
+	_sincronizar_carga(instance_id)
+	return retirado
+
+func transferir_carga_a(instance_id: String, destino: Inventario,
+		item_id: String, cantidad: int) -> int:
+	var inv := inventario_de(instance_id)
+	if inv == null:
+		return 0
+	var movido := inv.transferir_a(destino, item_id, cantidad)
+	_sincronizar_carga(instance_id)
+	return movido
 
 func disponibles(origen: String = "") -> Array:
 	var resultado: Array = []
@@ -132,13 +166,31 @@ func aplicar_dano(instance_id: String, cantidad: int) -> int:
 	return antes - int(b["salud"])
 
 func _serializar() -> Dictionary:
+	for instance_id in barcos:
+		_sincronizar_carga(str(instance_id))
 	return {"barcos": barcos.duplicate(true)}
 
 func _cargar(datos: Dictionary) -> void:
 	var recibidos: Variant = datos.get("barcos", {})
 	barcos = recibidos.duplicate(true) if recibidos is Dictionary else {}
+	_inventarios.clear()
+	for instance_id in barcos:
+		var b: Dictionary = barcos[instance_id]
+		var inv := Inventario.new()
+		inv.capacidad = float(b.get("capacidad_carga", 0.0))
+		inv.cargar({"items": b.get("carga", {}), "capacidad": inv.capacidad})
+		_inventarios[str(instance_id)] = inv
 	if barcos.is_empty():
 		_recrear_predeterminados()
 
 func reiniciar() -> void:
 	_recrear_predeterminados()
+
+func _sincronizar_carga(instance_id: String) -> void:
+	if not barcos.has(instance_id) or not _inventarios.has(instance_id):
+		return
+	var inv: Inventario = _inventarios[instance_id]
+	var b: Dictionary = barcos[instance_id]
+	b["carga"] = inv.serializar().get("items", {}).duplicate(true)
+	b["capacidad_carga"] = inv.capacidad
+	barcos[instance_id] = b

@@ -20,6 +20,14 @@ func _ejecutar() -> void:
 	_comprobar("la instancia tiene salud inicial", int(estado.get("salud", 0)) > 0)
 	_comprobar("la instancia tiene posición persistente",
 		estado.get("posicion", "") == "isla_principal")
+	_comprobar("la bodega usa el Inventario base",
+		FlotaMundo.inventario_de("balandra_001") is Inventario)
+	_comprobar("la bodega respeta capacidad de volumen",
+		FlotaMundo.inventario_de("balandra_001").capacidad == 60.0)
+	_comprobar("carga mercancía en la bodega",
+		FlotaMundo.cargar_mercancia("balandra_001", "ron", 2) == 2)
+	_comprobar("la bodega conserva la carga viva",
+		FlotaMundo.inventario_de("balandra_001").cantidad("ron") == 2)
 	_comprobar("despacha la nave seleccionada",
 		FlotaMundo.despachar("balandra_001", "isla_principal", "isla_ceniza"))
 	_comprobar("la nave pasa al estado mar", FlotaMundo.estado("balandra_001").get("estado", "") == "mar")
@@ -34,6 +42,7 @@ func _ejecutar() -> void:
 	FlotaMundo.reiniciar()
 	FlotaMundo._cargar(plano)
 	_comprobar("restaura el puerto de la nave", FlotaMundo.estado("balandra_001").get("posicion", "") == "isla_ceniza")
+	_comprobar("restaura la carga de la bodega", FlotaMundo.inventario_de("balandra_001").cantidad("ron") == 2)
 	FlotaMundo.aplicar_dano("balandra_001", 20)
 	_comprobar("repara sin superar salud máxima", FlotaMundo.reparar("balandra_001", 999) == 20
 		and FlotaMundo.estado("balandra_001").get("salud", 0) == BaseDeDatos.barco("balandra").salud_max)

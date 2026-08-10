@@ -6,7 +6,7 @@
 - Rejilla isométrica 128×64; `scripts/mapa/iso.gd` no se ha modificado.
 - API pública de `scripts/autoload/almacen.gd` intacta.
 - 24 escenas `prueba_*.tscn` ejecutadas en headless.
-- 631 comprobaciones instrumentadas en verde; persistencia A/B, viaje global y
+- 636 comprobaciones instrumentadas en verde; persistencia A/B, viaje global y
   profundidad
   arrancan sin errores reales.
 - La escena principal `res://escenas/mundo.tscn` arranca sin `SCRIPT ERROR`,
@@ -37,9 +37,9 @@
   propias para cada destino.
 - `BarcoData` y `FlotaMundo` ya representan tres instancias iniciales con IDs
   estables, puerto, destino, estado, salud, armadura, cañones, provisiones y
-  carga plana. Las rutas asignan automáticamente el barco compatible y el
-  estado se guarda entre procesos; combate naval y abordaje siguen fuera de
-  alcance.
+  bodega basada en `Inventario`. Las rutas asignan automáticamente el barco
+  compatible y el estado se guarda entre procesos; combate naval y abordaje
+  siguen fuera de alcance.
 - La isla esta formalizada como `ZonaExterior` y comparte el contrato de
   `Zona` con interiores y zonas remotas; el adaptador es propiedad del mundo
   y se libera con el resto de la escena.
@@ -76,8 +76,8 @@ manadas grandes ni comportamiento social.
 
 - Las zonas globales todavía son provisionales: no cargan escenas artísticas
   propias ni chunks descargables. La flota valida el tipo de barco y su puerto,
-  pero todavía no implementa carga real de mercancías, tripulación persistente
-  ni capacidad de flota avanzada.
+  y la bodega ya admite mercancías mediante el contenedor base, pero todavía
+  no implementa tripulación persistente ni capacidad de flota avanzada.
 - La fauna visible está limitada por ahora a la población mínima de prueba;
   todavía no hay reproducción, producción diaria, domesticación ni manadas
   dinámicas.
@@ -103,6 +103,7 @@ manadas grandes ni comportamiento social.
 - `e030b18` — transición jugable entre isla y zonas globales provisionales.
 - `6df3249` — persistencia entre procesos de la zona global activa.
 - `99c8c9a` — flota data-driven mínima vinculada a las rutas globales.
+- `pendiente` — bodega de barcos basada en `Inventario`, con carga y guardado.
 
 ## Reglas de continuidad
 
