@@ -10,6 +10,7 @@ var _ruta_info: Label
 var _interceptado_info: Label
 var _soltar_boton: Button
 var _luchar_boton: Button
+var _grua_boton: Button
 var _ruta_id := "portobello"
 var _interceptado_id := ""
 var _aviso := ""
@@ -60,6 +61,10 @@ func _ready() -> void:
 	_lista.custom_minimum_size = Vector2(0, 180)
 	_lista.fit_content = true
 	caja.add_child(_lista)
+	_grua_boton = Button.new()
+	_grua_boton.name = "ActivarGrua"
+	_grua_boton.pressed.connect(_activar_grua)
+	caja.add_child(_grua_boton)
 	_descargar_boton = Button.new()
 	_descargar_boton.name = "DescargarPuerto"
 	_descargar_boton.text = "Descargar cargamentos atracados"
@@ -101,6 +106,8 @@ func _ready() -> void:
 	RastreoCarga.informe_interceptacion.connect(_mostrar_interceptacion)
 	RastreoCarga.cargamento_perdido.connect(func(_m, _motivo): _repintar())
 	Almacen.existencias_cambiadas.connect(func(_id, _cantidad): _actualizar_ruta_info())
+	MuelleManager.grua_activada.connect(_actualizar_grua)
+	_actualizar_grua()
 	_actualizar_ruta_info()
 
 func abrir(estado: String = "abierta") -> void:
@@ -111,7 +118,24 @@ func abrir(estado: String = "abierta") -> void:
 	_zarpar_boton.disabled = estado != "abierta"
 	_ruta_selector.disabled = estado != "abierta"
 	_actualizar_bloqueos(estado == "abierta")
+	_actualizar_grua()
 	_repintar()
+
+func _activar_grua() -> void:
+	if MuelleManager.activar_grua():
+		_aviso = "Red de arrastre instalada."
+	else:
+		_aviso = "Faltan %d tablones tratados y/o %d doblones." % [
+			MuelleManager.COSTE_TABLONES, MuelleManager.COSTE_DOBLONES]
+	_actualizar_grua()
+	_repintar()
+
+func _actualizar_grua() -> void:
+	if _grua_boton == null:
+		return
+	_grua_boton.text = "Red de arrastre instalada" if MuelleManager.grua_activa else \
+		"Instalar red (%d tablones, %d doblones)" % [MuelleManager.COSTE_TABLONES, MuelleManager.COSTE_DOBLONES]
+	_grua_boton.disabled = MuelleManager.grua_activa
 
 func cerrar_panel() -> void:
 	visible = false

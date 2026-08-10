@@ -562,6 +562,7 @@ func _montar_logistica() -> void:
 	_abrir("muelle_grua", "curar_madera", 2, "muelle")
 	_abrir("corrales", "salar_carne", 1)
 	_abrir("capilla", "curar_heridos", 1)
+	MuelleManager.montar(fuentes_recurso)
 	_montar_puesto_muelle()
 
 	var taberna := _puerta_de("taberna")
@@ -990,6 +991,14 @@ func _ficha() -> String:
 # ---------------------------------------------------------------------------
 
 func _conectar() -> void:
+	MuelleManager.grua_activada.connect(_al_activar_grua)
+	MuelleManager.lote_recolectado.connect(func(productos):
+		var entregas: Array[String] = []
+		for id in productos:
+			entregas.append("%d× %s" % [int(productos[id]), BaseDeDatos.nombre_item(str(id))])
+		_apuntar("[color=#5cb2b5]La red del muelle recolectó: %s[/color]" % ", ".join(entregas)))
+	if MuelleManager.grua_activa:
+		_desactivar_rastrillo_marea()
 	for fuente in fuentes_recurso:
 		fuente.recolectado.connect(_al_recolectar_recurso)
 	for parcela in parcelas_cultivo:
@@ -1038,6 +1047,15 @@ func _al_recolectar_recurso(fuente: FuenteRecurso, ciclos: int, productos: Dicti
 	entregas.sort()
 	_apuntar("[color=#f5c051]Recolectado en %s: %s[/color]"
 		% [fuente.definicion().nombre, ", ".join(entregas)])
+
+func _al_activar_grua() -> void:
+	_desactivar_rastrillo_marea()
+	_apuntar("[color=#f5c051]Red de arrastre instalada: la marea se recoge desde la costa.[/color]")
+
+func _desactivar_rastrillo_marea() -> void:
+	for estacion in estaciones:
+		if estacion.edificio_id == "muelle_grua" and estacion.receta_id == "rastrillar_marea":
+			estacion.activa = false
 
 func _al_accion_parcela(parcela: ParcelaCultivo, accion: String, productos: Dictionary) -> void:
 	var def: Resource = parcela.definicion()

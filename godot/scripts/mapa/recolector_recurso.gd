@@ -48,5 +48,23 @@ func ejecutar_ahora() -> Dictionary:
 		lote_recolectado.emit(self, resultado.get("productos", {}))
 	return resultado
 
+func serializar() -> Dictionary:
+	return {
+		"fuente_instancia": fuente_instancia,
+		"edificio_id": edificio_id,
+		"trabajadores": trabajadores,
+		"intervalo_horas": intervalo_horas,
+		"activo": activo,
+		"proxima_recoleccion": proxima_recoleccion,
+	}
+
+func cargar(datos: Dictionary) -> void:
+	fuente_instancia = str(datos.get("fuente_instancia", fuente_instancia))
+	edificio_id = str(datos.get("edificio_id", edificio_id))
+	trabajadores = maxi(1, int(datos.get("trabajadores", trabajadores)))
+	intervalo_horas = maxf(0.1, float(datos.get("intervalo_horas", intervalo_horas)))
+	activo = bool(datos.get("activo", activo))
+	proxima_recoleccion = float(datos.get("proxima_recoleccion", _hora_total() + intervalo_horas))
+
 func _hora_total() -> float:
 	return float(Reloj.dia * 24) + Reloj.hora
