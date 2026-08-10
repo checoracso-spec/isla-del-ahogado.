@@ -24,6 +24,7 @@ var _inicializado := false
 func _ready() -> void:
 	Guardado.registrar("mercado", _serializar, _cargar)
 	_inicializar_stock()
+	Reloj.nuevo_dia.connect(_reajustar_demanda)
 
 func _inicializar_stock() -> void:
 	if _inicializado:
@@ -73,6 +74,11 @@ func reiniciar_demanda() -> void:
 	demanda.clear()
 	for id in STOCK_INICIAL:
 		demanda[id] = 1.0
+
+func _reajustar_demanda(_dia: int) -> void:
+	for id in demanda:
+		demanda[id] = move_toward(float(demanda[id]), 1.0, 0.10)
+	actualizado.emit()
 
 func precio_compra(id: String) -> int:
 	var item: ItemData = BaseDeDatos.item(id)

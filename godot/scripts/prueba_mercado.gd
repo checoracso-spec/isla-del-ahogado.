@@ -82,6 +82,11 @@ func _p3b_oferta_dinamica() -> void:
 	MercadoManager.registrar_demanda("ron", 0.4)
 	_comprobar("la demanda queda registrada", MercadoManager.indice_demanda("ron") > 1.0)
 	_comprobar("la demanda eleva el precio", MercadoManager.precio_compra("ron") > demanda_normal)
+	var demanda_alta := MercadoManager.indice_demanda("ron")
+	MercadoManager._reajustar_demanda(2)
+	_comprobar("la demanda se normaliza gradualmente al amanecer",
+		MercadoManager.indice_demanda("ron") < demanda_alta
+		and MercadoManager.indice_demanda("ron") > 1.0)
 	MercadoManager.reiniciar_demanda()
 
 func _p4_rechazar_sin_oro() -> void:
