@@ -96,6 +96,12 @@ func _ready() -> void:
 	Bolsa.energia = D.ENERGIA
 	Reloj.dia = D.DIA
 	Reloj.hora = D.HORA
+	MapaGlobal.reiniciar()
+	if not MapaGlobal.iniciar_viaje(D.RUTA_GLOBAL_GUARDADA):
+		printerr("A: no se pudo iniciar el viaje global de prueba")
+		get_tree().quit(1)
+		return
+	print("  viaje global: %s -> %s" % [MapaGlobal.ubicacion_actual, D.DESTINO_GLOBAL_GUARDADO])
 
 	if not Guardado.guardar(D.RANURA):
 		printerr("A: no se pudo guardar")

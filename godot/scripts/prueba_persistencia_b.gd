@@ -40,6 +40,7 @@ func _ready() -> void:
 		_terminar()
 		return
 	_comprobar("la red empieza desactivada antes de cargar", not MuelleManager.grua_activa)
+	_comprobar("el mapa global empieza sin viaje antes de cargar", not MapaGlobal.viajando())
 
 	# El cofre se acaba de sembrar con 3 rones en este proceso nuevo: si tras
 	# cargar sigue con 3, es que la carga no funcionó.
@@ -71,6 +72,10 @@ func _ready() -> void:
 		MuelleManager.grua_activa == D.GRUA_ACTIVA)
 	_comprobar("la receta antigua sigue desactivada tras cargar",
 		_notas_rastrillo_activo())
+	_comprobar("el viaje global se recupera tras cargar", MapaGlobal.viajando())
+	_comprobar("el viaje recupera su ruta y destino",
+		str(MapaGlobal.viaje_activo.get("ruta_id", "")) == D.RUTA_GLOBAL_GUARDADA
+		and str(MapaGlobal.viaje_activo.get("destino", "")) == D.DESTINO_GLOBAL_GUARDADO)
 
 	var semillero = null
 	var parcela = null

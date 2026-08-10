@@ -19,6 +19,8 @@ const FUENTE_GUARDADA := "semillero_isla"
 const CULTIVO_GUARDADO := "citricos"
 const ETAPA_CULTIVO_GUARDADA := 3
 const GRUA_ACTIVA := true
+const RUTA_GLOBAL_GUARDADA := "principal_ceniza"
+const DESTINO_GLOBAL_GUARDADO := "isla_ceniza"
 
 ## Casilla concreta del interior donde se coloca el jugador antes de guardar.
 ## Elegida a mano para que esté libre de muebles en `interior_casa_a`.
