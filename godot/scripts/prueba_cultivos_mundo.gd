@@ -83,6 +83,14 @@ func _ejecutar() -> void:
 	var siembra := automatizador.ejecutar_ahora()
 	_comprobar("el recolector de cultivos siembra desde Almacen",
 		bool(siembra.get("ok", false)) and CultivosMundo.etapa(parcela.identidad.instancia) == 1)
+	Almacen.anadir("fertilizante", 1, "prueba_cultivo")
+	var abono_automatico := automatizador.ejecutar_ahora()
+	_comprobar("el recolector fertiliza desde Almacen",
+		bool(abono_automatico.get("ok", false))
+		and abono_automatico.get("accion", "") == "fertilizar")
+	_comprobar("el abono automatico se descuenta del almacen",
+		Almacen.cantidad("fertilizante") == 0
+		and bool(CultivosMundo.estado(parcela.identidad.instancia).get("fertilizada", false)))
 	Reloj.dia = 3
 	Reloj.hora = 2.0
 	var cosecha_automatica := automatizador.ejecutar_ahora()
