@@ -6,12 +6,14 @@ extends Node
 ## serializar referencias al árbol.
 
 signal animal_cambiado(instancia: String)
+signal produccion_diaria(instancia: String, productos: Dictionary)
 
 var _estados: Dictionary = {}
 var _vivas: Dictionary = {}
 
 func _ready() -> void:
 	Guardado.registrar("animales_mundo", _serializar, _cargar)
+	Reloj.nuevo_dia.connect(_procesar_nuevo_dia)
 
 func registrar(animal: Node) -> bool:
 	if animal == null:
@@ -53,6 +55,56 @@ func tiene_domestico(definicion_id: String) -> bool:
 			if definicion != null and bool(definicion.domestico):
 				return true
 	return false
+
+## Procesa una entidad doméstica sin mezclar su inventario con el del jugador.
+## El lote es transaccional: si falta alimento o no caben los productos, no
+## se consume nada.
+func procesar_animal(animal: Node) -> Dictionary:
+	if animal == null or not is_instance_valid(animal):
+		return {"ok": false, "motivo": "animal_invalido", "productos": {}}
+	var definicion = animal.get("definicion")
+	if definicion == null or not bool(definicion.domestico):
+		return {"ok": false, "motivo": "no_domestico", "productos": {}}
+	var consume: Dictionary = definicion.consume
+	var produce: Dictionary = definicion.produce
+	if not Almacen.hay_todo(consume):
+		return {"ok": false, "motivo": "falta_alimento", "productos": {}}
+	if not _caben_productos(produce):
+		return {"ok": false, "motivo": "almacen_lleno", "productos": {}}
+
+	for id in consume:
+		if not Almacen.retirar(str(id), int(consume[id])):
+			return {"ok": false, "motivo": "cambio_concurrente", "productos": {}}
+	var aceptados: Dictionary = {}
+	for id in produce:
+		var item_id := str(id)
+		var cantidad := int(produce[id])
+		var entro := Almacen.anadir(item_id, cantidad, "produccion_animal")
+		if entro != cantidad:
+			for rollback_id in aceptados:
+				Almacen.retirar(str(rollback_id), int(aceptados[rollback_id]))
+			for devolver_id in consume:
+				Almacen.anadir(str(devolver_id), int(consume[devolver_id]), "rollback_animal")
+			return {"ok": false, "motivo": "almacen_lleno", "productos": {}}
+		aceptados[item_id] = cantidad
+	produccion_diaria.emit(str(animal.get("definicion_id")), aceptados)
+	return {"ok": true, "productos": aceptados}
+
+func _caben_productos(productos: Dictionary) -> bool:
+	if Almacen.capacidad_volumen <= 0.0:
+		return true
+	var volumen := 0.0
+	for id in productos:
+		var item: ItemData = BaseDeDatos.item(str(id))
+		if item != null:
+			volumen += item.volumen * int(productos[id])
+	return Almacen.volumen_ocupado() + volumen <= Almacen.capacidad_volumen + 0.0001
+
+func _procesar_nuevo_dia(_dia: int) -> void:
+	for animal in _vivas.values():
+		var resultado := procesar_animal(animal)
+		if bool(resultado.get("ok", false)):
+			anotar(animal)
 
 func _al_salir(instancia: String) -> void:
 	_vivas.erase(instancia)

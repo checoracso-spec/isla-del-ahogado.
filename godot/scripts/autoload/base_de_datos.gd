@@ -553,6 +553,13 @@ const TABLA_ANIMALES := [
 	  "produce": {}, "consume": {},
 	  "desc": "Mantiene las ratas lejos de las raciones del muelle." },
 
+	{ "id": "cerdo_granja", "nombre": "Cerdo de Granja", "tipo": "ganado",
+	  "habitat": "granja", "domestico": true,
+	  "generar_en_mundo": false, "orden_mundo": 5,
+	  "produce": { "grasa_ballena": 1, "carne_salada": 1 },
+	  "consume": { "fertilizante": 1 },
+	  "desc": "Animal doméstico: produce grasa y carne cuando recibe alimento." },
+
 	{ "id": "rata_muelle", "nombre": "Ratas de Muelle", "tipo": "plaga",
 	  "habitat": "puerto", "domestico": false,
 	  "produce": {}, "consume": { "raciones": 3 },

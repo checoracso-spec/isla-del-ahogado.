@@ -69,6 +69,31 @@ func _ready() -> void:
 	_comprobar("el gato neutraliza la plaga de ratas",
 		Motin._neutralizada(BaseDeDatos.animal("rata_muelle")))
 
+	var granjero = AnimalScript.new()
+	add_child(granjero)
+	var granja_montada: bool = bool(granjero.montar("cerdo_granja", "isla:cerdo_granja@4,5",
+		Vector2i(4, 5), rejilla, 13))
+	Almacen.existencias.clear()
+	Almacen.reservas.clear()
+	Almacen.anadir("fertilizante", 1)
+	var produccion := AnimalesMundo.procesar_animal(granjero)
+	_comprobar("el cerdo doméstico procesa su producción",
+		granja_montada and bool(produccion.get("ok", false)))
+	_comprobar("la producción entrega grasa y carne",
+		Almacen.cantidad("grasa_ballena") == 1 and Almacen.cantidad("carne_salada") == 1)
+	_comprobar("la producción consume el alimento del almacén",
+		Almacen.cantidad("fertilizante") == 0)
+	Almacen.existencias.clear()
+	Almacen.reservas.clear()
+	Almacen.capacidad_volumen = 1.6
+	Almacen.anadir("fertilizante", 1)
+	var bloqueada := AnimalesMundo.procesar_animal(granjero)
+	_comprobar("rechaza producción si no caben los productos",
+		not bool(bloqueada.get("ok", false)))
+	_comprobar("el lote fallido no consume el alimento",
+		Almacen.cantidad("fertilizante") == 1)
+	Almacen.capacidad_volumen = 0.0
+
 	print("=== %d/%d comprobaciones de animales ===" % [correctas, correctas + fallos])
 	get_tree().quit(0 if fallos == 0 else 1)
 
