@@ -13,6 +13,7 @@ func _ready() -> void:
 	MercadoManager.stock.vaciar()
 	MercadoManager._inicializado = false
 	MercadoManager._inicializar_stock()
+	MercadoManager.reiniciar_demanda()
 	MercadoManager.abrir()
 
 	_p1_puesto()
@@ -55,9 +56,10 @@ func _p1_puesto() -> void:
 func _p2_comprar() -> void:
 	var antes := Bolsa.oro
 	var stock_antes := MercadoManager.stock.cantidad("ron")
+	var precio_antes := MercadoManager.precio_compra("ron")
 	var ok := MercadoManager.comprar("ron", 1)
 	_comprobar("compra ron", ok)
-	_comprobar("descuenta doblones", Bolsa.oro == antes - MercadoManager.precio_compra("ron"))
+	_comprobar("descuenta doblones", Bolsa.oro == antes - precio_antes)
 	_comprobar("ron llega a mochila", Bolsa.mochila.cantidad("ron") == 1)
 	_comprobar("reduce stock", MercadoManager.stock.cantidad("ron") == stock_antes - 1)
 
@@ -76,6 +78,11 @@ func _p3b_oferta_dinamica() -> void:
 	_comprobar("la escasez eleva el precio de compra",
 		MercadoManager.precio_compra("ron") > precio_normal)
 	MercadoManager.stock.anadir("ron", 10)
+	var demanda_normal := MercadoManager.precio_compra("ron")
+	MercadoManager.registrar_demanda("ron", 0.4)
+	_comprobar("la demanda queda registrada", MercadoManager.indice_demanda("ron") > 1.0)
+	_comprobar("la demanda eleva el precio", MercadoManager.precio_compra("ron") > demanda_normal)
+	MercadoManager.reiniciar_demanda()
 
 func _p4_rechazar_sin_oro() -> void:
 	Bolsa.oro = 0
@@ -91,3 +98,4 @@ func _p5_guardar_stock() -> void:
 	var cargo := Guardado.cargar(RANURA_PRUEBA)
 	_comprobar("guarda y carga stock", guardo and cargo)
 	_comprobar("stock sobrevive", MercadoManager.stock.cantidad("ron") == ron_esperado)
+	_comprobar("demanda sobrevive", is_equal_approx(MercadoManager.indice_demanda("ron"), 1.0))

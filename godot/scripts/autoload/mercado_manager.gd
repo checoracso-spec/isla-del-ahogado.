@@ -17,6 +17,7 @@ const STOCK_INICIAL := {
 }
 
 var stock := Inventario.new()
+var demanda: Dictionary = {} ## id -> indice relativo; 1.0 = normal
 var abierto := false
 var _inicializado := false
 
@@ -29,6 +30,7 @@ func _inicializar_stock() -> void:
 		return
 	for id in STOCK_INICIAL:
 		stock.anadir(id, int(STOCK_INICIAL[id]))
+		demanda[id] = float(demanda.get(id, 1.0))
 	_inicializado = true
 
 func abrir() -> void:
@@ -57,16 +59,31 @@ func multiplicador_oferta(id: String) -> float:
 		return 0.90 * evento
 	return evento
 
+func indice_demanda(id: String) -> float:
+	return clampf(float(demanda.get(id, 1.0)), 0.5, 1.5)
+
+func multiplicador_demanda(id: String) -> float:
+	return 1.0 + (indice_demanda(id) - 1.0) * 0.5
+
+func registrar_demanda(id: String, variacion: float) -> void:
+	demanda[id] = clampf(indice_demanda(id) + variacion, 0.5, 1.5)
+	actualizado.emit()
+
+func reiniciar_demanda() -> void:
+	demanda.clear()
+	for id in STOCK_INICIAL:
+		demanda[id] = 1.0
+
 func precio_compra(id: String) -> int:
 	var item: ItemData = BaseDeDatos.item(id)
 	var base := float(item.valor_base if item else 1) * 1.25
-	return maxi(1, int(ceil(base * multiplicador_oferta(id))))
+	return maxi(1, int(ceil(base * multiplicador_oferta(id) * multiplicador_demanda(id))))
 
 func precio_venta(id: String) -> int:
 	var item: ItemData = BaseDeDatos.item(id)
 	var base := float(item.valor_base if item else 1) * 0.75
 	return maxi(1, int(floor(base * Plantel.factor("precio_venta")
-		* multiplicador_oferta(id))))
+		* multiplicador_oferta(id) * multiplicador_demanda(id))))
 
 func comprar(id: String, cantidad: int = 1) -> bool:
 	if cantidad <= 0 or stock.cantidad(id) < cantidad:
@@ -86,6 +103,7 @@ func comprar(id: String, cantidad: int = 1) -> bool:
 		Bolsa.ingresar(total)
 		operacion_realizada.emit("La compra no pudo completarse.")
 		return false
+	registrar_demanda(id, 0.08 * cantidad)
 	operacion_realizada.emit("Compraste %d × %s por %d doblones." % [cantidad, BaseDeDatos.nombre_item(id), total])
 	actualizado.emit()
 	return true
@@ -99,6 +117,7 @@ func vender(id: String, cantidad: int = 1) -> bool:
 	if movido != cantidad:
 		operacion_realizada.emit("El mercado no puede aceptar esa mercancía.")
 		return false
+	registrar_demanda(id, -0.06 * cantidad)
 	Bolsa.ingresar(total)
 	operacion_realizada.emit("Vendiste %d × %s por %d doblones." % [cantidad, BaseDeDatos.nombre_item(id), total])
 	actualizado.emit()
@@ -108,9 +127,13 @@ func lista_stock() -> Array:
 	return stock.lista()
 
 func _serializar() -> Dictionary:
-	return {"stock": stock.serializar(), "inicializado": _inicializado}
+	return {"stock": stock.serializar(), "demanda": demanda.duplicate(true),
+		"inicializado": _inicializado}
 
 func _cargar(datos: Dictionary) -> void:
 	stock.cargar(datos.get("stock", {}))
+	demanda = (datos.get("demanda", {}) as Dictionary).duplicate(true)
+	if demanda.is_empty():
+		reiniciar_demanda()
 	_inicializado = bool(datos.get("inicializado", true))
 	actualizado.emit()
