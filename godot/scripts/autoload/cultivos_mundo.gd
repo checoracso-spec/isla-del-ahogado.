@@ -50,11 +50,26 @@ func sembrar(instancia: String, inventario: Inventario) -> bool:
 	var def: CultivoData = BaseDeDatos.cultivo(str(estado.get("definicion", "")))
 	if def == null or not inventario.retirar(def.semilla, 1):
 		return false
+	_marcar_sembrado(instancia, estado, def)
+	return true
+
+func sembrar_en_almacen(instancia: String, origen: String = "") -> bool:
+	if not _estados.has(instancia):
+		return false
+	var estado: Dictionary = _estados[instancia]
+	if bool(estado.get("sembrada", false)):
+		return false
+	var def: CultivoData = BaseDeDatos.cultivo(str(estado.get("definicion", "")))
+	if def == null or not Almacen.retirar(def.semilla, 1):
+		return false
+	_marcar_sembrado(instancia, estado, def)
+	return true
+
+func _marcar_sembrado(instancia: String, estado: Dictionary, def: CultivoData) -> void:
 	estado["sembrada"] = true
 	estado["lista_en"] = _hora_total() + def.horas_crecimiento
 	_estados[instancia] = estado
 	_emitir_cambio(instancia)
-	return true
 
 func cosechar(instancia: String, inventario: Inventario) -> Dictionary:
 	if not _estados.has(instancia) or inventario == null:
@@ -75,6 +90,45 @@ func cosechar(instancia: String, inventario: Inventario) -> Dictionary:
 	_estados[instancia] = estado
 	_emitir_cambio(instancia)
 	return {"ok": true, "productos": def.cosecha.duplicate(true)}
+
+func puede_cosechar_en_almacen(instancia: String) -> bool:
+	if not _estados.has(instancia) or not _esta_lista(_estados[instancia]):
+		return false
+	var def: CultivoData = BaseDeDatos.cultivo(str((_estados[instancia] as Dictionary).get("definicion", "")))
+	if def == null:
+		return false
+	if Almacen.capacidad_volumen <= 0.0:
+		return true
+	var volumen := 0.0
+	for id in def.cosecha:
+		var item: ItemData = BaseDeDatos.item(str(id))
+		if item == null:
+			return false
+		volumen += item.volumen * int(def.cosecha[id])
+	return Almacen.volumen_ocupado() + volumen <= Almacen.capacidad_volumen
+
+func cosechar_en_almacen(instancia: String, origen: String = "") -> Dictionary:
+	if not _estados.has(instancia) or not puede_cosechar_en_almacen(instancia):
+		return {"ok": false, "productos": {}}
+	var estado: Dictionary = _estados[instancia]
+	var def: CultivoData = BaseDeDatos.cultivo(str(estado.get("definicion", "")))
+	if def == null:
+		return {"ok": false, "productos": {}}
+	var productos: Dictionary = {}
+	for id in def.cosecha:
+		var clave := str(id)
+		var cantidad := int(def.cosecha[id])
+		var aceptado := Almacen.anadir(clave, cantidad, origen)
+		if aceptado != cantidad:
+			for previo in productos:
+				Almacen.retirar(str(previo), int(productos[previo]))
+			return {"ok": false, "productos": {}}
+		productos[clave] = cantidad
+	estado["sembrada"] = false
+	estado["lista_en"] = 0.0
+	_estados[instancia] = estado
+	_emitir_cambio(instancia)
+	return {"ok": true, "productos": productos}
 
 func etapa(instancia: String) -> int:
 	if not _estados.has(instancia):

@@ -1,5 +1,7 @@
 extends Node
 
+const RecolectorCultivoScript := preload("res://scripts/mapa/recolector_cultivo.gd")
+
 var correctas := 0
 var fallos := 0
 var mundo: Mundo
@@ -56,6 +58,25 @@ func _ejecutar() -> void:
 	_comprobar("la cosecha llega a la mochila", Bolsa.mochila.cantidad("citricos") == 3)
 	_comprobar("cosechar deja aviso en la bitácora", _bitacora_contiene(mundo, "Cosecha de Cítricos"))
 	_comprobar("la parcela vuelve a estar disponible", CultivosMundo.etapa(parcela.identidad.instancia) == 0)
+
+	Almacen.vaciar()
+	Almacen.anadir("semilla_citrico", 1, "prueba_cultivo")
+	var automatizador = RecolectorCultivoScript.new()
+	add_child(automatizador)
+	automatizador.montar(parcela.identidad.instancia, "corrales", 1)
+	var siembra := automatizador.ejecutar_ahora()
+	_comprobar("el recolector de cultivos siembra desde Almacen",
+		bool(siembra.get("ok", false)) and CultivosMundo.etapa(parcela.identidad.instancia) == 1)
+	Reloj.dia = 3
+	Reloj.hora = 2.0
+	var cosecha_automatica := automatizador.ejecutar_ahora()
+	_comprobar("el cultivo automatico espera y cosecha al madurar",
+		bool(cosecha_automatica.get("ok", false))
+		and int(cosecha_automatica.get("productos", {}).get("citricos", 0)) == 3)
+	_comprobar("la cosecha automatica llega a Almacen",
+		Almacen.cantidad("citricos") == 3 and CultivosMundo.etapa(parcela.identidad.instancia) == 0)
+	automatizador.queue_free()
+	Almacen.vaciar()
 
 func _bitacora_contiene(mundo_real: Mundo, texto: String) -> bool:
 	for linea in mundo_real._bitacora:

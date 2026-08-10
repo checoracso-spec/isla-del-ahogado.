@@ -6,7 +6,7 @@
 - Rejilla isométrica 128×64; `scripts/mapa/iso.gd` no se ha modificado.
 - API pública de `scripts/autoload/almacen.gd` intacta.
 - 26 escenas `prueba_*.tscn` ejecutadas en headless.
-- 696 comprobaciones instrumentadas en verde; persistencia A/B, viaje global y
+- 699 comprobaciones instrumentadas en verde; persistencia A/B, viaje global y
   profundidad
   arrancan sin errores reales.
 - La escena principal `res://escenas/mundo.tscn` arranca sin `SCRIPT ERROR`,
@@ -121,7 +121,7 @@ antiguas a `montar()` siguen funcionando y usan la casa como destino laboral
 por compatibilidad. Barbanegra ya demuestra el caso real: vive en la cabana
 del capitan y trabaja en la herreria.
 
-El bloque se verifico con 26 suites y 696 comprobaciones, incluido el arranque
+El bloque se verifico con 26 suites y 699 comprobaciones, incluido el arranque
 de `mundo.tscn`, sin modificar `iso.gd` ni la API publica de `Almacen`.
 
 ## Contenido remoto incorporado en este checkpoint
@@ -187,6 +187,15 @@ produccion real: fuera de turno la estacion no progresa, y al volver al puesto
 recupera su velocidad configurada por trabajadores. Las escenas de prueba que
 crean estaciones aisladas conservan el comportamiento anterior mediante el
 valor por defecto `false`.
+
+## Automatizacion de cultivos
+
+`CultivosMundo` ahora ofrece `sembrar_en_almacen()` y
+`cosechar_en_almacen()` como rutas logísticas sobre el mismo estado de
+parcelas. `RecolectorCultivo` reutiliza esas rutas: puede sembrar cuando hay
+semillas, esperar la maduración del reloj y cosechar el lote completo cuando
+hay capacidad. La prueba de cultivos cubre el ciclo automático y conserva la
+siembra/cosecha manual existente.
 
 `NpcsMundo` registra las entidades vivas y guarda solo diccionarios planos:
 posicion, direccion, destino, tarea y estado. Los piratas tienen identidades
