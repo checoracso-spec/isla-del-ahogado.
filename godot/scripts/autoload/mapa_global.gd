@@ -50,6 +50,12 @@ func rutas_desde(origen: String = ubicacion_actual) -> Array:
 func ruta(id: String) -> Resource:
 	return BaseDeDatos.ruta(id)
 
+func riesgo_ruta(ruta_id: String) -> float:
+	var ruta_datos := ruta(ruta_id)
+	if ruta_datos == null:
+		return 0.0
+	return EventosMundo.riesgo_viaje(float(ruta_datos.riesgo))
+
 func viajando() -> bool:
 	return not viaje_activo.is_empty()
 
@@ -79,6 +85,7 @@ func iniciar_viaje(ruta_id: String, barco_id: String = "") -> bool:
 		"barco": barco_final,
 		"salida": ahora,
 		"llegada": ahora + float(ruta_elegida.dias) * 24.0,
+		"riesgo": riesgo_ruta(ruta_elegida.id),
 	}
 	viaje_iniciado.emit(ruta_elegida, float(viaje_activo["llegada"]))
 	return true

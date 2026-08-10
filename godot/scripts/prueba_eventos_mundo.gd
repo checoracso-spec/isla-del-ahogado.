@@ -20,6 +20,10 @@ func _ready() -> void:
 		MercadoManager.precio_compra("acero_imperial") > precio_normal)
 	_comprobar("el evento modifica el riesgo de viaje",
 		EventosMundo.riesgo_viaje(0.20) > riesgo_normal)
+	_comprobar("el mapa global consulta el riesgo del evento",
+		MapaGlobal.riesgo_ruta("principal_ceniza") > BaseDeDatos.ruta("principal_ceniza").riesgo)
+	_comprobar("el riesgo queda limitado al cien por ciento",
+		EventosMundo.riesgo_viaje(0.90) <= 1.0)
 	_comprobar("no permite duplicar un evento activo",
 		not EventosMundo.iniciar("bloqueo_corona"))
 
