@@ -36,7 +36,7 @@ func disponible(quien: Node) -> bool:
 		return inventario != null and inventario.hay(definicion().semilla)
 	if e == 3:
 		return CultivosMundo.puede_cosechar(identidad.instancia, inventario)
-	return true
+	return CultivosMundo.puede_fertilizar(identidad.instancia, inventario)
 
 func texto_accion() -> String:
 	var e := CultivosMundo.etapa(identidad.instancia if identidad != null else "")
@@ -44,6 +44,8 @@ func texto_accion() -> String:
 		return "Sembrar %s" % definicion().nombre
 	if e == 3:
 		return "Cosechar %s" % definicion().nombre
+	if CultivosMundo.necesita_fertilizante(identidad.instancia):
+		return "Fertilizar %s" % definicion().nombre
 	return "Cultivo creciendo"
 
 func interactuar(quien: Node) -> void:
@@ -54,6 +56,9 @@ func interactuar(quien: Node) -> void:
 	if e == 0:
 		if CultivosMundo.sembrar(identidad.instancia, inv):
 			accion_realizada.emit(self, "sembrar", {})
+	elif e == 1 or e == 2:
+		if CultivosMundo.fertilizar(identidad.instancia, inv):
+			accion_realizada.emit(self, "fertilizar", {})
 	elif e == 3:
 		var resultado := CultivosMundo.cosechar(identidad.instancia, inv)
 		if bool(resultado.get("ok", false)):

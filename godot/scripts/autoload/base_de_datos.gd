@@ -589,13 +589,16 @@ const TABLA_FUENTES := [
 
 const TABLA_CULTIVOS := [
 	{ "id": "citricos", "nombre": "Cítricos", "semilla": "semilla_citrico",
-	  "cosecha": { "citricos": 3 }, "horas_crecimiento": 18.0 },
+	  "cosecha": { "citricos": 3 }, "horas_crecimiento": 18.0,
+	  "fertilizante": "fertilizante", "multiplicador_fertilizante": 0.75 },
 	{ "id": "cana_azucar", "nombre": "Caña de Azúcar", "semilla": "semilla_cana",
 	  "cosecha": { "cana_azucar": 4 }, "horas_crecimiento": 20.0,
+	  "fertilizante": "fertilizante", "multiplicador_fertilizante": 0.70,
 	  "automatizador_edificio": "corrales", "automatizador_trabajadores": 1,
 	  "automatizador_horario_id": "tripulacion" },
 	{ "id": "tabaco", "nombre": "Tabaco", "semilla": "semilla_tabaco",
-	  "cosecha": { "tabaco": 3 }, "horas_crecimiento": 24.0 },
+	  "cosecha": { "tabaco": 3 }, "horas_crecimiento": 24.0,
+	  "fertilizante": "fertilizante", "multiplicador_fertilizante": 0.80 },
 ]
 
 const TABLA_BARCOS := [

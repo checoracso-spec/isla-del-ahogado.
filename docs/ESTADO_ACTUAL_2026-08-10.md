@@ -6,7 +6,7 @@
 - Rejilla isométrica 128×64; `scripts/mapa/iso.gd` no se ha modificado.
 - API pública de `scripts/autoload/almacen.gd` intacta.
 - 26 escenas `prueba_*.tscn` ejecutadas en headless.
-- 704 comprobaciones instrumentadas en verde; persistencia A/B, viaje global y
+- 707 comprobaciones instrumentadas en verde; persistencia A/B, viaje global y
   profundidad
   arrancan sin errores reales.
 - La escena principal `res://escenas/mundo.tscn` arranca sin `SCRIPT ERROR`,
@@ -121,7 +121,7 @@ antiguas a `montar()` siguen funcionando y usan la casa como destino laboral
 por compatibilidad. Barbanegra ya demuestra el caso real: vive en la cabana
 del capitan y trabaja en la herreria.
 
-El bloque se verifico con 26 suites y 704 comprobaciones, incluido el arranque
+El bloque se verifico con 26 suites y 707 comprobaciones, incluido el arranque
 de `mundo.tscn`, sin modificar `iso.gd` ni la API publica de `Almacen`.
 
 ## Contenido remoto incorporado en este checkpoint
@@ -233,4 +233,13 @@ y su configuracion se serializan como datos planos.
 
 Checkpoint de recoleccion: `a1c81d6` conecta la red de arrastre del muelle con
 los estibadores NPC activos y conserva el respaldo estatico.
+
+## Fertilizacion de cultivos
+
+`CultivoData` declara el fertilizante y el multiplicador de crecimiento por
+cultivo. `CultivosMundo` permite fertilizar desde la mochila o desde `Almacen`,
+consume una unidad, acorta el tiempo restante y guarda el indicador
+`fertilizada`. La parcela ofrece la accion durante las etapas de crecimiento y
+`RecolectorCultivo` puede ejecutar la misma accion de forma automatica antes de
+la cosecha. La prueba de cultivos cubre consumo, aceleracion y persistencia.
 5. Ejecutar las 26 suites y buscar errores reales después de cada bloque.

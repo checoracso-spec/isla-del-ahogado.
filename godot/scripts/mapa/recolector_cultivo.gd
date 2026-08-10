@@ -45,6 +45,11 @@ func ejecutar_ahora() -> Dictionary:
 			proxima_accion = _hora_total() + intervalo_horas
 			lote_procesado.emit(self, "sembrar", {})
 			return {"ok": true, "accion": "sembrar", "productos": {}}
+	elif etapa == 1 or etapa == 2:
+		if CultivosMundo.fertilizar_en_almacen(parcela_instancia, edificio_id):
+			proxima_accion = _hora_total() + intervalo_horas
+			lote_procesado.emit(self, "fertilizar", {})
+			return {"ok": true, "accion": "fertilizar", "productos": {}}
 	elif etapa == 3:
 		var resultado := CultivosMundo.cosechar_en_almacen(parcela_instancia, edificio_id)
 		if bool(resultado.get("ok", false)):

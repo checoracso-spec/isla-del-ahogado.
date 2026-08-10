@@ -19,7 +19,8 @@ func registrar(parcela) -> void:
 	var id := str(parcela.identidad.instancia)
 	_vivas[id] = parcela
 	if not _estados.has(id):
-		_estados[id] = {"definicion": parcela.definicion_id, "sembrada": false, "lista_en": 0.0}
+		_estados[id] = {"definicion": parcela.definicion_id, "sembrada": false,
+			"fertilizada": false, "lista_en": 0.0}
 	parcela.tree_exiting.connect(func(): _vivas.erase(id), CONNECT_ONE_SHOT)
 
 func estado(instancia: String) -> Dictionary:
@@ -65,8 +66,60 @@ func sembrar_en_almacen(instancia: String, origen: String = "") -> bool:
 	_marcar_sembrado(instancia, estado, def)
 	return true
 
+func necesita_fertilizante(instancia: String) -> bool:
+	if not _estados.has(instancia):
+		return false
+	var estado: Dictionary = _estados[instancia]
+	return bool(estado.get("sembrada", false)) \
+		and not bool(estado.get("fertilizada", false)) \
+		and not _esta_lista(estado)
+
+func puede_fertilizar(instancia: String, inventario: Inventario) -> bool:
+	if inventario == null or not necesita_fertilizante(instancia):
+		return false
+	var def: CultivoData = BaseDeDatos.cultivo(
+		str((_estados[instancia] as Dictionary).get("definicion", "")))
+	return def != null and def.fertilizante != "" and inventario.hay(def.fertilizante)
+
+func fertilizar(instancia: String, inventario: Inventario) -> bool:
+	if not puede_fertilizar(instancia, inventario):
+		return false
+	var estado: Dictionary = _estados[instancia]
+	var def: CultivoData = BaseDeDatos.cultivo(str(estado.get("definicion", "")))
+	if def == null or not inventario.retirar(def.fertilizante, 1):
+		return false
+	_aplicar_fertilizante(instancia, estado, def)
+	return true
+
+func puede_fertilizar_en_almacen(instancia: String) -> bool:
+	if not _estados.has(instancia) or not necesita_fertilizante(instancia):
+		return false
+	var def: CultivoData = BaseDeDatos.cultivo(
+		str((_estados[instancia] as Dictionary).get("definicion", "")))
+	return def != null and def.fertilizante != "" \
+		and Almacen.disponible(def.fertilizante) >= 1
+
+func fertilizar_en_almacen(instancia: String, origen: String = "") -> bool:
+	if not puede_fertilizar_en_almacen(instancia):
+		return false
+	var estado: Dictionary = _estados[instancia]
+	var def: CultivoData = BaseDeDatos.cultivo(str(estado.get("definicion", "")))
+	if def == null or not Almacen.retirar(def.fertilizante, 1):
+		return false
+	_aplicar_fertilizante(instancia, estado, def)
+	return true
+
+func _aplicar_fertilizante(instancia: String, estado: Dictionary, def: CultivoData) -> void:
+	var restante := maxf(0.0, float(estado.get("lista_en", 0.0)) - _hora_total())
+	estado["fertilizada"] = true
+	estado["lista_en"] = _hora_total() + maxf(0.1,
+		restante * def.multiplicador_fertilizante)
+	_estados[instancia] = estado
+	_emitir_cambio(instancia)
+
 func _marcar_sembrado(instancia: String, estado: Dictionary, def: CultivoData) -> void:
 	estado["sembrada"] = true
+	estado["fertilizada"] = false
 	estado["lista_en"] = _hora_total() + def.horas_crecimiento
 	_estados[instancia] = estado
 	_emitir_cambio(instancia)
@@ -86,6 +139,7 @@ func cosechar(instancia: String, inventario: Inventario) -> Dictionary:
 	for id in def.cosecha:
 		inventario.anadir(str(id), int(def.cosecha[id]))
 	estado["sembrada"] = false
+	estado["fertilizada"] = false
 	estado["lista_en"] = 0.0
 	_estados[instancia] = estado
 	_emitir_cambio(instancia)

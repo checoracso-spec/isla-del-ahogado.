@@ -44,6 +44,16 @@ func _ejecutar() -> void:
 	_comprobar("sembrar consume la semilla", Bolsa.mochila.cantidad("semilla_citrico") == 0)
 	_comprobar("sembrar deja aviso en la bitácora", _bitacora_contiene(mundo, "Sembraste Cítricos"))
 	_comprobar("el cultivo pasa a etapa inicial", CultivosMundo.etapa(parcela.identidad.instancia) == 1)
+	var lista_sin_fertilizante: float = CultivosMundo.estado(parcela.identidad.instancia).get("lista_en", 0.0)
+	Bolsa.mochila.anadir("fertilizante", 1)
+	_comprobar("la parcela ofrece fertilizar durante el crecimiento",
+		parcela.texto_accion().begins_with("Fertilizar"))
+	parcela.interactuar(mundo.jugador)
+	var estado_fertilizado := CultivosMundo.estado(parcela.identidad.instancia)
+	_comprobar("fertilizar consume un abono", Bolsa.mochila.cantidad("fertilizante") == 0)
+	_comprobar("el abono acelera y queda guardado en datos",
+		bool(estado_fertilizado.get("fertilizada", false))
+		and float(estado_fertilizado.get("lista_en", 0.0)) < lista_sin_fertilizante)
 
 	var serial: Dictionary = CultivosMundo._serializar()
 	CultivosMundo.reiniciar()

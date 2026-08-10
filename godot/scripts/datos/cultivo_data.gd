@@ -10,6 +10,7 @@ extends Resource
 @export var cosecha: Dictionary = {}
 @export var horas_crecimiento: float = 24.0
 @export var fertilizante: String = "fertilizante"
+@export var multiplicador_fertilizante: float = 0.75
 @export var tipo: String = "cultivo"
 @export var automatizador_edificio: String = ""
 @export var automatizador_trabajadores: int = 0
@@ -23,6 +24,8 @@ static func desde_dic(d: Dictionary) -> CultivoData:
 	c.cosecha = (d.get("cosecha", {}) as Dictionary).duplicate(true)
 	c.horas_crecimiento = maxf(0.1, float(d.get("horas_crecimiento", 24.0)))
 	c.fertilizante = str(d.get("fertilizante", "fertilizante"))
+	c.multiplicador_fertilizante = clampf(
+		float(d.get("multiplicador_fertilizante", 0.75)), 0.1, 1.0)
 	c.tipo = str(d.get("tipo", "cultivo"))
 	c.automatizador_edificio = str(d.get("automatizador_edificio", ""))
 	c.automatizador_trabajadores = maxi(0, int(d.get("automatizador_trabajadores", 0)))
