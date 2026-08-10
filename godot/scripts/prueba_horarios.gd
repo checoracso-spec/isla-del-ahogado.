@@ -78,6 +78,12 @@ func _ready() -> void:
 	_comprobar("el NPC consume ron desde su inventario",
 		ron_personal.get("ok", false) and pirata.moral_personal > 40.0
 		and pirata.inventario().cantidad("ron") == 0)
+	pirata.inventario().anadir("raciones", 1)
+	pirata.hambre = 45.0
+	pirata.tarea = Pirata.Tarea.COMIENDO
+	var consumo_rutina := pirata.atender_necesidad_de_rutina()
+	_comprobar("la rutina elige comida disponible por datos",
+		consumo_rutina.get("ok", false) and pirata.hambre > 45.0)
 	pirata.tarea = Pirata.Tarea.TRABAJANDO
 	var energia_antes := pirata.energia_personal
 	pirata.actualizar_necesidades(1.0)

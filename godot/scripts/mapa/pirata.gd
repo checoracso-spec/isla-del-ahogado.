@@ -81,6 +81,28 @@ func consumir_item_personal(id: String) -> Dictionary:
 	_anotar_estado()
 	return {"ok": true, "id": id, "comida": item.comida, "moral": item.moral}
 
+## Atiende una necesidad usando el mejor objeto disponible en el inventario.
+## La rutina decide el tipo; ItemData decide el efecto y el identificador.
+func atender_necesidad_de_rutina() -> Dictionary:
+	var necesidad_id := ""
+	match tarea:
+		Tarea.COMIENDO: necesidad_id = "hambre"
+		Tarea.A_LA_TABERNA: necesidad_id = "moral"
+		_: return {"ok": false, "motivo": "La tarea actual no consume."}
+	var mejor_id := ""
+	var mejor_efecto := 0.0
+	for id in inventario_personal.ids():
+		var item: ItemData = BaseDeDatos.item(str(id))
+		if item == null:
+			continue
+		var efecto := item.comida if necesidad_id == "hambre" else item.moral
+		if efecto > mejor_efecto:
+			mejor_efecto = efecto
+			mejor_id = str(id)
+	if mejor_id == "":
+		return {"ok": false, "motivo": "No hay consumibles para %s." % necesidad_id}
+	return consumir_item_personal(mejor_id)
+
 ## Avanza necesidades en horas de juego. No consume recursos: la comida y el
 ## ron se resolveran desde servicios de edificio en un bloque posterior.
 func actualizar_necesidades(horas: float) -> void:
@@ -229,6 +251,7 @@ func _pensar(delta: float) -> void:
 		_:
 			tarea = Tarea.PASEANDO
 			destino = _punto_cerca(taberna, 4.0)
+	atender_necesidad_de_rutina()
 
 func _punto_cerca(t: Vector2i, radio: float) -> Vector2:
 	return Vector2(t) + Vector2(_rnd.randf_range(-radio, radio), _rnd.randf_range(-radio, radio))
