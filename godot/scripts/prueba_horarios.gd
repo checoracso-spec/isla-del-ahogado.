@@ -60,6 +60,14 @@ func _ready() -> void:
 	_comprobar("la rutina acepta un destino de trabajo separado",
 		pirata.casa == Vector2i(2, 2) and pirata.trabajo == Vector2i(8, 8))
 	_comprobar("el pirata tiene identidad estable", pirata.identidad != null)
+	_comprobar("el NPC expone un inventario base propio",
+		pirata.inventario() != null and pirata.inventario() is Inventario)
+	pirata.inventario().anadir("ron", 2)
+	pirata.oro_personal = 37
+	pirata.hambre = 61.0
+	pirata.energia_personal = 44.0
+	pirata.moral_personal = 78.0
+	NpcsMundo.anotar(pirata)
 	var estado_npc: Dictionary = pirata.serializar()
 	var pos_guardada := pirata.pos_tile
 	pirata.colocar(Vector2(1.5, 1.5))
@@ -73,6 +81,14 @@ func _ready() -> void:
 	NpcsMundo._cargar(registro_npcs)
 	_comprobar("NpcsMundo aplica estados a los NPC vivos",
 		pirata.pos_tile.is_equal_approx(pos_guardada))
+	_comprobar("NpcsMundo restaura el inventario personal",
+		pirata.inventario().cantidad("ron") == 2)
+	_comprobar("NpcsMundo restaura el oro personal",
+		pirata.oro_personal == 37)
+	_comprobar("NpcsMundo restaura necesidades personales",
+		is_equal_approx(pirata.hambre, 61.0)
+		and is_equal_approx(pirata.energia_personal, 44.0)
+		and is_equal_approx(pirata.moral_personal, 78.0))
 	var rejilla := TransitableRejilla.new(10, 10)
 	rejilla.bloquear(Vector2i(5, 4), "muro de prueba")
 	pirata.transitable = rejilla

@@ -6,7 +6,7 @@
 - Rejilla isométrica 128×64; `scripts/mapa/iso.gd` no se ha modificado.
 - API pública de `scripts/autoload/almacen.gd` intacta.
 - 26 escenas `prueba_*.tscn` ejecutadas en headless.
-- 675 comprobaciones instrumentadas en verde; persistencia A/B, viaje global y
+- 683 comprobaciones instrumentadas en verde; persistencia A/B, viaje global y
   profundidad
   arrancan sin errores reales.
 - La escena principal `res://escenas/mundo.tscn` arranca sin `SCRIPT ERROR`,
@@ -121,7 +121,7 @@ antiguas a `montar()` siguen funcionando y usan la casa como destino laboral
 por compatibilidad. Barbanegra ya demuestra el caso real: vive en la cabana
 del capitan y trabaja en la herreria.
 
-El bloque se verifico con 26 suites y 675 comprobaciones, incluido el arranque
+El bloque se verifico con 26 suites y 683 comprobaciones, incluido el arranque
 de `mundo.tscn`, sin modificar `iso.gd` ni la API publica de `Almacen`.
 
 ## Contenido remoto incorporado en este checkpoint
@@ -147,6 +147,21 @@ Checkpoint de roster: `c89f221` obtiene los personajes activos desde los campos
 antiguos.
 
 ## Persistencia de NPCs
+
+### Inventario y necesidades personales
+
+Cada `Pirata` tiene un `Inventario` personal independiente de `Almacen`, oro
+propio y necesidades planas de hambre, energia y moral. `NpcsMundo` guarda
+estos datos como diccionarios planos, junto con la posicion y la rutina; nunca
+guarda referencias a nodos.
+
+El inventario se obtiene con `Pirata.inventario()` y reutiliza la clase base
+`Inventario`. No llama ni modifica la API publica de `Almacen`. La prueba A/B
+de NPC confirma que Barbanegra conserva posicion, direccion, tarea, identidad,
+inventario, oro y necesidades al cerrar y volver a cargar el juego.
+
+El desgaste y la recuperacion automatica de necesidades quedan para un bloque
+posterior, para no mezclar simulacion con esta capa de persistencia.
 
 `NpcsMundo` registra las entidades vivas y guarda solo diccionarios planos:
 posicion, direccion, destino, tarea y estado. Los piratas tienen identidades

@@ -1,7 +1,8 @@
 extends Node
 
 const MundoScript := preload("res://scripts/mundo.gd")
-const RANURA := 96
+const Datos := preload("res://scripts/prueba_persistencia_npc_datos.gd")
+const RANURA := Datos.RANURA
 
 var correctas := 0
 var fallos := 0
@@ -28,6 +29,15 @@ func _ready() -> void:
 			npc.identidad != null and npc.identidad.instancia.begins_with("npc_"))
 		_comprobar("NpcsMundo expone el estado plano cargado",
 			NpcsMundo.estado(npc.identidad.instancia).has("pos_tile"))
+		_comprobar("recupera el inventario personal del NPC",
+			npc.inventario().cantidad("ron") == Datos.RON)
+		_comprobar("recupera el oro personal del NPC",
+			npc.oro_personal == Datos.ORO)
+		_comprobar("recupera hambre y energia del NPC",
+			is_equal_approx(npc.hambre, Datos.HAMBRE)
+			and is_equal_approx(npc.energia_personal, Datos.ENERGIA))
+		_comprobar("recupera moral del NPC",
+			is_equal_approx(npc.moral_personal, Datos.MORAL))
 	Guardado.borrar(RANURA)
 	print("=== %d/%d comprobaciones de persistencia NPC ===" % [correctas, correctas + fallos])
 	get_tree().quit(0 if fallos == 0 else 1)

@@ -1,7 +1,8 @@
 extends Node
 
 const MundoScript := preload("res://scripts/mundo.gd")
-const RANURA := 96
+const Datos := preload("res://scripts/prueba_persistencia_npc_datos.gd")
+const RANURA := Datos.RANURA
 
 func _ready() -> void:
 	Reloj.pausado = true
@@ -24,6 +25,11 @@ func _ready() -> void:
 	npc.direccion = Vector2.RIGHT
 	npc.tarea = Pirata.Tarea.DURMIENDO
 	npc.estado = "idle"
+	npc.inventario().anadir("ron", Datos.RON)
+	npc.oro_personal = Datos.ORO
+	npc.hambre = Datos.HAMBRE
+	npc.energia_personal = Datos.ENERGIA
+	npc.moral_personal = Datos.MORAL
 	NpcsMundo.anotar(npc)
 	if not Guardado.guardar(RANURA):
 		printerr("A-npc: no pudo guardar")

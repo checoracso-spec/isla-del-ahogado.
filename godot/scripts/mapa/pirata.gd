@@ -10,6 +10,7 @@ enum Tarea { TRABAJANDO, YENDO_A_TRABAJAR, A_LA_TABERNA, PASEANDO, DURMIENDO, EN
 
 const VELOCIDAD := 1.5
 const ALTURA := 92.0
+const CAPACIDAD_INVENTARIO_PERSONAL := 12.0
 
 var id_personaje: String = ""
 var nombre_mostrado: String = "Pirata"
@@ -21,6 +22,12 @@ var horario_id: String = "tripulacion"
 var horario: HorarioData = null
 var color_ropa := Color("8c3b2f")
 var color_panuelo := Color("c9a227")
+## Inventario propio del NPC. No es Almacen y no participa en la logistica.
+var inventario_personal: Inventario
+var oro_personal: int = 0
+var hambre: float = 100.0
+var energia_personal: float = 100.0
+var moral_personal: float = 100.0
 
 ## Compatibilidad con el nombre usado por el prototipo anterior. La fuente
 ## de verdad sigue siendo Actor.pos_tile.
@@ -35,6 +42,29 @@ var tarea: int = Tarea.PASEANDO
 
 var _espera := 0.0
 var _rnd := RandomNumberGenerator.new()
+
+func _init() -> void:
+	inventario_personal = Inventario.new()
+	inventario_personal.capacidad = CAPACIDAD_INVENTARIO_PERSONAL
+
+## Contrato común para que puertas, cofres y futuras interfaces puedan tratar
+## al NPC como un portador sin conocer campos internos de Pirata.
+func inventario() -> Inventario:
+	return inventario_personal
+
+func ajustar_necesidad(id: String, delta: float) -> float:
+	match id:
+		"hambre": hambre = clampf(hambre + delta, 0.0, 100.0)
+		"energia": energia_personal = clampf(energia_personal + delta, 0.0, 100.0)
+		"moral": moral_personal = clampf(moral_personal + delta, 0.0, 100.0)
+	return necesidad(id)
+
+func necesidad(id: String) -> float:
+	match id:
+		"hambre": return hambre
+		"energia": return energia_personal
+		"moral": return moral_personal
+		_: return 0.0
 
 func montar(p_id: String, p_nombre: String, p_casa: Vector2i, p_taberna: Vector2i,
 		semilla: int, p_horario_id: String = "tripulacion",
@@ -68,6 +98,15 @@ func montar(p_id: String, p_nombre: String, p_casa: Vector2i, p_taberna: Vector2
 	queue_redraw()
 
 func aplicar_estado(datos: Dictionary) -> void:
+	var inventario_datos: Variant = datos.get("inventario", {})
+	if inventario_datos is Dictionary:
+		inventario_personal.cargar(inventario_datos)
+	oro_personal = int(datos.get("oro_personal", oro_personal))
+	var necesidades_datos: Variant = datos.get("necesidades", {})
+	if necesidades_datos is Dictionary:
+		hambre = clampf(float(necesidades_datos.get("hambre", hambre)), 0.0, 100.0)
+		energia_personal = clampf(float(necesidades_datos.get("energia", energia_personal)), 0.0, 100.0)
+		moral_personal = clampf(float(necesidades_datos.get("moral", moral_personal)), 0.0, 100.0)
 	var p: Variant = datos.get("pos_tile", {})
 	if p is Dictionary:
 		pos_tile = Vector2(float(p.get("x", pos_tile.x)), float(p.get("y", pos_tile.y)))
@@ -90,6 +129,13 @@ func serializar() -> Dictionary:
 		"destino": {"x": destino.x, "y": destino.y},
 		"tarea": tarea,
 		"estado": estado,
+		"inventario": inventario_personal.serializar(),
+		"oro_personal": oro_personal,
+		"necesidades": {
+			"hambre": hambre,
+			"energia": energia_personal,
+			"moral": moral_personal,
+		},
 	}
 
 ## La rutina sale del estado real del juego, no de un temporizador ciego.
