@@ -9,6 +9,10 @@ func _ready() -> void:
 	_comprobar("la base de datos declara eventos", BaseDeDatos.eventos.size() == 3)
 	_comprobar("el bloqueo tiene definición tipada",
 		BaseDeDatos.evento("bloqueo_corona") != null)
+	_comprobar("la marea declara capacidad extra de naufragios",
+		BaseDeDatos.evento("marea_de_naufragios") != null
+		and BaseDeDatos.evento("marea_de_naufragios").multiplicadores_recursos.get(
+			"restos_naufragio", 1.0) > 1.0)
 	_comprobar("el mundo empieza sin eventos activos", EventosMundo.activos().is_empty())
 
 	var precio_normal := MercadoManager.precio_compra("acero_imperial")

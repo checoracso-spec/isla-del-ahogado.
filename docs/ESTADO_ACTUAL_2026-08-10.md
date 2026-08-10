@@ -6,7 +6,7 @@
 - Rejilla isométrica 128×64; `scripts/mapa/iso.gd` no se ha modificado.
 - API pública de `scripts/autoload/almacen.gd` intacta.
 - 27 escenas `prueba_*.tscn` ejecutadas en headless.
-- 765 comprobaciones instrumentadas en verde; persistencia A/B, viaje global y
+- 770 comprobaciones instrumentadas en verde; persistencia A/B, viaje global y
   profundidad
   arrancan sin errores reales.
 - La escena principal `res://escenas/mundo.tscn` arranca sin `SCRIPT ERROR`,
@@ -23,7 +23,9 @@
 - `EventosMundo` data-driven y guardable. Ya declara tormenta costera, bloqueo
   de la Corona y marea de naufragios; el bloqueo afecta precios de acero y
   pólvora, y los eventos pueden elevar el riesgo mostrado por el mapa global
-  sin conocer nodos.
+  sin conocer nodos. La marea declara un multiplicador de recursos: al iniciar
+  repone los restos agotados hasta dos ciclos y las regeneraciones respetan la
+  capacidad activa; al cargar sin marea se conserva exactamente el agotamiento.
 - Fuentes de recursos data-driven: naufragio, manglar, veta de azufre y
   semillero. Se agotan, regeneran, guardan su identidad y entregan lotes
   completos sin sobrepasar la capacidad del inventario.
@@ -144,7 +146,7 @@ antiguas a `montar()` siguen funcionando y usan la casa como destino laboral
 por compatibilidad. Barbanegra ya demuestra el caso real: vive en la cabana
 del capitan y trabaja en la herreria.
 
-El bloque se verifico con 27 suites y 765 comprobaciones, incluido el arranque
+El bloque se verifico con 27 suites y 770 comprobaciones, incluido el arranque
 de `mundo.tscn`, sin modificar `iso.gd` ni la API publica de `Almacen`.
 
 ## Contenido remoto incorporado en este checkpoint

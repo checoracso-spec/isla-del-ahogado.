@@ -64,6 +64,19 @@ func multiplicador_oferta(item_id: String) -> float:
 			resultado *= maxf(0.1, float(def.multiplicadores_oferta[item_id]))
 	return resultado
 
+## Multiplicador de disponibilidad para una definición de fuente. Es distinto
+## del precio: una marea puede traer más restos y, a la vez, abaratar su venta.
+func multiplicador_recurso(definicion_id: String) -> float:
+	_actualizar_expirados()
+	var resultado := 1.0
+	for id in _activos:
+		var def = BaseDeDatos.evento(str(id))
+		if def == null:
+			continue
+		if def.multiplicadores_recursos.has(definicion_id):
+			resultado *= maxf(0.1, float(def.multiplicadores_recursos[definicion_id]))
+	return resultado
+
 func riesgo_viaje(riesgo_base: float) -> float:
 	_actualizar_expirados()
 	var resultado := riesgo_base

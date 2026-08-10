@@ -671,6 +671,7 @@ const TABLA_EVENTOS := [
 	  "desc": "Las rutas imperiales escasean de acero y pólvora seca." },
 	{ "id": "marea_de_naufragios", "nombre": "Marea de Naufragios", "tipo": "naufragio",
 	  "duracion_horas": 24.0, "multiplicador_riesgo_viaje": 1.0,
+	  "multiplicadores_recursos": { "restos_naufragio": 2.0 },
 	  "multiplicadores_oferta": { "madera_naufragio": 0.75 },
 	  "desc": "Una corriente trae restos a las costas y abarata la madera." },
 ]

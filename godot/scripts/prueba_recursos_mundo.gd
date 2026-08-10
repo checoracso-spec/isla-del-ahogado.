@@ -102,6 +102,16 @@ func _ejecutar() -> void:
 	_comprobar("el rastreo deja de anunciar fuentes agotadas",
 		not mundo._resumen_fuentes_exploracion().contains("Restos de Naufragio"))
 
+	print("5. Marea de naufragios")
+	EventosMundo.reiniciar()
+	_comprobar("la fuente queda vacía antes de la marea", naufragio.cantidad() == 0)
+	_comprobar("inicia la marea de naufragios",
+		EventosMundo.iniciar("marea_de_naufragios"))
+	_comprobar("la marea duplica la capacidad de restos",
+		EventosMundo.multiplicador_recurso("restos_naufragio") == 2.0)
+	_comprobar("la marea repone restos inmediatamente", naufragio.cantidad() == 2)
+	EventosMundo.terminar("marea_de_naufragios")
+
 func _casillas_distintas(fuentes: Array) -> bool:
 	var vistas := {}
 	for fuente in fuentes:

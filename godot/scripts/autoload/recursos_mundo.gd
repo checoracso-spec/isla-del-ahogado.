@@ -12,6 +12,7 @@ var _vivas: Dictionary = {}        ## instancia -> nodo FuenteRecurso
 
 func _ready() -> void:
 	Guardado.registrar("recursos_mundo", _serializar, _cargar)
+	EventosMundo.eventos_cambiados.connect(_ajustar_por_eventos)
 
 func registrar(fuente) -> void:
 	if fuente == null or fuente.identidad == null:
@@ -22,7 +23,7 @@ func registrar(fuente) -> void:
 		var def: FuenteRecursoData = fuente.definicion()
 		_estados[id] = {
 			"definicion": fuente.definicion_id,
-			"cantidad": def.ciclos_maximos if def != null else 0,
+			"cantidad": _capacidad_fuente(def) if def != null else 0,
 			"proxima": 0.0,
 		}
 	fuente.tree_exiting.connect(func(): _vivas.erase(id), CONNECT_ONE_SHOT)
@@ -151,10 +152,10 @@ func _process(_delta: float) -> void:
 		var def: FuenteRecursoData = BaseDeDatos.fuente(str(estado.get("definicion", "")))
 		if def == null:
 			continue
-		estado["cantidad"] = def.ciclos_maximos
+		estado["cantidad"] = _capacidad_fuente(def)
 		estado["proxima"] = 0.0
 		_estados[instancia] = estado
-		fuente_cambiada.emit(str(instancia), def.ciclos_maximos)
+		fuente_cambiada.emit(str(instancia), int(estado["cantidad"]))
 		var viva = _vivas.get(instancia)
 		if viva != null and is_instance_valid(viva):
 			viva.queue_redraw()
@@ -167,6 +168,7 @@ func _serializar() -> Dictionary:
 
 func _cargar(datos: Dictionary) -> void:
 	_estados = (datos.get("estados", {}) as Dictionary).duplicate(true)
+	_ajustar_por_eventos()
 	for id in _vivas:
 		var viva = _vivas[id]
 		if viva != null and is_instance_valid(viva):
@@ -175,3 +177,31 @@ func _cargar(datos: Dictionary) -> void:
 func reiniciar() -> void:
 	_estados.clear()
 	_vivas.clear()
+
+func _capacidad_fuente(def: FuenteRecursoData) -> int:
+	if def == null:
+		return 0
+	var multiplicador := EventosMundo.multiplicador_recurso(def.id)
+	return maxi(0, ceili(float(def.ciclos_maximos) * multiplicador))
+
+func _ajustar_por_eventos() -> void:
+	for instancia in _estados:
+		var estado: Dictionary = _estados[instancia]
+		var def: FuenteRecursoData = BaseDeDatos.fuente(
+			str(estado.get("definicion", "")))
+		if def == null:
+			continue
+		var multiplicador := EventosMundo.multiplicador_recurso(def.id)
+		if multiplicador <= 1.0:
+			continue
+		var capacidad := maxi(0, ceili(float(def.ciclos_maximos) * multiplicador))
+		# Una nueva marea trae restos inmediatamente. Al terminar el evento no
+		# confiscamos el excedente: sólo las regeneraciones usan la capacidad base.
+		if capacidad > int(estado.get("cantidad", 0)):
+			estado["cantidad"] = capacidad
+			estado["proxima"] = 0.0
+			_estados[instancia] = estado
+			fuente_cambiada.emit(str(instancia), capacidad)
+			var viva = _vivas.get(instancia)
+			if viva != null and is_instance_valid(viva):
+				viva.queue_redraw()
