@@ -103,7 +103,7 @@ manadas grandes ni comportamiento social.
 - `e030b18` — transición jugable entre isla y zonas globales provisionales.
 - `6df3249` — persistencia entre procesos de la zona global activa.
 - `99c8c9a` — flota data-driven mínima vinculada a las rutas globales.
-- `pendiente` — bodega de barcos basada en `Inventario`, con carga y guardado.
+- `1f5d1af` — bodega de barcos basada en `Inventario`, con carga y guardado.
 
 ## Reglas de continuidad
 
