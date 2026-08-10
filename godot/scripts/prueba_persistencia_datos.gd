@@ -21,6 +21,8 @@ const ETAPA_CULTIVO_GUARDADA := 3
 const GRUA_ACTIVA := true
 const RUTA_GLOBAL_GUARDADA := "principal_ceniza"
 const DESTINO_GLOBAL_GUARDADO := "isla_ceniza"
+const ANIMAL_GUARDADO := "cerdo_salvaje"
+const POS_ANIMAL := Vector2(3.5, 3.5)
 
 ## Casilla concreta del interior donde se coloca el jugador antes de guardar.
 ## Elegida a mano para que esté libre de muebles en `interior_casa_a`.

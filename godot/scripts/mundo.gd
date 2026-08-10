@@ -9,6 +9,7 @@ const PuestoMuelleScript := preload("res://scripts/interiores/puesto_muelle.gd")
 const FuenteRecursoScript := preload("res://scripts/mapa/fuente_recurso.gd")
 const ParcelaCultivoScript := preload("res://scripts/mapa/parcela_cultivo.gd")
 const ZonaExteriorScript := preload("res://scripts/mapa/zona_exterior.gd")
+const AnimalScript := preload("res://scripts/mapa/animal.gd")
 ## La isla en pantalla, enchufada a la logística que ya existía.
 ##
 ## Aquí no se inventa ninguna regla nueva: los edificios humean porque su
@@ -62,6 +63,7 @@ var piratas: Array[Pirata] = []
 var puertas: Array[Puerta] = []
 var fuentes_recurso: Array = []
 var parcelas_cultivo: Array = []
+var animales: Array = []
 
 var _terreno: TileMapLayer
 var _suelo_pueblo: TileMapLayer
@@ -177,6 +179,7 @@ func _construir_mundo() -> void:
 	_crear_puertas()
 	_crear_fuentes_recurso()
 	_crear_parcela_cultivo()
+	_crear_animales()
 	Interiores.usar_exterior(self, self)
 
 	_tinte = CanvasModulate.new()
@@ -392,6 +395,36 @@ func _crear_parcela_cultivo() -> void:
 			excluir.append(casilla)
 		else:
 			parcela.queue_free()
+
+func _crear_animales() -> void:
+	var ubicadas: Array[Vector2i] = []
+	var definiciones: Array = BaseDeDatos.animales.values()
+	definiciones.sort_custom(func(a, b): return int(a.orden_mundo) < int(b.orden_mundo))
+	var semilla := SEMILLA + 900
+	for def: AnimalData in definiciones:
+		if not def.generar_en_mundo:
+			continue
+		var casilla := Vector2i(-1, -1)
+		match def.habitat:
+			"costa":
+				casilla = _buscar_costa_libre()
+			"puerto":
+				casilla = transitable.casilla_libre_cerca(_puerta_de("muelle_grua"), 6)
+			_:
+				casilla = _buscar_tierra_libre(0.25, 1.0, ubicadas)
+		if casilla.x < 0 or casilla in ubicadas:
+			push_warning("Diagnóstico: no hay casilla para el animal '%s'" % def.id)
+			continue
+		var animal = AnimalScript.new()
+		animal.name = "Animal_%s" % def.id
+		_objetos.add_child(animal)
+		var clave := Entidades.clave_en("animal_" + def.id, casilla)
+		if animal.montar(def.id, clave, casilla, transitable, semilla):
+			animales.append(animal)
+			ubicadas.append(casilla)
+		else:
+			animal.queue_free()
+		semilla += 17
 
 ## Clave base del kit para un edificio, o "" si sigue con el arte antiguo.
 ## Comprueba que la pieza exista de verdad: un dato que apunte a un asset

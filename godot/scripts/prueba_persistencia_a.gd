@@ -56,6 +56,18 @@ func _ready() -> void:
 	parcela.interactuar(mundo.jugador)
 	print("  semillero   : %d ciclos restantes" % semillero.cantidad())
 	print("  parcela      : etapa %d" % CultivosMundo.etapa(parcela.identidad.instancia))
+	var animal_guardado = null
+	for candidato in mundo.animales:
+		if candidato.definicion_id == D.ANIMAL_GUARDADO:
+			animal_guardado = candidato
+			break
+	if animal_guardado == null:
+		printerr("A: falta el animal para persistencia")
+		get_tree().quit(1)
+		return
+	animal_guardado.colocar(D.POS_ANIMAL)
+	AnimalesMundo.anotar(animal_guardado)
+	print("  animal      : %s en %s" % [D.ANIMAL_GUARDADO, D.POS_ANIMAL])
 
 	# Entrar y vaciar el cofre
 	mundo.recibir_jugador(mundo.jugador, Vector2(puerta.casilla_exterior) + Vector2(0.5, 0.5))

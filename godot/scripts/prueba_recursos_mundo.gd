@@ -21,6 +21,11 @@ func _ejecutar() -> void:
 		mundo.zona_exterior != null and mundo.zona_exterior.actores == mundo.get_node("Objetos"))
 	_comprobar("la ZonaExterior conserva los límites de la isla",
 		mundo.zona_exterior != null and mundo.zona_exterior.limites() == mundo.limites_exterior())
+	_comprobar("el mundo puebla fauna desde BaseDeDatos", mundo.animales.size() >= 3)
+	_comprobar("los animales del mundo son actores con identidad",
+		mundo.animales.all(func(a): return a is Actor and a.identidad != null))
+	_comprobar("la fauna usa la transitabilidad de la isla",
+		mundo.animales.all(func(a): return a.transitable == mundo.transitable))
 	_comprobar("el mundo crea cuatro fuentes de recursos", mundo.fuentes_recurso.size() == 4)
 	if mundo.fuentes_recurso.size() < 4:
 		return

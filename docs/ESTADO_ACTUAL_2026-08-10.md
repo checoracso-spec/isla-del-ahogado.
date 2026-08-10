@@ -6,7 +6,7 @@
 - Rejilla isométrica 128×64; `scripts/mapa/iso.gd` no se ha modificado.
 - API pública de `scripts/autoload/almacen.gd` intacta.
 - 20 escenas `prueba_*.tscn` ejecutadas en headless.
-- 579 comprobaciones instrumentadas en verde; persistencia A/B y profundidad
+- 590 comprobaciones instrumentadas en verde; persistencia A/B y profundidad
   arrancan sin errores reales.
 - La escena principal `res://escenas/mundo.tscn` arranca sin `SCRIPT ERROR`,
   `Parse Error`, `Invalid call` ni `Invalid access`.
@@ -45,10 +45,14 @@
 
 ## Fauna
 
-`Animal` ya es una entidad viva basada en `Actor`: conserva hÃ¡bitat,
+`Animal` ya es una entidad viva basada en `Actor`: conserva hábitat,
 velocidad, radio de deambular, ciclo nocturno, identidad y estado plano en
-`AnimalesMundo`. La isla todavÃ­a no instancia manadas; la poblaciÃ³n queda como
-siguiente bloque sobre esta base.
+`AnimalesMundo`. La isla instancia ahora una población mínima data-driven
+desde `BaseDeDatos`: cerdo salvaje, cabra de montaña y loro vigía. Cada entidad
+usa la transitabilidad común, aparece con identidad estable y se incluye en el
+guardado; la suite A/B verifica que el cerdo conserva su posición entre
+procesos. El sistema todavía no implementa reproducción, producción diaria,
+manadas grandes ni comportamiento social.
 
 ## Autoloads registrados
 
@@ -61,7 +65,9 @@ siguiente bloque sobre esta base.
 ## Límites conocidos
 
 - Los destinos del mapa global todavía no cargan escenas artísticas propias.
-- Los animales tienen datos, pero aún no son entidades visibles del mundo.
+- La fauna visible está limitada por ahora a la población mínima de prueba;
+  todavía no hay reproducción, producción diaria, domesticación ni manadas
+  dinámicas.
 - No hay combate naval, economía dinámica completa ni NPCs con inventario y
   relaciones avanzadas.
 - El arte definitivo sólo está integrado en una parte de los edificios; los
@@ -78,6 +84,9 @@ siguiente bloque sobre esta base.
 
 - `31dc933` — formalizacion de la isla como `ZonaExterior`.
 - `0206419` — persistencia de viajes globales entre procesos.
+- `97d35b4` — entidades animales guardables basadas en `Actor`.
+- `pendiente` — población mínima de fauna data-driven en la isla y prueba A/B
+  de posición entre procesos.
 
 ## Reglas de continuidad
 
@@ -85,4 +94,4 @@ siguiente bloque sobre esta base.
 2. No cambiar la API pública de `Almacen`.
 3. No mezclar `Bolsa` con `Almacen`.
 4. Guardar datos planos, nunca referencias a nodos.
-5. Ejecutar las 19 suites y buscar errores reales después de cada bloque.
+5. Ejecutar las 20 suites y buscar errores reales después de cada bloque.

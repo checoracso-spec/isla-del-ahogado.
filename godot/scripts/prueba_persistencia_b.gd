@@ -76,6 +76,14 @@ func _ready() -> void:
 	_comprobar("el viaje recupera su ruta y destino",
 		str(MapaGlobal.viaje_activo.get("ruta_id", "")) == D.RUTA_GLOBAL_GUARDADA
 		and str(MapaGlobal.viaje_activo.get("destino", "")) == D.DESTINO_GLOBAL_GUARDADO)
+	var animal_guardado = null
+	for candidato in mundo.animales:
+		if candidato.definicion_id == D.ANIMAL_GUARDADO:
+			animal_guardado = candidato
+			break
+	_comprobar("la fauna guardada existe tras reabrir", animal_guardado != null)
+	_comprobar("la fauna recupera su posición entre procesos",
+		animal_guardado != null and animal_guardado.pos_tile.distance_to(D.POS_ANIMAL) < 0.01)
 
 	var semillero = null
 	var parcela = null
