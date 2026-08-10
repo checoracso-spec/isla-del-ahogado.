@@ -77,6 +77,8 @@ func _ejecutar() -> void:
 	_comprobar("el agotamiento se conserva en datos planos", naufragio.cantidad() == 0
 		and arbol.cantidad() == 2 and veta.cantidad() == 1 and semillero.cantidad() == 0)
 	_comprobar("las cuatro fuentes siguen registradas tras cargar", serial.get("estados", {}).size() == 4)
+	_comprobar("el rastreo deja de anunciar fuentes agotadas",
+		not mundo._resumen_fuentes_exploracion().contains("Restos de Naufragio"))
 
 func _casillas_distintas(fuentes: Array) -> bool:
 	var vistas := {}

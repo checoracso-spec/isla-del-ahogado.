@@ -1003,6 +1003,8 @@ func _conectar() -> void:
 		fuente.recolectado.connect(_al_recolectar_recurso)
 	for parcela in parcelas_cultivo:
 		parcela.accion_realizada.connect(_al_accion_parcela)
+	RecursosMundo.fuente_cambiada.connect(func(_instancia, _cantidad):
+		_apuntar(_resumen_fuentes_exploracion()))
 	Almacen.cuello_de_botella.connect(func(est, insumo, faltan):
 		_apuntar("[color=#c0392b]%s necesita %d× %s[/color]"
 			% [_nombre(est), faltan, BaseDeDatos.nombre_item(insumo)]))
