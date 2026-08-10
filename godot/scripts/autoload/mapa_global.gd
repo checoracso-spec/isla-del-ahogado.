@@ -55,12 +55,21 @@ func iniciar_viaje(ruta_id: String, barco_id: String = "") -> bool:
 	var ruta_elegida := ruta(ruta_id)
 	if ruta_elegida == null or ruta_elegida.origen != ubicacion_actual:
 		return false
-	var barco_final: String = barco_id if barco_id != "" else str(ruta_elegida.barco_requerido)
+	var barco_final := barco_id
+	if barco_final == "":
+		barco_final = FlotaMundo.disponible_para(
+			str(ruta_elegida.barco_requerido), str(ruta_elegida.origen))
+	if barco_final == "":
+		return false
 	var ahora := _hora_total()
+	if not FlotaMundo.despachar(barco_final, str(ruta_elegida.origen),
+			str(ruta_elegida.destino)):
+		return false
 	viaje_activo = {
 		"ruta_id": ruta_elegida.id,
 		"origen": ruta_elegida.origen,
 		"destino": ruta_elegida.destino,
+		"barco_id": barco_final,
 		"barco": barco_final,
 		"salida": ahora,
 		"llegada": ahora + float(ruta_elegida.dias) * 24.0,
@@ -71,6 +80,8 @@ func iniciar_viaje(ruta_id: String, barco_id: String = "") -> bool:
 func cancelar_viaje() -> bool:
 	if not viajando():
 		return false
+	var barco_id := str(viaje_activo.get("barco_id", viaje_activo.get("barco", "")))
+	FlotaMundo.cancelar(barco_id, str(viaje_activo.get("origen", ubicacion_actual)))
 	viaje_activo.clear()
 	viaje_cancelado.emit()
 	return true
@@ -81,7 +92,9 @@ func _process(_delta: float) -> void:
 	if _hora_total() < float(viaje_activo.get("llegada", INF)):
 		return
 	var destino_id := str(viaje_activo.get("destino", ""))
+	var barco_id := str(viaje_activo.get("barco_id", viaje_activo.get("barco", "")))
 	ubicacion_actual = destino_id
+	FlotaMundo.llegar(barco_id, destino_id)
 	viaje_activo.clear()
 	viaje_completado.emit(destino_id)
 
@@ -97,7 +110,27 @@ func _serializar() -> Dictionary:
 func _cargar(datos: Dictionary) -> void:
 	ubicacion_actual = str(datos.get("ubicacion_actual", "isla_principal"))
 	viaje_activo = (datos.get("viaje_activo", {}) as Dictionary).duplicate(true)
+	# Partidas anteriores guardaban el tipo en `barco`; desde ahora guardamos la
+	# instancia. Si existe una partida vieja, resolvemos su barco estable sin
+	# invalidar el viaje guardado.
+	if not viaje_activo.is_empty() and not viaje_activo.has("barco_id"):
+		var tipo_antiguo := str(viaje_activo.get("barco", ""))
+		var origen := str(viaje_activo.get("origen", ubicacion_actual))
+		var instancia := FlotaMundo.disponible_para(tipo_antiguo, origen)
+		if instancia != "":
+			FlotaMundo.despachar(instancia, origen,
+				str(viaje_activo.get("destino", "")))
+			viaje_activo["barco_id"] = instancia
+			viaje_activo["barco"] = instancia
+	if not viaje_activo.is_empty() and viaje_activo.has("barco_id"):
+		var barco_guardado := str(viaje_activo.get("barco_id", ""))
+		var estado_barco := FlotaMundo.estado(barco_guardado)
+		if not estado_barco.is_empty() and str(estado_barco.get("estado", "")) != "mar":
+			FlotaMundo.despachar(barco_guardado,
+				str(viaje_activo.get("origen", ubicacion_actual)),
+				str(viaje_activo.get("destino", "")))
 
 func reiniciar() -> void:
 	ubicacion_actual = "isla_principal"
 	viaje_activo.clear()
+	FlotaMundo.reiniciar()

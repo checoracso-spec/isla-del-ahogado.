@@ -43,6 +43,7 @@ RecursosMundo="*res://scripts/autoload/recursos_mundo.gd"
 CultivosMundo="*res://scripts/autoload/cultivos_mundo.gd"
 AnimalesMundo="*res://scripts/autoload/animales_mundo.gd"
 DioramasExternos="*res://scripts/autoload/dioramas_externos.gd"
+FlotaMundo="*res://scripts/autoload/flota_mundo.gd"
 MapaGlobal="*res://scripts/autoload/mapa_global.gd"
 MuelleManager="*res://scripts/autoload/muelle_manager.gd"
 

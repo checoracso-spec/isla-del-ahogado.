@@ -3,6 +3,7 @@ const FuenteRecursoDataScript := preload("res://scripts/datos/fuente_recurso_dat
 const CultivoDataScript := preload("res://scripts/datos/cultivo_data.gd")
 const DestinoDataScript := preload("res://scripts/datos/destino_data.gd")
 const RutaGlobalDataScript := preload("res://scripts/datos/ruta_global_data.gd")
+const BarcoDataScript := preload("res://scripts/datos/barco_data.gd")
 ## AUTOLOAD: BaseDeDatos
 ##
 ## Todo el contenido del juego vive aquí, en tablas de diccionarios.
@@ -585,6 +586,18 @@ const TABLA_CULTIVOS := [
 	  "cosecha": { "tabaco": 3 }, "horas_crecimiento": 24.0 },
 ]
 
+const TABLA_BARCOS := [
+	{ "id": "balandra", "nombre": "Balandra Corsaria", "tipo": "balandra",
+	  "capacidad_volumen": 60.0, "capacidad_peso": 300.0, "velocidad": 1.25,
+	  "salud_max": 100, "armadura": 2, "canones_max": 2, "tripulacion_min": 4 },
+	{ "id": "bergantin", "nombre": "Bergantín Mercante", "tipo": "bergantin",
+	  "capacidad_volumen": 120.0, "capacidad_peso": 700.0, "velocidad": 1.0,
+	  "salud_max": 150, "armadura": 5, "canones_max": 6, "tripulacion_min": 8 },
+	{ "id": "galeon", "nombre": "Galeón de Guerra", "tipo": "galeon",
+	  "capacidad_volumen": 220.0, "capacidad_peso": 1400.0, "velocidad": 0.75,
+	  "salud_max": 260, "armadura": 12, "canones_max": 18, "tripulacion_min": 20 },
+]
+
 const TABLA_DESTINOS := [
 	{ "id": "isla_principal", "nombre": "Marea y Ceniza", "tipo": "isla",
 	  "mapa_id": "isla_principal", "coordenadas": Vector2(0, 0), "puerto": true,
@@ -667,6 +680,7 @@ var fuentes: Dictionary = {}      ## id -> FuenteRecursoData
 var cultivos: Dictionary = {}     ## id -> CultivoData
 var destinos: Dictionary = {}     ## id -> DestinoData
 var rutas: Dictionary = {}        ## id -> RutaGlobalData
+var barcos: Dictionary = {}       ## id -> BarcoData
 
 func _ready() -> void:
 	for d in TABLA_ITEMS:
@@ -696,6 +710,9 @@ func _ready() -> void:
 	for d in TABLA_CULTIVOS:
 		var cultivo = CultivoDataScript.desde_dic(d)
 		cultivos[cultivo.id] = cultivo
+	for d in TABLA_BARCOS:
+		var barco = BarcoDataScript.desde_dic(d)
+		barcos[str(barco.get("id"))] = barco
 	for d in TABLA_DESTINOS:
 		var destino = DestinoDataScript.desde_dic(d)
 		destinos[destino.id] = destino
@@ -764,6 +781,9 @@ func destino(id: String) -> DestinoData:
 
 func ruta(id: String) -> RutaGlobalData:
 	return rutas.get(id)
+
+func barco(id: String):
+	return barcos.get(id)
 
 func nombre_item(id: String) -> String:
 	var it: ItemData = items.get(id)

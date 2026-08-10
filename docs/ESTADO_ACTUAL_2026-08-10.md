@@ -5,8 +5,8 @@
 - Godot 4.7.1.
 - Rejilla isométrica 128×64; `scripts/mapa/iso.gd` no se ha modificado.
 - API pública de `scripts/autoload/almacen.gd` intacta.
-- 23 escenas `prueba_*.tscn` ejecutadas en headless.
-- 609 comprobaciones instrumentadas en verde; persistencia A/B, viaje global y
+- 24 escenas `prueba_*.tscn` ejecutadas en headless.
+- 631 comprobaciones instrumentadas en verde; persistencia A/B, viaje global y
   profundidad
   arrancan sin errores reales.
 - La escena principal `res://escenas/mundo.tscn` arranca sin `SCRIPT ERROR`,
@@ -34,14 +34,19 @@
   El muelle abre un panel de rutas; al llegar, `Mundo` activa una `ZonaRemota`
   provisional, mueve al jugador y adapta la cámara. El embarque de la zona
   permite regresar por una ruta data-driven. Todavía no carga escenas artísticas
-  propias ni barcos persistentes.
+  propias para cada destino.
+- `BarcoData` y `FlotaMundo` ya representan tres instancias iniciales con IDs
+  estables, puerto, destino, estado, salud, armadura, cañones, provisiones y
+  carga plana. Las rutas asignan automáticamente el barco compatible y el
+  estado se guarda entre procesos; combate naval y abordaje siguen fuera de
+  alcance.
 - La isla esta formalizada como `ZonaExterior` y comparte el contrato de
   `Zona` con interiores y zonas remotas; el adaptador es propiedad del mundo
   y se libera con el resto de la escena.
 - La prueba A/B de persistencia recupera también un viaje global en curso,
-  incluyendo ruta, origen y destino; ahora termina con 35/35 comprobaciones.
+  incluyendo ruta, origen y destino; ahora termina con 37/37 comprobaciones.
 - La prueba A/B adicional llega a `isla_ceniza`, cierra el proceso y reconstruye
-  la `ZonaRemota` correcta al cargar; son 8/8 comprobaciones nuevas.
+  la `ZonaRemota` correcta al cargar; son 9/9 comprobaciones nuevas.
 - Capas visuales, arte desacoplado mediante `Assets`, paleta maestra y kit de
   placeholders.
 - `Actor` como base del jugador y ahora también de `Pirata`; la tripulación
@@ -65,13 +70,14 @@ manadas grandes ni comportamiento social.
 `Controles`, `GlobalColors`, `Guardado`, `Entidades`, `Assets`, `Bolsa`,
 `CraftingManager`, `MercadoManager`, `TabernaManager`, `Ubicacion`,
 `Contenedores`, `Interiores`, `RecursosMundo`, `CultivosMundo`,
-`AnimalesMundo`, `DioramasExternos`, `MapaGlobal` y `MuelleManager`.
+`AnimalesMundo`, `DioramasExternos`, `FlotaMundo`, `MapaGlobal` y `MuelleManager`.
 
 ## Límites conocidos
 
 - Las zonas globales todavía son provisionales: no cargan escenas artísticas
-  propias ni chunks descargables. La UI permite iniciar rutas, pero aún no
-  valida propiedad/capacidad de una flota persistente.
+  propias ni chunks descargables. La flota valida el tipo de barco y su puerto,
+  pero todavía no implementa carga real de mercancías, tripulación persistente
+  ni capacidad de flota avanzada.
 - La fauna visible está limitada por ahora a la población mínima de prueba;
   todavía no hay reproducción, producción diaria, domesticación ni manadas
   dinámicas.
@@ -96,6 +102,7 @@ manadas grandes ni comportamiento social.
   verificada entre procesos.
 - `e030b18` — transición jugable entre isla y zonas globales provisionales.
 - `6df3249` — persistencia entre procesos de la zona global activa.
+- `pendiente` — flota data-driven mínima vinculada a las rutas globales.
 
 ## Reglas de continuidad
 
@@ -103,4 +110,4 @@ manadas grandes ni comportamiento social.
 2. No cambiar la API pública de `Almacen`.
 3. No mezclar `Bolsa` con `Almacen`.
 4. Guardar datos planos, nunca referencias a nodos.
-5. Ejecutar las 23 suites y buscar errores reales después de cada bloque.
+5. Ejecutar las 24 suites y buscar errores reales después de cada bloque.

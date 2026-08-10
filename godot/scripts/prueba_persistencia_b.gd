@@ -76,6 +76,10 @@ func _ready() -> void:
 	_comprobar("el viaje recupera su ruta y destino",
 		str(MapaGlobal.viaje_activo.get("ruta_id", "")) == D.RUTA_GLOBAL_GUARDADA
 		and str(MapaGlobal.viaje_activo.get("destino", "")) == D.DESTINO_GLOBAL_GUARDADO)
+	_comprobar("la nave del viaje se recupera en el mar",
+		FlotaMundo.estado(D.BARCO_GUARDADO).get("estado", "") == "mar")
+	_comprobar("la nave recupera el destino del viaje",
+		FlotaMundo.estado(D.BARCO_GUARDADO).get("destino", "") == D.DESTINO_GLOBAL_GUARDADO)
 	var animal_guardado = null
 	for candidato in mundo.animales:
 		if candidato.definicion_id == D.ANIMAL_GUARDADO:

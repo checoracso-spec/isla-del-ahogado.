@@ -25,6 +25,9 @@ func _ready() -> void:
 		mundo.zona_global_activa != null
 		and mundo.jugador.get_parent() == mundo.zona_global_activa.actores)
 	_comprobar("Ubicacion conserva la zona global", Ubicacion.zona == "global:isla_ceniza")
+	_comprobar("la nave queda atracada en la isla remota",
+		FlotaMundo.estado("balandra_001").get("estado", "") == "puerto"
+		and FlotaMundo.estado("balandra_001").get("posicion", "") == "isla_ceniza")
 	_comprobar("la cámara usa los límites remotos",
 		mundo.camara().limit_right < 3000)
 	Guardado.borrar(D.RANURA_ZONA_GLOBAL)

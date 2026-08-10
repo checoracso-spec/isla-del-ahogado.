@@ -87,9 +87,15 @@ func _actualizar_info() -> void:
 	if ruta == null:
 		_info.text = "No hay rutas disponibles desde esta ubicación."
 		return
-	_info.text = "%s\nBarco requerido: %s\nRiesgo estimado: %d%%\n%s" % [
-		ruta.descripcion, ruta.barco_requerido, int(ruta.riesgo * 100.0),
-		"Viaje en curso." if MapaGlobal.viajando() else "Listo para zarpar."]
+	var barco_texto := ""
+	if MapaGlobal.viajando():
+		barco_texto = "Barco en navegación: %s" % str(MapaGlobal.viaje_activo.get("barco_id", ""))
+	else:
+		var barco_id := FlotaMundo.disponible_para(str(ruta.barco_requerido), str(ruta.origen))
+		barco_texto = "Barco asignable: %s" % barco_id if barco_id != "" else "Sin barco disponible en este puerto"
+	_info.text = "%s\nBarco requerido: %s\n%s\nRiesgo estimado: %d%%\n%s" % [
+		ruta.descripcion, ruta.barco_requerido, barco_texto,
+		int(ruta.riesgo * 100.0), "Viaje en curso." if MapaGlobal.viajando() else "Listo para zarpar."]
 
 func _nombre_destino(id: String) -> String:
 	var destino: Resource = BaseDeDatos.destino(id)

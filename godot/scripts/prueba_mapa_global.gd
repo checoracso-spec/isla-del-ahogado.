@@ -28,6 +28,10 @@ func _ejecutar() -> void:
 	MapaGlobal.viaje_completado.connect(func(id: String): llegadas.append(id))
 	_comprobar("inicia un viaje válido", MapaGlobal.iniciar_viaje("principal_ceniza"))
 	_comprobar("el viaje queda activo", MapaGlobal.viajando())
+	_comprobar("el viaje asigna una instancia estable de flota",
+		str(MapaGlobal.viaje_activo.get("barco_id", "")) == "balandra_001")
+	_comprobar("la balandra pasa a estado mar",
+		FlotaMundo.estado("balandra_001").get("estado", "") == "mar")
 	_comprobar("el destino aún no cambia durante la travesía",
 		MapaGlobal.ubicacion_actual == "isla_principal")
 	_comprobar("rechaza un segundo viaje simultáneo",
@@ -49,8 +53,14 @@ func _ejecutar() -> void:
 	_comprobar("llega al destino al superar la duración", llegadas.size() == 1
 		and MapaGlobal.ubicacion_actual == "isla_ceniza")
 	_comprobar("el viaje termina al llegar", not MapaGlobal.viajando())
+	_comprobar("la balandra queda atracada en el destino",
+		FlotaMundo.estado("balandra_001").get("posicion", "") == "isla_ceniza"
+		and FlotaMundo.estado("balandra_001").get("estado", "") == "puerto")
 	_comprobar("se puede cancelar un viaje activo", MapaGlobal.iniciar_viaje("ceniza_principal")
 		and MapaGlobal.cancelar_viaje() and not MapaGlobal.viajando())
+	_comprobar("cancelar devuelve la nave al puerto de salida",
+		FlotaMundo.estado("balandra_001").get("posicion", "") == "isla_ceniza"
+		and FlotaMundo.estado("balandra_001").get("estado", "") == "puerto")
 	_comprobar("guardado reconoce la sección global",
 		"mapa_global" in Guardado.secciones_activas())
 
