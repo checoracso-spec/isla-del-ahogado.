@@ -63,6 +63,18 @@ func _ejecutar() -> void:
 	_comprobar("el recurso remoto empieza disponible",
 		zona.fuentes_recurso.size() == 1
 		and zona.fuentes_recurso[0].cantidad() > 0)
+	var contenido_chunks := 0
+	for chunk in zona.chunks.values():
+		contenido_chunks += chunk.contenido.size()
+	_comprobar("el contenido recolectable pertenece a un chunk",
+		contenido_chunks == zona.fuentes_recurso.size()
+		+ zona.parcelas_cultivo.size() + zona.recolectores_cultivo.size())
+	if zona.fuentes_recurso.size() == 1:
+		var chunk_fuente: Vector2i = zona.chunk_de_casilla(zona.fuentes_recurso[0].casilla())
+		zona.activar_chunk(chunk_fuente, false)
+		_comprobar("desactivar un chunk oculta su recurso",
+			not zona.fuentes_recurso[0].visible)
+		zona.activar_chunk(chunk_fuente)
 	var actor_contenido := Actor.new()
 	actor_contenido.name = "ActorPruebaContenido"
 	zona.recibir(actor_contenido, zona.entrada())

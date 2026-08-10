@@ -6,7 +6,7 @@
 - Rejilla isométrica 128×64; `scripts/mapa/iso.gd` no se ha modificado.
 - API pública de `scripts/autoload/almacen.gd` intacta.
 - 27 escenas `prueba_*.tscn` ejecutadas en headless.
-- 761 comprobaciones instrumentadas en verde; persistencia A/B, viaje global y
+- 763 comprobaciones instrumentadas en verde; persistencia A/B, viaje global y
   profundidad
   arrancan sin errores reales.
 - La escena principal `res://escenas/mundo.tscn` arranca sin `SCRIPT ERROR`,
@@ -57,8 +57,9 @@
   descargar y reconstruir chunks sin serializar nodos.
 - `ZonaRemota` incorpora streaming básico por chunks de 8×8: cada chunk tiene
   ciclo de vida, activación/desactivación, dibujo de suelo y estado plano
-  guardable. El contenido de recursos se mantiene en el registro persistente;
-  la descarga de nodos de contenido se ampliará después.
+  guardable. Las fuentes, parcelas y automatizadores siguen bajo `Actores`
+  para conservar el orden isométrico, pero cada chunk controla su visibilidad y
+  proceso sin duplicar el estado de `RecursosMundo` o `CultivosMundo`.
 - La prueba A/B de persistencia recupera también un viaje global en curso,
   incluyendo ruta, origen y destino; ahora termina con 37/37 comprobaciones.
 - La prueba A/B adicional llega a `isla_ceniza`, cierra el proceso y reconstruye
@@ -139,7 +140,7 @@ antiguas a `montar()` siguen funcionando y usan la casa como destino laboral
 por compatibilidad. Barbanegra ya demuestra el caso real: vive en la cabana
 del capitan y trabaja en la herreria.
 
-El bloque se verifico con 27 suites y 761 comprobaciones, incluido el arranque
+El bloque se verifico con 27 suites y 763 comprobaciones, incluido el arranque
 de `mundo.tscn`, sin modificar `iso.gd` ni la API publica de `Almacen`.
 
 ## Contenido remoto incorporado en este checkpoint

@@ -60,6 +60,14 @@ func _montar_chunks() -> void:
 			add_child(chunk)
 			chunks[_clave_chunk(Vector2i(cx, cy))] = chunk
 
+func _chunk_de_casilla(casilla: Vector2i):
+	return chunks.get(_clave_chunk(chunk_de_casilla(casilla)))
+
+func _registrar_contenido_chunk(nodo: Node, casilla: Vector2i) -> void:
+	var chunk = _chunk_de_casilla(casilla)
+	if chunk != null:
+		chunk.registrar_contenido(nodo)
+
 func _clave_chunk(coordenada: Vector2i) -> String:
 	return "%d,%d" % [coordenada.x, coordenada.y]
 
@@ -126,6 +134,9 @@ func montar_contenido() -> void:
 	for recolector in recolectores_cultivo:
 		if recolector != null and is_instance_valid(recolector):
 			recolector.queue_free()
+	for chunk in chunks.values():
+		if chunk != null and is_instance_valid(chunk):
+			chunk.limpiar_contenido()
 	fuentes_recurso.clear()
 	parcelas_cultivo.clear()
 	recolectores_cultivo.clear()
@@ -144,6 +155,7 @@ func montar_contenido() -> void:
 			str(destino.fuentes[i]), casilla.x, casilla.y]
 		if fuente.montar(str(destino.fuentes[i]), clave, casilla):
 			fuentes_recurso.append(fuente)
+			_registrar_contenido_chunk(fuente, casilla)
 			usadas.append(casilla)
 		else:
 			fuente.queue_free()
@@ -158,6 +170,7 @@ func montar_contenido() -> void:
 			str(destino.cultivos[i]), casilla.x, casilla.y]
 		if parcela.montar(str(destino.cultivos[i]), clave, casilla):
 			parcelas_cultivo.append(parcela)
+			_registrar_contenido_chunk(parcela, casilla)
 			_montar_automatizador_cultivo(parcela)
 			usadas.append(casilla)
 		else:
@@ -174,6 +187,7 @@ func _montar_automatizador_cultivo(parcela: ParcelaCultivo) -> void:
 	recolector.montar(parcela.identidad.instancia, def.automatizador_edificio,
 		def.automatizador_trabajadores, def.automatizador_horario_id)
 	recolectores_cultivo.append(recolector)
+	_registrar_contenido_chunk(recolector, parcela.casilla())
 
 func _casilla_contenido(semilla: int, usadas: Array) -> Vector2i:
 	var margen := 2
