@@ -128,6 +128,22 @@ func disponible_para(definicion_id: String, origen: String) -> String:
 			return instance_id
 	return ""
 
+func provisiones_de(instance_id: String) -> int:
+	return int((barcos.get(instance_id, {}) as Dictionary).get("provisiones", 0))
+
+func reservar_provisiones(instance_id: String, dias: int) -> bool:
+	if not barcos.has(instance_id):
+		return false
+	var coste := maxi(0, dias)
+	var b: Dictionary = barcos[instance_id]
+	var disponibles := int(b.get("provisiones", 0))
+	if disponibles < coste:
+		return false
+	b["provisiones"] = disponibles - coste
+	barcos[instance_id] = b
+	barco_cambiado.emit(instance_id)
+	return true
+
 func despachar(instance_id: String, origen: String, destino: String) -> bool:
 	if not barcos.has(instance_id):
 		return false

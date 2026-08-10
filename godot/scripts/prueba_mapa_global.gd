@@ -37,19 +37,25 @@ func _ejecutar() -> void:
 		str(MapaGlobal.viaje_activo.get("barco_id", "")) == "balandra_001")
 	_comprobar("la balandra pasa a estado mar",
 		FlotaMundo.estado("balandra_001").get("estado", "") == "mar")
+	_comprobar("el viaje reserva provisiones segun sus dias",
+		FlotaMundo.provisiones_de("balandra_001") == 48)
 	_comprobar("el destino aún no cambia durante la travesía",
 		MapaGlobal.ubicacion_actual == "isla_principal")
 	_comprobar("rechaza un segundo viaje simultáneo",
 		not MapaGlobal.iniciar_viaje("principal_portobello"))
 
 	var serial := MapaGlobal._serializar()
+	var serial_flota := FlotaMundo._serializar()
 	_comprobar("serializa ubicación y viaje sin nodos",
 		serial.has("ubicacion_actual") and serial.has("viaje_activo"))
 	MapaGlobal.reiniciar()
+	FlotaMundo._cargar(serial_flota)
 	MapaGlobal._cargar(serial)
 	_comprobar("recupera el viaje activo", MapaGlobal.viajando())
 	_comprobar("recupera el origen guardado",
 		str(MapaGlobal.viaje_activo.get("origen", "")) == "isla_principal")
+	_comprobar("las provisiones reservadas sobreviven al guardado",
+		FlotaMundo.provisiones_de("balandra_001") == 48)
 
 	print("3. Llegada y cancelación")
 	Reloj.dia = 3

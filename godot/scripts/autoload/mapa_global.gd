@@ -65,6 +65,8 @@ func iniciar_viaje(ruta_id: String, barco_id: String = "") -> bool:
 			str(ruta_elegida.barco_requerido), str(ruta_elegida.origen))
 	if barco_final == "":
 		return false
+	if not FlotaMundo.reservar_provisiones(barco_final, int(ruta_elegida.dias)):
+		return false
 	var ahora := _hora_total()
 	if not FlotaMundo.despachar(barco_final, str(ruta_elegida.origen),
 			str(ruta_elegida.destino)):
