@@ -5,10 +5,12 @@ const PanelMochilaScript := preload("res://scripts/ui/panel_mochila.gd")
 const PanelMercadoScript := preload("res://scripts/ui/panel_mercado.gd")
 const PanelTabernaScript := preload("res://scripts/ui/panel_taberna.gd")
 const PanelMuelleScript := preload("res://scripts/ui/panel_muelle.gd")
+const PanelMapaGlobalScript := preload("res://scripts/ui/panel_mapa_global.gd")
 const PuestoMuelleScript := preload("res://scripts/interiores/puesto_muelle.gd")
 const FuenteRecursoScript := preload("res://scripts/mapa/fuente_recurso.gd")
 const ParcelaCultivoScript := preload("res://scripts/mapa/parcela_cultivo.gd")
 const ZonaExteriorScript := preload("res://scripts/mapa/zona_exterior.gd")
+const ZonaRemotaScript := preload("res://scripts/mapa/zona_remota.gd")
 const AnimalScript := preload("res://scripts/mapa/animal.gd")
 ## La isla en pantalla, enchufada a la logística que ya existía.
 ##
@@ -64,6 +66,7 @@ var puertas: Array[Puerta] = []
 var fuentes_recurso: Array = []
 var parcelas_cultivo: Array = []
 var animales: Array = []
+var zona_global_activa: Zona = null
 
 var _terreno: TileMapLayer
 var _suelo_pueblo: TileMapLayer
@@ -209,6 +212,9 @@ func _crear_jugador() -> void:
 func _al_cargar_partida() -> void:
 	if Interiores.dentro():
 		Interiores.salir(jugador)
+	if MapaGlobal.ubicacion_actual != "isla_principal":
+		_activar_zona_global(MapaGlobal.ubicacion_actual)
+		return
 
 	if Ubicacion.en_exterior():
 		_situar_jugador()
@@ -461,6 +467,69 @@ func mostrar_exterior(visible_ahora: bool) -> void:
 	_objetos.visible = visible_ahora
 	_objetos.process_mode = Node.PROCESS_MODE_INHERIT if visible_ahora \
 		else Node.PROCESS_MODE_DISABLED
+
+## Activa una isla/ciudad provisional sin destruir la isla principal. El mismo
+## contrato de Zona sirve hoy para esta demostración y mañana para cargar una
+## escena o un chunk real sin cambiar al jugador ni la cámara.
+func _activar_zona_global(destino_id: String) -> bool:
+	if destino_id == "" or destino_id == "isla_principal":
+		return false
+	if zona_global_activa != null:
+		_desactivar_zona_global()
+	var nueva: Zona = MapaGlobal.crear_zona(destino_id, 20, 14)
+	if nueva == null:
+		push_warning("No existe una zona global para '%s'" % destino_id)
+		return false
+	zona_global_activa = nueva
+	add_child(zona_global_activa)
+	mostrar_exterior(false)
+	var rutas: Array = MapaGlobal.rutas_desde(destino_id)
+	if not rutas.is_empty():
+		var ruta_regreso: Resource = rutas[0]
+		for candidata: Resource in rutas:
+			if str(candidata.destino) == "isla_principal":
+				ruta_regreso = candidata
+				break
+		var embarque = zona_global_activa.call("montar_transicion", ruta_regreso.id)
+		if embarque != null:
+			embarque.viaje_solicitado.connect(_al_pedir_viaje_global)
+	zona_global_activa.recibir(jugador, zona_global_activa.entrada())
+	Ubicacion.cambiar_zona("global:" + destino_id, jugador.pos_tile)
+	_camara.seguir(jugador)
+	_camara.limitar_a_casillas(zona_global_activa.limites())
+	_apuntar("[color=#5cb2b5]Llegaste a %s.[/color]" % _nombre_destino(destino_id))
+	return true
+
+func _desactivar_zona_global() -> void:
+	if zona_global_activa == null:
+		return
+	var saliente := zona_global_activa
+	zona_global_activa = null
+	if saliente.get_parent() != null:
+		saliente.get_parent().remove_child(saliente)
+	saliente.queue_free()
+	mostrar_exterior(true)
+	var puerto := _puerta_de("muelle_grua")
+	recibir_jugador(jugador, Vector2(puerto) + Vector2(0.5, 0.5))
+	Ubicacion.volver_al_exterior(jugador.pos_tile)
+	_camara.seguir(jugador)
+	_camara.limitar_a_casillas(limites_exterior())
+	_apuntar("[color=#f5c051]Regresaste a la isla principal.[/color]")
+
+func _al_llegar_global(destino_id: String) -> void:
+	if destino_id == "isla_principal":
+		_desactivar_zona_global()
+	else:
+		_activar_zona_global(destino_id)
+
+func _al_pedir_viaje_global(transicion: Node, _quien: Node) -> void:
+	var ruta_id := str(transicion.get("ruta_id"))
+	if MapaGlobal.iniciar_viaje(ruta_id):
+		_apuntar("[color=#f5c051]Zarpaste por la ruta %s.[/color]" % ruta_id)
+
+func _nombre_destino(destino_id: String) -> String:
+	var destino: Resource = BaseDeDatos.destino(destino_id)
+	return str(destino.nombre) if destino != null else destino_id
 
 ## Devuelve al jugador al exterior en la casilla indicada.
 func recibir_jugador(quien: Jugador, en: Vector2) -> void:
@@ -748,6 +817,7 @@ var panel_mochila
 var panel_mercado
 var panel_taberna
 var panel_muelle
+var panel_mapa_global
 var _lbl_partida: Label
 var _fundido_aviso: Tween
 var _bitacora: Array[String] = []
@@ -880,7 +950,13 @@ func _montar_hud() -> void:
 	panel_muelle.set_anchors_preset(Control.PRESET_CENTER, true)
 	panel_muelle.position = Vector2(-215, -150)
 	_hud.add_child(panel_muelle)
+	panel_mapa_global = PanelMapaGlobalScript.new()
+	panel_mapa_global.set_anchors_preset(Control.PRESET_CENTER, true)
+	panel_mapa_global.position = Vector2(-215, -170)
+	_hud.add_child(panel_mapa_global)
+	panel_muelle.mapa_global_solicitado.connect(func(): panel_mapa_global.abrir())
 	Interiores.salio.connect(func(_i): panel_muelle.cerrar_panel())
+	Interiores.salio.connect(func(_i): panel_mapa_global.cerrar_panel())
 
 	# Aviso de guardado. Sin esto, pulsar F5 no da ninguna señal de vida y no
 	# sabes si guardó, si falló o si la tecla no hace nada.
@@ -1010,6 +1086,8 @@ func _ficha() -> String:
 		var def: InteriorDefinicion = BaseDeDatos.interior(Ubicacion.zona)
 		var titulo := def.nombre if def != null else Ubicacion.zona
 		return "[b]%s[/b]\n[color=#8b94a6]Estás dentro. Busca la puerta para salir.[/color]" % titulo
+	if zona_global_activa != null:
+		return "[b]%s[/b]\n[color=#8b94a6]Zona remota. Busca el embarque para regresar.[/color]" % _nombre_destino(MapaGlobal.ubicacion_actual)
 	if _bajo_raton == null:
 		return "[color=#7d8798]Pasa el ratón por un edificio.[/color]"
 	var v := _bajo_raton
@@ -1038,6 +1116,9 @@ func _ficha() -> String:
 # ---------------------------------------------------------------------------
 
 func _conectar() -> void:
+	MapaGlobal.viaje_iniciado.connect(func(ruta: Resource, _llegada: float):
+		_apuntar("[color=#f5c051]Viaje iniciado: %s.[/color]" % str(ruta.id)))
+	MapaGlobal.viaje_completado.connect(_al_llegar_global)
 	MuelleManager.grua_activada.connect(_al_activar_grua)
 	MuelleManager.lote_recolectado.connect(func(productos):
 		var entregas: Array[String] = []
@@ -1188,5 +1269,5 @@ func _unhandled_input(evento: InputEvent) -> void:
 	if evento is InputEventKey and evento.pressed and not evento.echo:
 		if evento.keycode == KEY_SPACE:
 			Reloj.pausado = not Reloj.pausado
-		elif evento.keycode == KEY_ESCAPE and not panel_cofre.abierto() and not panel_crafteo.abierto() and not panel_mochila.abierto() and not panel_mercado.abierto() and not panel_taberna.abierto() and not panel_muelle.abierto():
+		elif evento.keycode == KEY_ESCAPE and not panel_cofre.abierto() and not panel_crafteo.abierto() and not panel_mochila.abierto() and not panel_mercado.abierto() and not panel_taberna.abierto() and not panel_muelle.abierto() and not panel_mapa_global.abierto():
 			get_tree().quit()

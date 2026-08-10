@@ -8,10 +8,12 @@ extends Zona
 const COLOR_SUELO := Color("3d5b4a")
 const COLOR_SUELO_ALT := Color("4d6c52")
 const COLOR_CAMINO := Color("8f6b4b")
+const TransicionGlobalScript := preload("res://scripts/mapa/transicion_global.gd")
 
 var destino_id: String = ""
 var ancho: int = 1
 var alto: int = 1
+var transiciones: Array = []
 
 func construir(p_destino_id: String, p_ancho: int = 16, p_alto: int = 12) -> void:
 	destino_id = p_destino_id
@@ -28,6 +30,27 @@ func construir(p_destino_id: String, p_ancho: int = 16, p_alto: int = 12) -> voi
 
 func entrada() -> Vector2:
 	return Vector2(ancho / 2, alto - 2) + Vector2(0.5, 0.5)
+
+## Añade un único punto de embarque para una ruta data-driven. El destino
+## remoto puede tener una ruta de regreso o una conexión posterior sin que la
+## zona necesite conocer la escena que la contiene.
+func montar_transicion(ruta_id: String) -> Node:
+	if actores == null:
+		actores = Node2D.new()
+		actores.name = "Actores"
+		actores.y_sort_enabled = true
+		add_child(actores)
+	var ruta: Resource = MapaGlobal.ruta(ruta_id)
+	if ruta == null:
+		return null
+	var t: Node = TransicionGlobalScript.new()
+	t.name = "Embarque_" + ruta_id
+	t.ruta_id = ruta_id
+	t.casilla_propia = Vector2i(ancho / 2, alto - 2)
+	t.position = Iso.centro_v(t.casilla_propia)
+	actores.add_child(t)
+	transiciones.append(t)
+	return t
 
 func _draw() -> void:
 	for y in range(alto):

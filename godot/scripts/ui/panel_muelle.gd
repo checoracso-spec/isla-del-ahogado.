@@ -1,6 +1,8 @@
 class_name PanelMuelle
 extends PanelContainer
 
+signal mapa_global_solicitado()
+
 var _estado: Label
 var _lista: RichTextLabel
 var _descargar_boton: Button
@@ -11,6 +13,7 @@ var _interceptado_info: Label
 var _soltar_boton: Button
 var _luchar_boton: Button
 var _grua_boton: Button
+var _mapa_boton: Button
 var _ruta_id := "portobello"
 var _interceptado_id := ""
 var _aviso := ""
@@ -66,6 +69,11 @@ func _ready() -> void:
 	_grua_boton.name = "ActivarGrua"
 	_grua_boton.pressed.connect(_activar_grua)
 	caja.add_child(_grua_boton)
+	_mapa_boton = Button.new()
+	_mapa_boton.name = "AbrirMapaGlobal"
+	_mapa_boton.text = "Abrir mapa global"
+	_mapa_boton.pressed.connect(func(): mapa_global_solicitado.emit())
+	caja.add_child(_mapa_boton)
 	_descargar_boton = Button.new()
 	_descargar_boton.name = "DescargarPuerto"
 	_descargar_boton.text = "Descargar cargamentos atracados"
@@ -184,6 +192,7 @@ func _actualizar_bloqueos(estacion_abierta: bool) -> void:
 	_descargar_boton.disabled = not estacion_abierta or decision_pendiente
 	_zarpar_boton.disabled = not estacion_abierta or decision_pendiente
 	_ruta_selector.disabled = not estacion_abierta or decision_pendiente
+	_mapa_boton.disabled = not estacion_abierta or decision_pendiente
 	_interceptado_info.visible = decision_pendiente
 	_soltar_boton.visible = decision_pendiente
 	_luchar_boton.visible = decision_pendiente

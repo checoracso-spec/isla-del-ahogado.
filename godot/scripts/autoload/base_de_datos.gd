@@ -607,6 +607,8 @@ const TABLA_RUTAS_GLOBALES := [
 	  "barco": "balandra", "dias": 2, "riesgo": 0.25 },
 	{ "id": "principal_fortaleza", "origen": "isla_principal", "destino": "fortaleza_corona",
 	  "barco": "galeon", "dias": 4, "riesgo": 0.60 },
+	{ "id": "fortaleza_principal", "origen": "fortaleza_corona", "destino": "isla_principal",
+	  "barco": "galeon", "dias": 4, "riesgo": 0.60 },
 	{ "id": "portobello_principal", "origen": "portobello", "destino": "isla_principal",
 	  "barco": "bergantin", "dias": 2, "riesgo": 0.15 },
 	{ "id": "ceniza_principal", "origen": "isla_ceniza", "destino": "isla_principal",
