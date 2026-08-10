@@ -570,6 +570,7 @@ func _montar_logistica() -> void:
 	for id: String in PUESTOS:
 		var p := Pirata.new()
 		_objetos.add_child(p)
+		p.transitable = transitable
 		var datos: PersonajeData = BaseDeDatos.personaje(id)
 		p.montar(id, datos.nombre if datos != null else id, _puerta_de(PUESTOS[id]), taberna,
 			semilla, datos.horario_id if datos != null else "tripulacion")
@@ -581,6 +582,7 @@ func _montar_logistica() -> void:
 	for i in 10:
 		var p := Pirata.new()
 		_objetos.add_child(p)
+		p.transitable = transitable
 		p.montar("", "Marinero", _puerta_de(destinos[i % destinos.size()]), taberna, semilla)
 		piratas.append(p)
 		semilla += 31

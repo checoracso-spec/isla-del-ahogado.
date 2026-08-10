@@ -1,37 +1,36 @@
-﻿class_name Pirata
-extends Node2D
-## Un miembro de la tripulacion andando por la isla.
+class_name Pirata
+extends Actor
+## Un miembro de la tripulación andando por la isla.
 ##
-## No es decoracion: cada pirata esta asignado a un edificio y su rutina
-## depende del estado real de la logistica. Si su estacion se queda sin
-## material, deja de trabajar y se va a la taberna. Si es de noche, tambien.
-##
-## AVISO SOBRE EL ARTE: estos personajes estan DIBUJADOS POR CODIGO (ver
-## `_draw`). Es un marcador de posicion deliberado: los unicos sprites de
-## personaje gratuitos que encontramos son pixel art de 22 px y desentonan
-## brutalmente con los edificios renderizados. Cuando haya sprites decentes,
-## se cambia `_draw` por un AnimatedSprite2D y no hay que tocar nada mas.
+## La rutina sigue siendo propia del pirata, pero posición, dirección, huella,
+## movimiento, detalle y dibujo base vienen de Actor. Así los futuros animales
+## y NPCs no necesitan una segunda implementación de colisiones.
 
 enum Tarea { TRABAJANDO, YENDO_A_TRABAJAR, A_LA_TABERNA, PASEANDO, DURMIENDO, EN_CASA, COMIENDO }
 
-const VELOCIDAD := 1.5              ## casillas por segundo
-const ALTURA := 92.0                ## pixeles, de los pies a la coronilla
+const VELOCIDAD := 1.5
+const ALTURA := 92.0
 
 var id_personaje: String = ""
 var nombre_mostrado: String = "Pirata"
-var casa: Vector2i = Vector2i.ZERO          ## su puesto de trabajo
-var taberna: Vector2i = Vector2i.ZERO       ## adonde va al anochecer
+var casa: Vector2i = Vector2i.ZERO
+var taberna: Vector2i = Vector2i.ZERO
 var horario_id: String = "tripulacion"
 var horario: HorarioData = null
 var color_ropa := Color("8c3b2f")
 var color_panuelo := Color("c9a227")
 
-var pos: Vector2 = Vector2.ZERO             ## en casillas, con decimales
+## Compatibilidad con el nombre usado por el prototipo anterior. La fuente
+## de verdad sigue siendo Actor.pos_tile.
+var pos: Vector2:
+	get:
+		return pos_tile
+	set(value):
+		pos_tile = value
+
 var destino: Vector2 = Vector2.ZERO
 var tarea: int = Tarea.PASEANDO
-var mirando_derecha := true
 
-var _fase := 0.0
 var _espera := 0.0
 var _rnd := RandomNumberGenerator.new()
 
@@ -43,28 +42,32 @@ func montar(p_id: String, p_nombre: String, p_casa: Vector2i, p_taberna: Vector2
 	taberna = p_taberna
 	horario_id = p_horario_id
 	horario = BaseDeDatos.horario(horario_id)
+	velocidad = VELOCIDAD
+	huella = Huella.cuadrada(0.56)
+	detalle = Detalle.CERCA
 	_rnd.seed = semilla
-	pos = Vector2(p_casa) + Vector2(_rnd.randf_range(-1.5, 1.5), _rnd.randf_range(-1.5, 1.5))
-	destino = pos
+	pos_tile = Vector2(p_casa) + Vector2(_rnd.randf_range(-1.5, 1.5), _rnd.randf_range(-1.5, 1.5))
+	destino = pos_tile
 	var paleta := [
 		Color("8c3b2f"), Color("3f5a6b"), Color("6b5236"),
 		Color("4a5d3a"), Color("6d3f5c"), Color("2f4858"),
 	]
 	color_ropa = paleta[_rnd.randi() % paleta.size()]
 	color_panuelo = [Color("c9a227"), Color("b23a3a"), Color("d9d2c5")][_rnd.randi() % 3]
-	_actualizar_posicion()
-
-# ---------------------------------------------------------------------------
-
-func _process(delta: float) -> void:
-	if Reloj.pausado:
-		return
-	_pensar(delta)
-	_mover(delta)
-	_actualizar_posicion()
+	_aplicar_posicion()
 	queue_redraw()
 
 ## La rutina sale del estado real del juego, no de un temporizador ciego.
+func actualizar(delta: float, _nivel: int) -> void:
+	_pensar(delta)
+	var distancia := destino - pos_tile
+	if distancia.length() <= 0.08:
+		estado = "idle"
+		return
+	# Actor resuelve la colisión y actualiza dirección/posición. Si un edificio
+	# bloquea la línea directa, el pirata no atraviesa la estructura.
+	mover(distancia, delta)
+
 func _pensar(delta: float) -> void:
 	_espera -= delta
 	if _espera > 0.0:
@@ -73,7 +76,6 @@ func _pensar(delta: float) -> void:
 
 	var hay_motin := Motin.nivel >= 80.0
 	if hay_motin:
-		# Se amontonan en la plaza en vez de trabajar.
 		tarea = Tarea.PASEANDO
 		destino = Vector2(casa) + Vector2(_rnd.randf_range(-6, 6), _rnd.randf_range(-6, 6))
 		return
@@ -99,39 +101,16 @@ func _pensar(delta: float) -> void:
 			tarea = Tarea.PASEANDO
 			destino = _punto_cerca(taberna, 4.0)
 
-func _mover(delta: float) -> void:
-	var d := destino - pos
-	var dist := d.length()
-	if dist < 0.08:
-		_fase = 0.0
-		return
-	var paso := VELOCIDAD * delta
-	pos += d / dist * minf(paso, dist)
-	_fase += delta * 7.0
-	# En isometrico, "a la derecha" es que crezca la X de pantalla.
-	var dx := d.x - d.y
-	if absf(dx) > 0.01:
-		mirando_derecha = dx > 0.0
-
-func _actualizar_posicion() -> void:
-	position = Iso.centro_fino(pos) + Vector2(0, Iso.MEDIO_Y)
-
 func _punto_cerca(t: Vector2i, radio: float) -> Vector2:
 	return Vector2(t) + Vector2(_rnd.randf_range(-radio, radio), _rnd.randf_range(-radio, radio))
 
-# ---------------------------------------------------------------------------
-# DIBUJO
-# ---------------------------------------------------------------------------
-
-func _draw() -> void:
-	Figura.dibujar(self, {
-		"andando": (destino - pos).length() > 0.08,
-		"fase": _fase,
-		"mirando_derecha": mirando_derecha,
-		"ropa": color_ropa,
-		"panuelo": color_panuelo,
-		"altura": ALTURA,
-	})
+func _opciones_figura() -> Dictionary:
+	var op := super()
+	op["ropa"] = color_ropa
+	op["panuelo"] = color_panuelo
+	op["altura"] = ALTURA
+	op["sombrero"] = true
+	return op
 
 func estado_texto() -> String:
 	match tarea:

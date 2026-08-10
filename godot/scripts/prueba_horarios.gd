@@ -47,6 +47,9 @@ func _ready() -> void:
 	pirata = Pirata.new()
 	add_child(pirata)
 	pirata.montar("prueba", "Pirata de Prueba", Vector2i(4, 4), Vector2i(6, 6), 7)
+	_comprobar("el pirata reutiliza el actor base", pirata is Actor)
+	_comprobar("el pirata conserva su posición en pos_tile",
+		pirata.pos == pirata.pos_tile)
 	Reloj.hora = 21.0
 	pirata._pensar(0.1)
 	_comprobar("el pirata aplica el tramo de taberna", pirata.tarea == Pirata.Tarea.A_LA_TABERNA)
