@@ -40,14 +40,32 @@ func cerrar() -> void:
 	abierto = false
 	mercado_cerrado.emit()
 
+func indice_oferta(id: String) -> float:
+	var objetivo := maxi(1, int(STOCK_INICIAL.get(id, 1)))
+	return float(stock.cantidad(id)) / float(objetivo)
+
+func multiplicador_oferta(id: String) -> float:
+	var oferta := indice_oferta(id)
+	if oferta <= 0.25:
+		return 1.50
+	if oferta <= 0.50:
+		return 1.25
+	if oferta >= 1.50:
+		return 0.75
+	if oferta >= 1.25:
+		return 0.90
+	return 1.0
+
 func precio_compra(id: String) -> int:
 	var item: ItemData = BaseDeDatos.item(id)
-	return maxi(1, int(ceil(float(item.valor_base if item else 1) * 1.25)))
+	var base := float(item.valor_base if item else 1) * 1.25
+	return maxi(1, int(ceil(base * multiplicador_oferta(id))))
 
 func precio_venta(id: String) -> int:
 	var item: ItemData = BaseDeDatos.item(id)
 	var base := float(item.valor_base if item else 1) * 0.75
-	return maxi(1, int(floor(base * Plantel.factor("precio_venta"))))
+	return maxi(1, int(floor(base * Plantel.factor("precio_venta")
+		* multiplicador_oferta(id))))
 
 func comprar(id: String, cantidad: int = 1) -> bool:
 	if cantidad <= 0 or stock.cantidad(id) < cantidad:

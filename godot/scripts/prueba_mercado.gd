@@ -18,6 +18,7 @@ func _ready() -> void:
 	_p1_puesto()
 	_p2_comprar()
 	_p3_vender()
+	_p3b_oferta_dinamica()
 	_p4_rechazar_sin_oro()
 	_p5_guardar_stock()
 
@@ -66,6 +67,15 @@ func _p3_vender() -> void:
 	_comprobar("vende ron", ok)
 	_comprobar("ron sale de mochila", Bolsa.mochila.cantidad("ron") == 0)
 	_comprobar("ingresa doblones", Bolsa.oro == antes + MercadoManager.precio_venta("ron"))
+
+func _p3b_oferta_dinamica() -> void:
+	var precio_normal := MercadoManager.precio_compra("ron")
+	MercadoManager.stock.retirar("ron", 10)
+	_comprobar("la oferta baja cuando el stock escasea",
+		MercadoManager.indice_oferta("ron") < 0.25)
+	_comprobar("la escasez eleva el precio de compra",
+		MercadoManager.precio_compra("ron") > precio_normal)
+	MercadoManager.stock.anadir("ron", 10)
 
 func _p4_rechazar_sin_oro() -> void:
 	Bolsa.oro = 0
