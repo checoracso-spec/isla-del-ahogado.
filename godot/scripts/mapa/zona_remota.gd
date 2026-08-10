@@ -24,6 +24,7 @@ var recolectores_cultivo: Array = []
 func construir(p_destino_id: String, p_ancho: int = 16, p_alto: int = 12) -> void:
 	destino_id = p_destino_id
 	id = p_destino_id
+	montar_identidad(p_destino_id, "zona:%s" % p_destino_id)
 	ancho = maxi(4, p_ancho)
 	alto = maxi(4, p_alto)
 	name = "Zona_" + destino_id

@@ -17,6 +17,15 @@ func _ejecutar() -> void:
 	add_child(zona)
 	zona.montar_contenido()
 	_comprobar("la zona conserva su identidad", zona.id == "portobello")
+	_comprobar("la zona remota tiene identidad estable",
+		zona.identidad_zona != null and zona.identidad_zona.clave == "zona:portobello")
+	var estado_zona := zona.serializar_zona()
+	zona.estado_guardable["visitas"] = 1
+	_comprobar("la zona expone estado plano guardable",
+		estado_zona.get("identidad", {}).get("instancia", "") != "")
+	zona.cargar_zona({"estado": {"visitas": 2}})
+	_comprobar("la zona restaura estado sin referencias a nodos",
+		int(zona.estado_guardable.get("visitas", 0)) == 2)
 	_comprobar("la zona tiene límites propios",
 		zona.limites() == Rect2i(0, 0, 16, 12), str(zona.limites()))
 	_comprobar("la zona tiene actores ordenados por profundidad",

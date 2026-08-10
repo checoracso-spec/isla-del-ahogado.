@@ -11,6 +11,7 @@ var isla_id: String = "isla_principal"
 func montar(p_id: String, p_transitable: Transitable, p_actores: Node2D) -> void:
 	isla_id = p_id
 	id = p_id
+	montar_identidad(p_id, "zona:%s" % p_id)
 	transitable = p_transitable
 	actores = p_actores
 

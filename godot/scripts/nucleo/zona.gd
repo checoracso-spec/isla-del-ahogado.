@@ -16,8 +16,10 @@ extends Node2D
 ## ganar nada hoy.
 
 var id: String = ""
+var identidad_zona: Identidad = null
 var transitable: Transitable = null
 var actores: Node2D = null
+var estado_guardable: Dictionary = {}
 
 func _ready() -> void:
 	if actores == null:
@@ -28,6 +30,21 @@ func _ready() -> void:
 
 func limites() -> Rect2i:
 	return transitable.limites() if transitable != null else Rect2i()
+
+func montar_identidad(definicion_id: String, clave_natural: String) -> void:
+	identidad_zona = Entidades.identificar("zona", definicion_id, clave_natural)
+	Entidades.vincular(identidad_zona, self)
+
+func serializar_zona() -> Dictionary:
+	return {
+		"id": id,
+		"identidad": identidad_zona.serializar() if identidad_zona != null else {},
+		"limites": {"x": limites().size.x, "y": limites().size.y},
+		"estado": estado_guardable.duplicate(true),
+	}
+
+func cargar_zona(datos: Dictionary) -> void:
+	estado_guardable = (datos.get("estado", {}) as Dictionary).duplicate(true)
 
 ## Dónde aparece alguien que llega sin más indicaciones.
 func entrada() -> Vector2:

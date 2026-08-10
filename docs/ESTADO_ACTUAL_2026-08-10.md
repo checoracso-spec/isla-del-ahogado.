@@ -6,7 +6,7 @@
 - Rejilla isométrica 128×64; `scripts/mapa/iso.gd` no se ha modificado.
 - API pública de `scripts/autoload/almacen.gd` intacta.
 - 27 escenas `prueba_*.tscn` ejecutadas en headless.
-- 750 comprobaciones instrumentadas en verde; persistencia A/B, viaje global y
+- 753 comprobaciones instrumentadas en verde; persistencia A/B, viaje global y
   profundidad
   arrancan sin errores reales.
 - La escena principal `res://escenas/mundo.tscn` arranca sin `SCRIPT ERROR`,
@@ -51,6 +51,10 @@
 - La isla esta formalizada como `ZonaExterior` y comparte el contrato de
   `Zona` con interiores y zonas remotas; el adaptador es propiedad del mundo
   y se libera con el resto de la escena.
+- `Zona` expone ahora identidad estable y estado plano mediante
+  `serializar_zona()`/`cargar_zona()`. La isla y las zonas remotas usan claves
+  naturales (`zona:isla_principal`, `zona:portobello`, etc.), preparadas para
+  descargar y reconstruir chunks sin serializar nodos.
 - La prueba A/B de persistencia recupera también un viaje global en curso,
   incluyendo ruta, origen y destino; ahora termina con 37/37 comprobaciones.
 - La prueba A/B adicional llega a `isla_ceniza`, cierra el proceso y reconstruye
@@ -131,7 +135,7 @@ antiguas a `montar()` siguen funcionando y usan la casa como destino laboral
 por compatibilidad. Barbanegra ya demuestra el caso real: vive en la cabana
 del capitan y trabaja en la herreria.
 
-El bloque se verifico con 27 suites y 750 comprobaciones, incluido el arranque
+El bloque se verifico con 27 suites y 753 comprobaciones, incluido el arranque
 de `mundo.tscn`, sin modificar `iso.gd` ni la API publica de `Almacen`.
 
 ## Contenido remoto incorporado en este checkpoint
@@ -280,4 +284,4 @@ y el viaje no comienza; la reserva persiste junto con la instancia del barco.
 
 La bitacora del mundo distingue ahora fertilizacion de siembra y cosecha, y la
 prueba de cultivos comprueba el mensaje de esa accion.
-5. Ejecutar las 26 suites y buscar errores reales después de cada bloque.
+5. Ejecutar las 27 suites y buscar errores reales después de cada bloque.
