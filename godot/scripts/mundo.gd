@@ -954,6 +954,10 @@ func _actualizar_hud() -> void:
 		if int(g["puerto"]) + int(g["mar"]) > 0:
 			flota = " [color=#5b9bd5]· %d · %d[/color]" % [g["puerto"], g["mar"]]
 		lineas.append("%s  [b]%d[/b]%s" % [BaseDeDatos.nombre_item(id), g["cofres"], flota])
+	lineas.append("")
+	lineas.append("[color=#f5c051][b]RASTREO DE LA ISLA[/b][/color]")
+	lineas.append(_resumen_fuentes_exploracion())
+	lineas.append(_resumen_cultivos_exploracion())
 	_lbl_recursos.text = "\n".join(lineas)
 
 	_lbl_ficha.text = _ficha()
@@ -1033,6 +1037,24 @@ func _resumen_fuentes_exploracion() -> String:
 	if lineas.is_empty():
 		return "[color=#7d8798]No hay recursos silvestres disponibles.[/color]"
 	return "[color=#5cb2b5]Rastreo de la isla: %s.[/color]" % ", ".join(lineas)
+
+func _resumen_cultivos_exploracion() -> String:
+	var lineas: Array[String] = []
+	for parcela in parcelas_cultivo:
+		if parcela == null or not is_instance_valid(parcela):
+			continue
+		var def: CultivoData = parcela.definicion()
+		var nombre := str(def.nombre if def != null else parcela.definicion_id)
+		var etapa := CultivosMundo.etapa(parcela.identidad.instancia)
+		var estado := "sin sembrar"
+		if etapa == 1 or etapa == 2:
+			estado = "creciendo"
+		elif etapa == 3:
+			estado = "lista"
+		lineas.append("%s (%s) al %s" % [nombre, estado, _direccion_fuente(parcela.casilla())])
+	if lineas.is_empty():
+		return "[color=#7d8798]No hay parcelas registradas.[/color]"
+	return "[color=#82b06b]Cultivos: %s[/color]" % ", ".join(lineas)
 
 func _direccion_fuente(casilla: Vector2i) -> String:
 	var delta: Vector2 = Vector2(casilla) + Vector2(0.5, 0.5) - jugador.pos_tile

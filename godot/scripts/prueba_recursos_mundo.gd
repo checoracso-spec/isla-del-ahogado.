@@ -38,7 +38,13 @@ func _ejecutar() -> void:
 	_comprobar("las cuatro fuentes ocupan casillas distintas",
 			por_tipo.size() == 4 and _casillas_distintas(por_tipo.values()))
 	_comprobar("la bitácora orienta hacia los recursos",
-			mundo._resumen_fuentes_exploracion().contains("Restos de Naufragio"))
+		mundo._resumen_fuentes_exploracion().contains("Restos de Naufragio"))
+	_comprobar("el HUD muestra el rastreo de la isla",
+		mundo._lbl_recursos.text.contains("RASTREO DE LA ISLA")
+		and mundo._lbl_recursos.text.contains("Restos de Naufragio"))
+	_comprobar("el HUD muestra las parcelas con dirección",
+		mundo._lbl_recursos.text.contains("Cultivos:")
+		and mundo._lbl_recursos.text.contains("Cítricos"))
 
 	var naufragio = por_tipo["restos_naufragio"]
 	_comprobar("el naufragio está junto al agua", _junto_a_agua(naufragio.casilla()))
