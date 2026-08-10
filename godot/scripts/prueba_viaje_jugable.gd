@@ -45,6 +45,27 @@ func _ejecutar() -> void:
 		and mundo.zona_global_activa.parcelas_cultivo[0].definicion_id == "tabaco")
 	_comprobar("el HUD identifica el rastreo de la zona",
 		mundo._lbl_recursos.text.contains("RASTREO DE LA ZONA"))
+	var veta = null
+	for candidata in mundo.zona_global_activa.fuentes_recurso:
+		if candidata.definicion_id == "veta_azufre":
+			veta = candidata
+			break
+	Bolsa.mochila.vaciar()
+	if veta != null:
+		veta.interactuar(mundo.jugador)
+	_comprobar("el jugador recolecta una fuente remota",
+		veta != null and Bolsa.mochila.cantidad("azufre_volcanico") == 2)
+	var parcela_tabaco = null
+	for candidata in mundo.zona_global_activa.parcelas_cultivo:
+		if candidata.definicion_id == "tabaco":
+			parcela_tabaco = candidata
+			break
+	Bolsa.mochila.anadir("semilla_tabaco", 1)
+	if parcela_tabaco != null:
+		parcela_tabaco.interactuar(mundo.jugador)
+	_comprobar("el jugador siembra en una parcela remota",
+		parcela_tabaco != null
+		and CultivosMundo.etapa(parcela_tabaco.identidad.instancia) == 1)
 	_comprobar("la zona remota crea un embarque de regreso",
 		mundo.zona_global_activa.get("transiciones").size() == 1)
 
