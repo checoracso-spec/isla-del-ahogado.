@@ -259,7 +259,8 @@ const TABLA_PERSONAJES := [
 	{ "id": "anne_bonny", "nombre": "Anne Bonny", "titulo": "",
 	  "rol": "Maestra del Contrabando",
 	  "habilidad": "Aumenta la capacidad de carga de los barcos un 15%.",
-	  "efecto": { "tipo": "capacidad_carga", "valor": 0.15 } },
+	  "efecto": { "tipo": "capacidad_carga", "valor": 0.15 },
+	  "puesto": "capitania", "casa": "capitania" },
 
 	{ "id": "mary_read", "nombre": "Mary Read", "titulo": "",
 	  "rol": "Capitana de Asalto",

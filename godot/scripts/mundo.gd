@@ -666,9 +666,9 @@ func _montar_logistica() -> void:
 			["seda_robada", 6], ["cuero", 10]]:
 		Almacen.anadir(par[0], par[1], "inicio")
 
-	for id in PUESTOS:
+	for id in _personajes_con_puesto():
 		var datos: PersonajeData = BaseDeDatos.personaje(id)
-		var puesto_id: String = str(PUESTOS[id])
+		var puesto_id: String = _puesto_de_personaje(id)
 		if datos != null and datos.puesto_id != "":
 			puesto_id = datos.puesto_id
 		Plantel.reclutar(id)
@@ -686,12 +686,12 @@ func _montar_logistica() -> void:
 
 	var taberna := _puerta_de("taberna")
 	var semilla := SEMILLA
-	for id: String in PUESTOS:
+	for id: String in _personajes_con_puesto():
 		var p := Pirata.new()
 		_objetos.add_child(p)
 		p.transitable = transitable
 		var datos: PersonajeData = BaseDeDatos.personaje(id)
-		var puesto_id: String = str(PUESTOS[id])
+		var puesto_id: String = _puesto_de_personaje(id)
 		var casa_id: String = puesto_id
 		if datos != null:
 			if datos.puesto_id != "":
@@ -713,6 +713,24 @@ func _montar_logistica() -> void:
 		p.montar("", "Marinero", _puerta_de(destinos[i % destinos.size()]), taberna, semilla)
 		piratas.append(p)
 		semilla += 31
+
+func _personajes_con_puesto() -> Array[String]:
+	var ids: Array[String] = []
+	for id in BaseDeDatos.personajes.keys():
+		var datos: PersonajeData = BaseDeDatos.personaje(str(id))
+		if datos != null and datos.puesto_id != "":
+			ids.append(datos.id)
+	if ids.is_empty():
+		for id in PUESTOS.keys():
+			ids.append(str(id))
+	ids.sort()
+	return ids
+
+func _puesto_de_personaje(id: String) -> String:
+	var datos: PersonajeData = BaseDeDatos.personaje(id)
+	if datos != null and datos.puesto_id != "":
+		return datos.puesto_id
+	return str(PUESTOS.get(id, ""))
 
 func _montar_puesto_muelle() -> void:
 	if not casillas_edificio.has("muelle_grua"):
@@ -1125,8 +1143,8 @@ func _ficha() -> String:
 		if e.parada:
 			lineas.append("  [color=#c0392b]%s[/color]" % e.ultimo_motivo)
 	var gente := []
-	for id in PUESTOS:
-		if PUESTOS[id] == v.edificio_id and id in Plantel.reclutados:
+	for id in _personajes_con_puesto():
+		if _puesto_de_personaje(str(id)) == v.edificio_id and id in Plantel.reclutados:
 			var p: PersonajeData = BaseDeDatos.personaje(id)
 			if p != null:
 				gente.append(p.nombre)

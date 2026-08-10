@@ -132,6 +132,9 @@ func _p3_jugador_aparece() -> void:
 	_comprobar("Barbanegra se monta desde la base de datos", barbanegra != null)
 	_comprobar("la rutina separa casa y puesto de trabajo",
 		barbanegra != null and barbanegra.casa != barbanegra.trabajo)
+	var roster: Array[String] = mundo._personajes_con_puesto()
+	_comprobar("el roster activo sale de PersonajeData", roster.size() == 8)
+	_comprobar("el roster incluye a Anne Bonny desde datos", "anne_bonny" in roster)
 
 func _p4_jugador_se_mueve() -> void:
 	print("4. El jugador se mueve")
