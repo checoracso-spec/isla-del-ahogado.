@@ -50,6 +50,13 @@ func _ready() -> void:
 	_comprobar("el pirata reutiliza el actor base", pirata is Actor)
 	_comprobar("el pirata conserva su posición en pos_tile",
 		pirata.pos == pirata.pos_tile)
+	var rejilla := TransitableRejilla.new(10, 10)
+	rejilla.bloquear(Vector2i(5, 4), "muro de prueba")
+	pirata.transitable = rejilla
+	pirata.colocar(Vector2(4.5, 4.5))
+	pirata.mover(Vector2.RIGHT, 0.5)
+	_comprobar("la tripulación consulta la transitabilidad común",
+		pirata.pos_tile.x <= 4.5)
 	Reloj.hora = 21.0
 	pirata._pensar(0.1)
 	_comprobar("el pirata aplica el tramo de taberna", pirata.tarea == Pirata.Tarea.A_LA_TABERNA)
