@@ -5,8 +5,8 @@
 - Godot 4.7.1.
 - Rejilla isométrica 128×64; `scripts/mapa/iso.gd` no se ha modificado.
 - API pública de `scripts/autoload/almacen.gd` intacta.
-- 24 escenas `prueba_*.tscn` ejecutadas en headless.
-- 663 comprobaciones instrumentadas en verde; persistencia A/B, viaje global y
+- 26 escenas `prueba_*.tscn` ejecutadas en headless.
+- 675 comprobaciones instrumentadas en verde; persistencia A/B, viaje global y
   profundidad
   arrancan sin errores reales.
 - La escena principal `res://escenas/mundo.tscn` arranca sin `SCRIPT ERROR`,
@@ -70,7 +70,8 @@ manadas grandes ni comportamiento social.
 `Controles`, `GlobalColors`, `Guardado`, `Entidades`, `Assets`, `Bolsa`,
 `CraftingManager`, `MercadoManager`, `TabernaManager`, `Ubicacion`,
 `Contenedores`, `Interiores`, `RecursosMundo`, `CultivosMundo`,
-`AnimalesMundo`, `DioramasExternos`, `FlotaMundo`, `MapaGlobal` y `MuelleManager`.
+`AnimalesMundo`, `NpcsMundo`, `DioramasExternos`, `FlotaMundo`, `MapaGlobal` y
+`MuelleManager`.
 
 ## Límites conocidos
 
@@ -120,7 +121,7 @@ antiguas a `montar()` siguen funcionando y usan la casa como destino laboral
 por compatibilidad. Barbanegra ya demuestra el caso real: vive en la cabana
 del capitan y trabaja en la herreria.
 
-El bloque se verifico con 24 suites y 661 comprobaciones, incluido el arranque
+El bloque se verifico con 26 suites y 675 comprobaciones, incluido el arranque
 de `mundo.tscn`, sin modificar `iso.gd` ni la API publica de `Almacen`.
 
 ## Contenido remoto incorporado en este checkpoint
@@ -139,11 +140,19 @@ La configuracion actual es:
 El HUD muestra el rastreo de la zona activa. La prueba de viaje verifica el
 contenido de Isla Ceniza y la prueba A/B recolecta una veta en el proceso A y
 confirma su cantidad restante tras cargar en el proceso B. El checkpoint queda
-en 24 suites y 663 comprobaciones, sin errores reales de Godot.
+en 26 suites y 675 comprobaciones, sin errores reales de Godot.
 
 Checkpoint de roster: `c89f221` obtiene los personajes activos desde los campos
 `puesto` de `PersonajeData`; `PUESTOS` queda solamente como respaldo para datos
 antiguos.
+
+## Persistencia de NPCs
+
+`NpcsMundo` registra las entidades vivas y guarda solo diccionarios planos:
+posicion, direccion, destino, tarea y estado. Los piratas tienen identidades
+estables; los marineros anonimos usan claves `marinero_0` a `marinero_9`.
+La prueba A/B de NPC confirma que Barbanegra conserva su posicion exacta,
+direccion, tarea e identidad al cerrar y volver a cargar el juego.
 
 Checkpoint de rutinas: `b77a684` separa vivienda y puesto de trabajo para los
 personajes que ya tienen esos datos declarados.
@@ -155,4 +164,4 @@ destinos.
 Checkpoint de codigo: `bfc0949` valida tambiÃ©n que el jugador recolecta una
 veta y siembra tabaco dentro de la zona remota usando las interacciones
 existentes.
-5. Ejecutar las 24 suites y buscar errores reales después de cada bloque.
+5. Ejecutar las 26 suites y buscar errores reales después de cada bloque.
