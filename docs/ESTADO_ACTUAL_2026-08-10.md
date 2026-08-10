@@ -5,8 +5,8 @@
 - Godot 4.7.1.
 - Rejilla isométrica 128×64; `scripts/mapa/iso.gd` no se ha modificado.
 - API pública de `scripts/autoload/almacen.gd` intacta.
-- 19 escenas `prueba_*.tscn` ejecutadas en headless.
-- 564 comprobaciones instrumentadas en verde; persistencia A/B y profundidad
+- 20 escenas `prueba_*.tscn` ejecutadas en headless.
+- 579 comprobaciones instrumentadas en verde; persistencia A/B y profundidad
   arrancan sin errores reales.
 - La escena principal `res://escenas/mundo.tscn` arranca sin `SCRIPT ERROR`,
   `Parse Error`, `Invalid call` ni `Invalid access`.
@@ -43,13 +43,20 @@
   usa la misma transitabilidad y huella común, sin atravesar casillas
   bloqueadas.
 
+## Fauna
+
+`Animal` ya es una entidad viva basada en `Actor`: conserva hÃ¡bitat,
+velocidad, radio de deambular, ciclo nocturno, identidad y estado plano en
+`AnimalesMundo`. La isla todavÃ­a no instancia manadas; la poblaciÃ³n queda como
+siguiente bloque sobre esta base.
+
 ## Autoloads registrados
 
 `Reloj`, `BaseDeDatos`, `Plantel`, `Almacen`, `RastreoCarga`, `Motin`,
 `Controles`, `GlobalColors`, `Guardado`, `Entidades`, `Assets`, `Bolsa`,
 `CraftingManager`, `MercadoManager`, `TabernaManager`, `Ubicacion`,
 `Contenedores`, `Interiores`, `RecursosMundo`, `CultivosMundo`,
-`DioramasExternos`, `MapaGlobal` y `MuelleManager`.
+`AnimalesMundo`, `DioramasExternos`, `MapaGlobal` y `MuelleManager`.
 
 ## Límites conocidos
 

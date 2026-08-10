@@ -36,6 +36,7 @@ const SECCIONES := {
 	"cultivos": true,
 	"mapa_global": true,
 	"muelle": true,
+	"animales_mundo": true,
 	"npcs": false,
 	"animales": false,
 	"edificios": false,

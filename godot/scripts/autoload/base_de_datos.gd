@@ -518,23 +518,28 @@ const TABLA_INTERIORES := [
 
 const TABLA_ANIMALES := [
 	{ "id": "cerdo_salvaje", "nombre": "Cerdos Salvajes de la Isla", "tipo": "ganado",
+	  "habitat": "bosque", "domestico": false,
 	  "produce": { "grasa_ballena": 1, "carne_salada": 1 }, "consume": { "fertilizante": 1 },
 	  "desc": "Fuente de grasa y carne. Sí, la 'grasa de ballena' a veces es de cerdo." },
 
 	{ "id": "cabra_montana", "nombre": "Cabras de Montaña", "tipo": "ganado",
+	  "habitat": "montana", "domestico": false,
 	  "produce": { "cuero": 2 }, "consume": {},
 	  "desc": "Cuero resistente. Suben donde no sube nadie." },
 
 	{ "id": "loro_vigia", "nombre": "Loros Vigías", "tipo": "utilidad",
+	  "habitat": "costa", "domestico": true,
 	  "produce": {}, "consume": { "raciones": 1 },
 	  "desc": "Asignables a un personaje: amplían el radio de visión en la niebla." },
 
 	{ "id": "rata_muelle", "nombre": "Ratas de Muelle", "tipo": "plaga",
+	  "habitat": "puerto", "domestico": false,
 	  "produce": {}, "consume": { "raciones": 3 },
 	  "contramedida": "gato_de_barco",
 	  "desc": "Se comen tus raciones cada día si el almacén no tiene un Gato de Barco." },
 
 	{ "id": "mono_ladron", "nombre": "Monos Ladrones", "tipo": "plaga",
+	  "habitat": "bosque", "domestico": false,
 	  "produce": {}, "consume": { "doblon": 25 },
 	  "contramedida": "cofre_nivel_2",
 	  "desc": "Evento aleatorio: roban doblones si los cofres no están mejorados." },
