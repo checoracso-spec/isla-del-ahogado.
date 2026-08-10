@@ -32,6 +32,11 @@
 - Mapa global data-driven con destinos, rutas, viajes y estado guardable;
   todavía usa zonas remotas provisionales y no cambia la escena jugable al
   llegar.
+- La isla esta formalizada como `ZonaExterior` y comparte el contrato de
+  `Zona` con interiores y zonas remotas; el adaptador es propiedad del mundo
+  y se libera con el resto de la escena.
+- La prueba A/B de persistencia recupera tambien un viaje global en curso,
+  incluyendo ruta, origen y destino; ahora termina con 33/33 comprobaciones.
 - Capas visuales, arte desacoplado mediante `Assets`, paleta maestra y kit de
   placeholders.
 - `Actor` como base del jugador y ahora también de `Pirata`; la tripulación
@@ -61,6 +66,11 @@
 - `dc65dae` — capacidad validada antes de recolectar y cosechar.
 - `c0f8c31` — rastreo de recursos y cultivos visible en el HUD.
 - `0567889` — la tripulación reutiliza `Actor` y la transitabilidad.
+
+## Ultimos checkpoints adicionales
+
+- `31dc933` — formalizacion de la isla como `ZonaExterior`.
+- `0206419` — persistencia de viajes globales entre procesos.
 
 ## Reglas de continuidad
 
