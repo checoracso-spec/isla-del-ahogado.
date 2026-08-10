@@ -28,7 +28,7 @@ func montar(p_definicion_id: String, clave_natural: String, casilla: Vector2i) -
 	queue_redraw()
 	return true
 
-func definicion() -> Resource:
+func definicion() -> FuenteRecursoData:
 	return BaseDeDatos.fuente(definicion_id)
 
 func cantidad() -> int:

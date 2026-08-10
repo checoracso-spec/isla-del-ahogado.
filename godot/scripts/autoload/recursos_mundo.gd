@@ -19,7 +19,7 @@ func registrar(fuente) -> void:
 	var id: String = str(fuente.identidad.instancia)
 	_vivas[id] = fuente
 	if not _estados.has(id):
-		var def: Resource = fuente.definicion()
+		var def: FuenteRecursoData = fuente.definicion()
 		_estados[id] = {
 			"definicion": fuente.definicion_id,
 			"cantidad": def.ciclos_maximos if def != null else 0,
@@ -34,7 +34,7 @@ func recolectar(instancia: String, destino: Inventario, ciclos: int = 1) -> Dict
 	if not _estados.has(instancia) or destino == null:
 		return {"ciclos": 0, "productos": {}}
 	var estado: Dictionary = _estados[instancia]
-	var def = BaseDeDatos.fuente(str(estado.get("definicion", "")))
+	var def: FuenteRecursoData = BaseDeDatos.fuente(str(estado.get("definicion", "")))
 	if def == null:
 		return {"ciclos": 0, "productos": {}}
 	var posibles := mini(maxi(0, ciclos), int(estado.get("cantidad", 0)))
@@ -73,7 +73,7 @@ func _process(_delta: float) -> void:
 		var proxima := float(estado.get("proxima", 0.0))
 		if proxima <= 0.0 or ahora < proxima:
 			continue
-		var def = BaseDeDatos.fuente(str(estado.get("definicion", "")))
+		var def: FuenteRecursoData = BaseDeDatos.fuente(str(estado.get("definicion", "")))
 		if def == null:
 			continue
 		estado["cantidad"] = def.ciclos_maximos

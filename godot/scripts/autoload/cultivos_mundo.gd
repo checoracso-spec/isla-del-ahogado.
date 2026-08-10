@@ -31,7 +31,7 @@ func sembrar(instancia: String, inventario: Inventario) -> bool:
 	var estado: Dictionary = _estados[instancia]
 	if bool(estado.get("sembrada", false)):
 		return false
-	var def: Resource = BaseDeDatos.cultivo(str(estado.get("definicion", "")))
+	var def: CultivoData = BaseDeDatos.cultivo(str(estado.get("definicion", "")))
 	if def == null or not inventario.retirar(def.semilla, 1):
 		return false
 	estado["sembrada"] = true
@@ -46,7 +46,7 @@ func cosechar(instancia: String, inventario: Inventario) -> Dictionary:
 	var estado: Dictionary = _estados[instancia]
 	if not bool(estado.get("sembrada", false)) or not _esta_lista(estado):
 		return {"ok": false, "productos": {}}
-	var def: Resource = BaseDeDatos.cultivo(str(estado.get("definicion", "")))
+	var def: CultivoData = BaseDeDatos.cultivo(str(estado.get("definicion", "")))
 	if def == null:
 		return {"ok": false, "productos": {}}
 	for id in def.cosecha:
@@ -68,7 +68,7 @@ func etapa(instancia: String) -> int:
 		return 0
 	if _esta_lista(estado):
 		return 3
-	var def: Resource = BaseDeDatos.cultivo(str(estado.get("definicion", "")))
+	var def: CultivoData = BaseDeDatos.cultivo(str(estado.get("definicion", "")))
 	if def == null:
 		return 1
 	var restante := maxf(0.0, float(estado.get("lista_en", 0.0)) - _hora_total())
