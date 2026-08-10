@@ -101,6 +101,10 @@ func _ready() -> void:
 		semillero != null and semillero.cantidad() == 0)
 	_comprobar("la parcela sembrada conserva su etapa tras cargar",
 		parcela != null and CultivosMundo.etapa(parcela.identidad.instancia) == D.ETAPA_CULTIVO_GUARDADA)
+	_comprobar("la parcela conserva la fertilizacion entre procesos",
+		parcela != null
+		and bool(CultivosMundo.estado(parcela.identidad.instancia).get("fertilizada", false))
+		== D.CULTIVO_FERTILIZADO_GUARDADO)
 
 	# Bajar antes de revisar el cofre: el que vació A pertenece a la planta baja,
 	# no al cofre independiente de la planta alta.

@@ -54,6 +54,8 @@ func _ready() -> void:
 	Bolsa.mochila.vaciar()
 	semillero.interactuar(mundo.jugador)
 	parcela.interactuar(mundo.jugador)
+	Bolsa.mochila.anadir("fertilizante", 1)
+	parcela.interactuar(mundo.jugador)
 	print("  semillero   : %d ciclos restantes" % semillero.cantidad())
 	print("  parcela      : etapa %d" % CultivosMundo.etapa(parcela.identidad.instancia))
 	var animal_guardado = null
