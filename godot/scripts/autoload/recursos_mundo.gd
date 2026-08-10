@@ -66,6 +66,61 @@ func recolectar(instancia: String, destino: Inventario, ciclos: int = 1) -> Dict
 		viva.queue_redraw()
 	return {"ciclos": posibles, "productos": productos}
 
+## Recolección automática para estaciones del mundo, como la grúa del muelle.
+## Usa la API pública de Almacen como destino logístico, pero no mezcla ese
+## estado con Inventario ni modifica las reglas del almacén.
+func recolectar_en_almacen(instancia: String, ciclos: int = 1,
+		origen: String = "") -> Dictionary:
+	if not _estados.has(instancia):
+		return {"ciclos": 0, "productos": {}}
+	var estado: Dictionary = _estados[instancia]
+	var def: FuenteRecursoData = BaseDeDatos.fuente(str(estado.get("definicion", "")))
+	if def == null:
+		return {"ciclos": 0, "productos": {}}
+	var posibles := mini(maxi(0, ciclos), int(estado.get("cantidad", 0)))
+	if posibles <= 0:
+		return {"ciclos": 0, "productos": {}}
+
+	# El lote completo debe caber antes de tocar el almacén. Así una grúa no
+	# deja una extracción a medias si el puerto está lleno.
+	if Almacen.capacidad_volumen > 0.0:
+		var hueco := Almacen.capacidad_volumen - Almacen.volumen_ocupado()
+		var volumen_lote := 0.0
+		for item_id in def.productos:
+			var item: ItemData = BaseDeDatos.item(str(item_id))
+			if item != null:
+				volumen_lote += item.volumen * int(def.productos[item_id])
+		if volumen_lote > 0.0:
+			posibles = mini(posibles, int(floor(hueco / volumen_lote)))
+	if posibles <= 0:
+		return {"ciclos": 0, "productos": {}}
+
+	var productos: Dictionary = {}
+	for item_id in def.productos:
+		var total := int(def.productos[item_id]) * posibles
+		var aceptado := Almacen.anadir(str(item_id), total, origen)
+		if aceptado != total:
+			# La comprobación previa evita este camino en condiciones normales.
+			# Si el destino cambió entre medias, no consumimos la fuente.
+			for previo in productos:
+				Almacen.retirar(str(previo), int(productos[previo]))
+			return {"ciclos": 0, "productos": {}}
+		productos[str(item_id)] = total
+
+	_estado_recolectado(instancia, posibles, def)
+	return {"ciclos": posibles, "productos": productos}
+
+func _estado_recolectado(instancia: String, ciclos: int, def: FuenteRecursoData) -> void:
+	var estado: Dictionary = _estados[instancia]
+	estado["cantidad"] = int(estado.get("cantidad", 0)) - ciclos
+	if int(estado["cantidad"]) <= 0 and def.regeneracion_horas > 0.0:
+		estado["proxima"] = _hora_total() + def.regeneracion_horas
+	_estados[instancia] = estado
+	fuente_cambiada.emit(instancia, int(estado["cantidad"]))
+	var viva = _vivas.get(instancia)
+	if viva != null and is_instance_valid(viva):
+		viva.queue_redraw()
+
 func _process(_delta: float) -> void:
 	var ahora := _hora_total()
 	for instancia in _estados:
