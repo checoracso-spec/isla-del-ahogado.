@@ -66,6 +66,18 @@ func _ready() -> void:
 	_comprobar("el pirata tiene identidad estable", pirata.identidad != null)
 	_comprobar("el NPC expone un inventario base propio",
 		pirata.inventario() != null and pirata.inventario() is Inventario)
+	pirata.inventario().anadir("raciones", 1)
+	pirata.hambre = 40.0
+	var comida_personal := pirata.consumir_item_personal("raciones")
+	_comprobar("el NPC consume comida desde su inventario",
+		comida_personal.get("ok", false) and pirata.hambre > 40.0
+		and pirata.inventario().cantidad("raciones") == 0)
+	pirata.inventario().anadir("ron", 1)
+	pirata.moral_personal = 40.0
+	var ron_personal := pirata.consumir_item_personal("ron")
+	_comprobar("el NPC consume ron desde su inventario",
+		ron_personal.get("ok", false) and pirata.moral_personal > 40.0
+		and pirata.inventario().cantidad("ron") == 0)
 	pirata.tarea = Pirata.Tarea.TRABAJANDO
 	var energia_antes := pirata.energia_personal
 	pirata.actualizar_necesidades(1.0)

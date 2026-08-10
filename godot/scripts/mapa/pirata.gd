@@ -66,6 +66,21 @@ func necesidad(id: String) -> float:
 		"moral": return moral_personal
 		_: return 0.0
 
+## Consume un objeto del inventario personal y aplica sus efectos de datos.
+## Esta ruta no toca Almacen ni Motin: las necesidades del NPC son propias.
+func consumir_item_personal(id: String) -> Dictionary:
+	var item: ItemData = BaseDeDatos.item(id)
+	if item == null or (item.comida <= 0.0 and item.moral <= 0.0):
+		return {"ok": false, "motivo": "Ese objeto no satisface necesidades personales."}
+	if not inventario_personal.retirar(id, 1):
+		return {"ok": false, "motivo": "El NPC no tiene ese objeto."}
+	if item.comida > 0.0:
+		ajustar_necesidad("hambre", item.comida)
+	if item.moral > 0.0:
+		ajustar_necesidad("moral", item.moral)
+	_anotar_estado()
+	return {"ok": true, "id": id, "comida": item.comida, "moral": item.moral}
+
 ## Avanza necesidades en horas de juego. No consume recursos: la comida y el
 ## ron se resolveran desde servicios de edificio en un bloque posterior.
 func actualizar_necesidades(horas: float) -> void:
