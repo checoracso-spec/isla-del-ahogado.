@@ -48,6 +48,26 @@ func servir_ronda() -> bool:
 	actualizado.emit()
 	return true
 
+## Servicio para entidades del mundo con inventario propio, como Pirata.
+## No usa Bolsa ni Almacen: la ronda consume la provisión personal del NPC.
+func servir_ronda_a(entidad: Node) -> Dictionary:
+	if estado_actual != "activa":
+		return {"ok": false, "motivo": "La taberna no esta activa."}
+	if entidad == null or not entidad.has_method("inventario") \
+			or not entidad.has_method("ajustar_necesidad"):
+		return {"ok": false, "motivo": "La entidad no admite servicios personales."}
+	var inventario: Inventario = entidad.inventario()
+	if inventario == null or not inventario.hay("raciones") or not inventario.hay("ron"):
+		return {"ok": false, "motivo": "Faltan raciones o ron en el inventario personal."}
+	var raciones: ItemData = BaseDeDatos.item("raciones")
+	var ron: ItemData = BaseDeDatos.item("ron")
+	if not inventario.retirar("raciones", 1) or not inventario.retirar("ron", 1):
+		return {"ok": false, "motivo": "Las provisiones cambiaron antes de servir."}
+	entidad.ajustar_necesidad("hambre", raciones.comida if raciones != null else 0.0)
+	entidad.ajustar_necesidad("moral", ron.moral if ron != null else 0.0)
+	return {"ok": true, "servicio": "ronda_personal", "hambre": raciones.comida if raciones != null else 0.0,
+		"moral": ron.moral if ron != null else 0.0}
+
 func contratar_marinero() -> bool:
 	if estado_actual != "activa":
 		resultado.emit("La contratación sólo está disponible con la taberna activa.")

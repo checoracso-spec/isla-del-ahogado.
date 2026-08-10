@@ -63,6 +63,20 @@ func _p2_ronda() -> void:
 func _p3_rumor() -> void:
 	var rumor := TabernaManager.escuchar_rumor()
 	_comprobar("escucha un rumor", rumor != "")
+	var npc := Pirata.new()
+	add_child(npc)
+	npc.montar("npc_prueba_taberna", "Marinero de Prueba", Vector2i(3, 3), Vector2i(4, 4), 77)
+	npc.inventario().anadir("raciones", 1)
+	npc.inventario().anadir("ron", 1)
+	npc.hambre = 30.0
+	npc.moral_personal = 30.0
+	var servicio := TabernaManager.servir_ronda_a(npc)
+	_comprobar("la taberna atiende a un NPC", servicio.get("ok", false))
+	_comprobar("la ronda NPC usa su inventario personal",
+		npc.inventario().esta_vacio())
+	_comprobar("la ronda NPC recupera sus necesidades",
+		npc.hambre > 30.0 and npc.moral_personal > 30.0)
+	npc.queue_free()
 
 func _p4_fallo_sin_insumos() -> void:
 	var ok := TabernaManager.servir_ronda()

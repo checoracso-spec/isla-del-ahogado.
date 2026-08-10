@@ -87,7 +87,13 @@ func atender_necesidad_de_rutina() -> Dictionary:
 	var necesidad_id := ""
 	match tarea:
 		Tarea.COMIENDO: necesidad_id = "hambre"
-		Tarea.A_LA_TABERNA: necesidad_id = "moral"
+		Tarea.A_LA_TABERNA:
+			var taberna := get_node_or_null("/root/TabernaManager")
+			if taberna != null and taberna.has_method("servir_ronda_a"):
+				var ronda: Dictionary = taberna.call("servir_ronda_a", self)
+				if bool(ronda.get("ok", false)):
+					return ronda
+			necesidad_id = "moral"
 		_: return {"ok": false, "motivo": "La tarea actual no consume."}
 	var mejor_id := ""
 	var mejor_efecto := 0.0
