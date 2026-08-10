@@ -605,16 +605,16 @@ const TABLA_DESTINOS := [
 	{ "id": "portobello", "nombre": "Portobello", "tipo": "ciudad",
 	  "mapa_id": "isla_portobello", "coordenadas": Vector2(1, -1), "puerto": true,
 	  "descripcion": "Ciudad mercante donde opera el mercado negro.",
-	  "fuentes": ["restos_naufragio"] },
+	  "fuentes": ["restos_naufragio"], "ancho": 20, "alto": 14 },
 	{ "id": "isla_ceniza", "nombre": "Isla Ceniza", "tipo": "isla",
 	  "mapa_id": "isla_ceniza", "coordenadas": Vector2(-1, 1), "puerto": true,
 	  "descripcion": "Isla volcánica rica en azufre.",
 	  "fuentes": ["veta_azufre", "restos_naufragio"],
-	  "cultivos": ["tabaco"] },
+	  "cultivos": ["tabaco"], "ancho": 24, "alto": 16 },
 	{ "id": "fortaleza_corona", "nombre": "Fortaleza de la Corona", "tipo": "fortaleza",
 	  "mapa_id": "fortaleza_corona", "coordenadas": Vector2(2, 1), "puerto": true,
 	  "descripcion": "Puesto naval imperial y objetivo de alto riesgo.",
-	  "fuentes": ["restos_naufragio"] },
+	  "fuentes": ["restos_naufragio"], "ancho": 22, "alto": 16 },
 ]
 
 const TABLA_RUTAS_GLOBALES := [

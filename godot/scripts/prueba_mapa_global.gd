@@ -18,6 +18,11 @@ func _ejecutar() -> void:
 	_comprobar("hay varias ubicaciones globales", MapaGlobal.destinos().size() >= 4,
 		str(MapaGlobal.destinos()))
 	_comprobar("hay rutas desde la isla", MapaGlobal.rutas_desde().size() == 3)
+	var zona_ceniza: Zona = MapaGlobal.crear_zona("isla_ceniza", 0, 0)
+	_comprobar("las dimensiones remotas vienen de BaseDeDatos",
+		zona_ceniza != null and zona_ceniza.limites() == Rect2i(0, 0, 24, 16))
+	if zona_ceniza != null:
+		zona_ceniza.free()
 	var ruta: Resource = MapaGlobal.ruta("principal_ceniza")
 	_comprobar("la ruta conoce origen y destino", ruta != null
 		and ruta.origen == "isla_principal" and ruta.destino == "isla_ceniza")

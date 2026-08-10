@@ -22,10 +22,14 @@ func destino(id: String) -> Resource:
 
 ## Fábrica provisional: cada destino se convierte en una Zona con el mismo
 ## contrato que la isla y los interiores. No carga escenas ni arte definitivo.
-func crear_zona(destino_id: String, ancho: int = 16, alto: int = 12) -> Zona:
+func crear_zona(destino_id: String, ancho: int = 0, alto: int = 0) -> Zona:
 	var datos := BaseDeDatos.destino(destino_id)
 	if datos == null:
 		return null
+	if ancho <= 0:
+		ancho = datos.ancho
+	if alto <= 0:
+		alto = datos.alto
 	var zona = ZonaRemotaScript.new()
 	zona.construir(destino_id, ancho, alto)
 	return zona

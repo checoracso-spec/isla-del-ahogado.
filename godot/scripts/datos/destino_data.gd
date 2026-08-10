@@ -12,6 +12,8 @@ const ScriptDestino := preload("res://scripts/datos/destino_data.gd")
 @export var descripcion: String = ""
 @export var fuentes: Array[String] = []
 @export var cultivos: Array[String] = []
+@export var ancho: int = 20
+@export var alto: int = 14
 
 static func desde_dic(d: Dictionary) -> DestinoData:
 	var destino := DestinoData.new()
@@ -27,5 +29,7 @@ static func desde_dic(d: Dictionary) -> DestinoData:
 		destino.fuentes.append(str(id_fuente))
 	for id_cultivo in d.get("cultivos", []):
 		destino.cultivos.append(str(id_cultivo))
+	destino.ancho = maxi(4, int(d.get("ancho", destino.ancho)))
+	destino.alto = maxi(4, int(d.get("alto", destino.alto)))
 	destino.resource_name = destino.nombre
 	return destino

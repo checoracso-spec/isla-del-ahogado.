@@ -476,7 +476,7 @@ func _activar_zona_global(destino_id: String) -> bool:
 		return false
 	if zona_global_activa != null:
 		_desactivar_zona_global()
-	var nueva: Zona = MapaGlobal.crear_zona(destino_id, 20, 14)
+	var nueva: Zona = MapaGlobal.crear_zona(destino_id, 0, 0)
 	if nueva == null:
 		push_warning("No existe una zona global para '%s'" % destino_id)
 		return false
