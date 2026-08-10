@@ -17,6 +17,12 @@ regeneración e identidad natural. Su zona, orden y criterio de colocación
 viven en `FuenteRecursoData`; `mundo.gd` sólo monta las definiciones activas.
 El guardado usa diccionarios planos; no serializa nodos.
 
+`RecolectorRecurso` es un componente opcional para automatizar una fuente
+hacia `Almacen` cuando una grua, red o mejora del muelle lo habilite. No se
+monta todavia en el mapa principal: la receta existente `rastrillar_marea`
+continua siendo la autoridad de la produccion inicial y asi se evita duplicar
+salidas durante el prototipo.
+
 ## Cultivos
 
 `CultivoData` define semillas, cosechas y horas de crecimiento.

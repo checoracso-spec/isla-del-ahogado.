@@ -53,6 +53,17 @@ func _ejecutar() -> void:
 		and fuente.cantidad() == 1)
 	Almacen.capacidad_volumen = 0.0
 
+	# La misma pieza también puede trabajar por reloj, sin que el edificio
+	# necesite conocer los detalles de la fuente.
+	RecursosMundo._estados[fuente.identidad.instancia]["cantidad"] = 1
+	Reloj.pausado = false
+	recolector.proxima_recoleccion = recolector._hora_total()
+	recolector._process(0.0)
+	_comprobar("la recolectora respeta el intervalo del reloj",
+		Almacen.cantidad("madera_naufragio") == 2
+		and fuente.cantidad() == 0)
+	Reloj.pausado = true
+
 func _comprobar(nombre: String, condicion: bool) -> void:
 	if condicion:
 		correctas += 1
