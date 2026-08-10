@@ -20,6 +20,8 @@ func _ejecutar() -> void:
 	_comprobar("la zona remota tiene identidad estable",
 		zona.identidad_zona != null and zona.identidad_zona.clave == "zona:portobello")
 	var estado_zona := zona.serializar_zona()
+	_comprobar("el estado de zona incluye los chunks",
+		estado_zona.get("chunks", {}).size() == zona.chunks.size())
 	zona.estado_guardable["visitas"] = 1
 	_comprobar("la zona expone estado plano guardable",
 		estado_zona.get("identidad", {}).get("instancia", "") != "")
@@ -34,6 +36,17 @@ func _ejecutar() -> void:
 		zona.transitable.cabe_en(zona.entrada(), Huella.cuadrada(0.52)))
 	_comprobar("la zona conserva transitabilidad común",
 		zona.transitable is TransitableRejilla)
+	_comprobar("la zona remota se divide en chunks",
+		zona.chunks.size() == 4)
+	var chunk_origen: Vector2i = zona.chunk_de_casilla(Vector2i(1, 1))
+	_comprobar("resuelve el chunk de una casilla",
+		chunk_origen == Vector2i.ZERO)
+	_comprobar("puede desactivar un chunk",
+		zona.activar_chunk(Vector2i.ZERO, false)
+		and not zona.chunks["0,0"].activo)
+	_comprobar("puede reactivar un chunk",
+		zona.activar_chunk(Vector2i.ZERO)
+		and zona.chunks["0,0"].activo)
 	_comprobar("Portobello monta sus recursos desde datos",
 		zona.fuentes_recurso.size() == 1)
 	_comprobar("Portobello no inventa cultivos",

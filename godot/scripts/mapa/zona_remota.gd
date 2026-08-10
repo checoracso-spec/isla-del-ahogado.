@@ -12,6 +12,8 @@ const TransicionGlobalScript := preload("res://scripts/mapa/transicion_global.gd
 const FuenteRecursoScript := preload("res://scripts/mapa/fuente_recurso.gd")
 const ParcelaCultivoScript := preload("res://scripts/mapa/parcela_cultivo.gd")
 const RecolectorCultivoScript := preload("res://scripts/mapa/recolector_cultivo.gd")
+const ZonaChunkScript := preload("res://scripts/nucleo/zona_chunk.gd")
+const TAMANO_CHUNK := 8
 
 var destino_id: String = ""
 var ancho: int = 1
@@ -20,6 +22,7 @@ var transiciones: Array = []
 var fuentes_recurso: Array = []
 var parcelas_cultivo: Array = []
 var recolectores_cultivo: Array = []
+var chunks: Dictionary = {} ## "x,y" -> ZonaChunk
 
 func construir(p_destino_id: String, p_ancho: int = 16, p_alto: int = 12) -> void:
 	destino_id = p_destino_id
@@ -33,6 +36,74 @@ func construir(p_destino_id: String, p_ancho: int = 16, p_alto: int = 12) -> voi
 	# Un acceso abierto en el borde representa el puerto o camino de llegada.
 	var entrada_borde := Vector2i(ancho / 2, alto - 1)
 	transitable.liberar(entrada_borde)
+	_montar_chunks()
+	queue_redraw()
+
+func _montar_chunks() -> void:
+	for existente in chunks.values():
+		if existente != null and is_instance_valid(existente):
+			existente.queue_free()
+	chunks.clear()
+	var columnas := ceili(float(ancho) / TAMANO_CHUNK)
+	var filas := ceili(float(alto) / TAMANO_CHUNK)
+	for cy in range(filas):
+		for cx in range(columnas):
+			var inicio := Vector2i(cx * TAMANO_CHUNK, cy * TAMANO_CHUNK)
+			var tam := Vector2i(
+				mini(TAMANO_CHUNK, ancho - inicio.x),
+				mini(TAMANO_CHUNK, alto - inicio.y)
+			)
+			var chunk = ZonaChunkScript.new()
+			chunk.montar(Vector2i(cx, cy), Rect2i(inicio, tam))
+			add_child(chunk)
+			chunks[_clave_chunk(Vector2i(cx, cy))] = chunk
+
+func _clave_chunk(coordenada: Vector2i) -> String:
+	return "%d,%d" % [coordenada.x, coordenada.y]
+
+func chunk_de_casilla(casilla: Vector2i) -> Vector2i:
+	return Vector2i(
+		floori(float(casilla.x) / TAMANO_CHUNK),
+		floori(float(casilla.y) / TAMANO_CHUNK)
+	)
+
+func activar_chunk(coordenada: Vector2i, activo: bool = true) -> bool:
+	var chunk = chunks.get(_clave_chunk(coordenada))
+	if chunk == null:
+		return false
+	if activo:
+		chunk.activar()
+	else:
+		chunk.desactivar()
+	queue_redraw()
+	return true
+
+func actualizar_chunks_cerca(posicion: Vector2, radio: int = 1) -> void:
+	var centro := chunk_de_casilla(Vector2i(floori(posicion.x), floori(posicion.y)))
+	for clave in chunks:
+		var chunk = chunks[clave]
+		var cerca := absi(chunk.coordenada.x - centro.x) <= radio \
+			and absi(chunk.coordenada.y - centro.y) <= radio
+		if cerca:
+			chunk.activar()
+		else:
+			chunk.desactivar()
+	queue_redraw()
+
+func serializar_zona() -> Dictionary:
+	var datos := super.serializar_zona()
+	datos["chunks"] = {}
+	for clave in chunks:
+		var chunk = chunks[clave]
+		datos["chunks"][clave] = chunk.serializar()
+	return datos
+
+func cargar_zona(datos: Dictionary) -> void:
+	super.cargar_zona(datos)
+	for clave in datos.get("chunks", {}):
+		var chunk = chunks.get(str(clave))
+		if chunk != null:
+			chunk.cargar(datos["chunks"][clave])
 	queue_redraw()
 
 ## Monta el contenido recolectable declarado por el destino. Los nodos son
@@ -140,6 +211,9 @@ func montar_transicion(ruta_id: String) -> Node:
 func _draw() -> void:
 	for y in range(alto):
 		for x in range(ancho):
+			var chunk = chunks.get(_clave_chunk(chunk_de_casilla(Vector2i(x, y))))
+			if chunk != null and not chunk.activo:
+				continue
 			var centro := Iso.centro(x, y)
 			var color := COLOR_SUELO if (x + y) % 2 == 0 else COLOR_SUELO_ALT
 			if x == ancho / 2 or y == alto / 2:
