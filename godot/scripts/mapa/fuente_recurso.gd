@@ -34,8 +34,11 @@ func definicion() -> FuenteRecursoData:
 func cantidad() -> int:
 	return RecursosMundo.cantidad(identidad.instancia if identidad != null else "")
 
-func disponible(_quien: Node) -> bool:
-	return cantidad() > 0
+func disponible(quien: Node) -> bool:
+	if cantidad() <= 0 or quien == null or not quien.has_method("inventario"):
+		return false
+	var destino: Inventario = quien.inventario()
+	return RecursosMundo.puede_recolectar(identidad.instancia, destino)
 
 func texto_accion() -> String:
 	var def := definicion()

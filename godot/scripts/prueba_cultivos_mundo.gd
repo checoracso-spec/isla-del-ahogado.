@@ -48,6 +48,10 @@ func _ejecutar() -> void:
 	Reloj.hora = 1.6
 	_comprobar("el cultivo madura según el reloj", CultivosMundo.etapa(parcela.identidad.instancia) == 3)
 	_comprobar("la parcela ofrece cosechar", parcela.texto_accion() == "Cosechar Cítricos")
+	var mochila_limitada := Inventario.new()
+	mochila_limitada.capacidad = 0.01
+	_comprobar("rechaza cosechar si no cabe la cosecha completa",
+		not CultivosMundo.puede_cosechar(parcela.identidad.instancia, mochila_limitada))
 	parcela.interactuar(mundo.jugador)
 	_comprobar("la cosecha llega a la mochila", Bolsa.mochila.cantidad("citricos") == 3)
 	_comprobar("cosechar deja aviso en la bitácora", _bitacora_contiene(mundo, "Cosecha de Cítricos"))

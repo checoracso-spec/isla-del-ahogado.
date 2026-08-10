@@ -28,7 +28,15 @@ func casilla() -> Vector2i:
 	return casilla_pos
 
 func disponible(quien: Node) -> bool:
-	return quien != null and quien.has_method("inventario")
+	if quien == null or not quien.has_method("inventario") or identidad == null:
+		return false
+	var inventario: Inventario = quien.inventario()
+	var e := CultivosMundo.etapa(identidad.instancia)
+	if e == 0:
+		return inventario != null and inventario.hay(definicion().semilla)
+	if e == 3:
+		return CultivosMundo.puede_cosechar(identidad.instancia, inventario)
+	return true
 
 func texto_accion() -> String:
 	var e := CultivosMundo.etapa(identidad.instancia if identidad != null else "")

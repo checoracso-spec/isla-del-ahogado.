@@ -25,6 +25,22 @@ func registrar(parcela) -> void:
 func estado(instancia: String) -> Dictionary:
 	return (_estados.get(instancia, {}) as Dictionary).duplicate(true)
 
+## Consulta sin efectos para que una parcela no ofrezca cosechar si la
+## mochila no puede recibir la cosecha completa.
+func puede_cosechar(instancia: String, inventario: Inventario) -> bool:
+	if not _estados.has(instancia) or inventario == null:
+		return false
+	var estado: Dictionary = _estados[instancia]
+	if not bool(estado.get("sembrada", false)) or not _esta_lista(estado):
+		return false
+	var def: CultivoData = BaseDeDatos.cultivo(str(estado.get("definicion", "")))
+	if def == null:
+		return false
+	for id in def.cosecha:
+		if inventario.hueco_para(str(id)) < int(def.cosecha[id]):
+			return false
+	return true
+
 func sembrar(instancia: String, inventario: Inventario) -> bool:
 	if not _estados.has(instancia) or inventario == null:
 		return false
@@ -44,7 +60,7 @@ func cosechar(instancia: String, inventario: Inventario) -> Dictionary:
 	if not _estados.has(instancia) or inventario == null:
 		return {"ok": false, "productos": {}}
 	var estado: Dictionary = _estados[instancia]
-	if not bool(estado.get("sembrada", false)) or not _esta_lista(estado):
+	if not puede_cosechar(instancia, inventario):
 		return {"ok": false, "productos": {}}
 	var def: CultivoData = BaseDeDatos.cultivo(str(estado.get("definicion", "")))
 	if def == null:

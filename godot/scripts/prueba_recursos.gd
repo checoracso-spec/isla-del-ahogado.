@@ -36,6 +36,10 @@ func _ejecutar() -> void:
 		fuente.is_in_group(Interactuable.GRUPO))
 
 	print("2. Recolección y agotamiento")
+	var mochila_limitada := Inventario.new()
+	mochila_limitada.capacidad = 0.01
+	_comprobar("rechaza la recolección si no cabe el lote completo",
+		not RecursosMundo.puede_recolectar(id_antes, mochila_limitada))
 	var resultado: Dictionary = fuente.recolectar(jugador.inventario())
 	_comprobar("recolecta un ciclo", int(resultado.get("ciclos", 0)) == 1)
 	_comprobar("entrega madera a la mochila", Bolsa.mochila.cantidad("madera_naufragio") == 2)

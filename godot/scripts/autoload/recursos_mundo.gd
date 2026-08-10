@@ -30,6 +30,10 @@ func registrar(fuente) -> void:
 func cantidad(instancia: String) -> int:
 	return int((_estados.get(instancia, {}) as Dictionary).get("cantidad", 0))
 
+## Consulta sin efectos para que una fuente no ofrezca una acción imposible.
+func puede_recolectar(instancia: String, destino: Inventario, ciclos: int = 1) -> bool:
+	return _ciclos_posibles(instancia, destino, ciclos) > 0
+
 func recolectar(instancia: String, destino: Inventario, ciclos: int = 1) -> Dictionary:
 	if not _estados.has(instancia) or destino == null:
 		return {"ciclos": 0, "productos": {}}
@@ -37,7 +41,7 @@ func recolectar(instancia: String, destino: Inventario, ciclos: int = 1) -> Dict
 	var def: FuenteRecursoData = BaseDeDatos.fuente(str(estado.get("definicion", "")))
 	if def == null:
 		return {"ciclos": 0, "productos": {}}
-	var posibles := mini(maxi(0, ciclos), int(estado.get("cantidad", 0)))
+	var posibles := _ciclos_posibles(instancia, destino, ciclos)
 	if posibles <= 0:
 		return {"ciclos": 0, "productos": {}}
 	# La recolección es por ciclos completos: no desaparece un nodo si el
@@ -65,6 +69,22 @@ func recolectar(instancia: String, destino: Inventario, ciclos: int = 1) -> Dict
 	if viva != null and is_instance_valid(viva):
 		viva.queue_redraw()
 	return {"ciclos": posibles, "productos": productos}
+
+func _ciclos_posibles(instancia: String, destino: Inventario, ciclos: int) -> int:
+	if not _estados.has(instancia) or destino == null:
+		return 0
+	var estado: Dictionary = _estados[instancia]
+	var def: FuenteRecursoData = BaseDeDatos.fuente(str(estado.get("definicion", "")))
+	if def == null:
+		return 0
+	var posibles := mini(maxi(0, ciclos), int(estado.get("cantidad", 0)))
+	for item_id in def.productos:
+		var por_ciclo := int(def.productos[item_id])
+		if por_ciclo <= 0:
+			continue
+		var ciclos_por_capacidad := int(floor(float(destino.hueco_para(str(item_id))) / por_ciclo))
+		posibles = mini(posibles, ciclos_por_capacidad)
+	return maxi(0, posibles)
 
 ## Recolección automática para estaciones del mundo, como la grúa del muelle.
 ## Usa la API pública de Almacen como destino logístico, pero no mezcla ese
