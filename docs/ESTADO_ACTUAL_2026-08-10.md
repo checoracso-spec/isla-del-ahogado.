@@ -231,6 +231,6 @@ extrae restos; cuando un NPC vuelve a la tarea `TRABAJANDO`, la capacidad vuelve
 a estar disponible. La prueba de recoleccion verifica tambien que esta decision
 y su configuracion se serializan como datos planos.
 
-Checkpoint de recoleccion: pendiente de sustituir por el hash despues del
-commit de este bloque.
+Checkpoint de recoleccion: `a1c81d6` conecta la red de arrastre del muelle con
+los estibadores NPC activos y conserva el respaldo estatico.
 5. Ejecutar las 26 suites y buscar errores reales después de cada bloque.
