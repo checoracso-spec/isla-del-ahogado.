@@ -4,6 +4,7 @@ const CultivoDataScript := preload("res://scripts/datos/cultivo_data.gd")
 const DestinoDataScript := preload("res://scripts/datos/destino_data.gd")
 const RutaGlobalDataScript := preload("res://scripts/datos/ruta_global_data.gd")
 const BarcoDataScript := preload("res://scripts/datos/barco_data.gd")
+const NecesidadDataScript := preload("res://scripts/datos/necesidad_data.gd")
 ## AUTOLOAD: BaseDeDatos
 ##
 ## Todo el contenido del juego vive aquí, en tablas de diccionarios.
@@ -679,6 +680,23 @@ const TABLA_HORARIOS := [
 	  ] },
 ]
 
+const TABLA_NECESIDADES := [
+	{ "id": "hambre", "nombre": "Hambre", "valor_inicial": 100.0,
+	  "cambio_base_por_hora": -2.0,
+	  "cambios_por_actividad": {} },
+	{ "id": "energia", "nombre": "Energia", "valor_inicial": 100.0,
+	  "cambio_base_por_hora": -0.8,
+	  "cambios_por_actividad": {
+		"trabajar": -1.2, "pasear": -0.3, "taberna": -0.2,
+		"dormir": 4.0, "casa": 1.0,
+	  } },
+	{ "id": "moral", "nombre": "Moral personal", "valor_inicial": 100.0,
+	  "cambio_base_por_hora": -0.1,
+	  "cambios_por_actividad": {
+		"trabajar": -0.1, "taberna": 0.8, "dormir": 0.2,
+	  } },
+]
+
 var items: Dictionary = {}        ## id -> ItemData
 var recetas: Dictionary = {}      ## id -> RecetaData
 var edificios: Dictionary = {}    ## id -> EdificioData
@@ -691,6 +709,7 @@ var cultivos: Dictionary = {}     ## id -> CultivoData
 var destinos: Dictionary = {}     ## id -> DestinoData
 var rutas: Dictionary = {}        ## id -> RutaGlobalData
 var barcos: Dictionary = {}       ## id -> BarcoData
+var necesidades: Dictionary = {}  ## id -> NecesidadData
 
 func _ready() -> void:
 	for d in TABLA_ITEMS:
@@ -714,6 +733,9 @@ func _ready() -> void:
 	for d in TABLA_HORARIOS:
 		var h: HorarioData = HorarioData.desde_dic(d)
 		horarios[h.id] = h
+	for d in TABLA_NECESIDADES:
+		var necesidad = NecesidadDataScript.desde_dic(d)
+		necesidades[necesidad.id] = necesidad
 	for d in TABLA_FUENTES:
 		var f = FuenteRecursoDataScript.desde_dic(d)
 		fuentes[f.id] = f
@@ -779,6 +801,9 @@ func interior(id: String) -> InteriorDefinicion:
 
 func horario(id: String) -> HorarioData:
 	return horarios.get(id, horarios.get("tripulacion"))
+
+func necesidad(id: String):
+	return necesidades.get(id)
 
 func fuente(id: String) -> FuenteRecursoData:
 	return fuentes.get(id)

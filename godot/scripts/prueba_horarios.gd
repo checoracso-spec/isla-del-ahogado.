@@ -46,6 +46,10 @@ func _ready() -> void:
 	_comprobar("la taberna prepara a las 10:00", estacion_taberna.en_horario(10.0))
 	_comprobar("la taberna sirve a las 20:00", estacion_taberna.en_horario(20.0))
 	_comprobar("la taberna descansa a las 14:00", not estacion_taberna.en_horario(14.0))
+	_comprobar("existen reglas data-driven de necesidades",
+		BaseDeDatos.necesidad("hambre") != null
+		and BaseDeDatos.necesidad("energia") != null
+		and BaseDeDatos.necesidad("moral") != null)
 
 	pirata = Pirata.new()
 	add_child(pirata)
@@ -62,6 +66,16 @@ func _ready() -> void:
 	_comprobar("el pirata tiene identidad estable", pirata.identidad != null)
 	_comprobar("el NPC expone un inventario base propio",
 		pirata.inventario() != null and pirata.inventario() is Inventario)
+	pirata.tarea = Pirata.Tarea.TRABAJANDO
+	var energia_antes := pirata.energia_personal
+	pirata.actualizar_necesidades(1.0)
+	_comprobar("el trabajo desgasta energia desde datos",
+		pirata.energia_personal < energia_antes)
+	pirata.tarea = Pirata.Tarea.DURMIENDO
+	var energia_despues_trabajo := pirata.energia_personal
+	pirata.actualizar_necesidades(1.0)
+	_comprobar("dormir recupera energia desde datos",
+		pirata.energia_personal > energia_despues_trabajo)
 	pirata.inventario().anadir("ron", 2)
 	pirata.oro_personal = 37
 	pirata.hambre = 61.0

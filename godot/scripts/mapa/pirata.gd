@@ -66,6 +66,35 @@ func necesidad(id: String) -> float:
 		"moral": return moral_personal
 		_: return 0.0
 
+## Avanza necesidades en horas de juego. No consume recursos: la comida y el
+## ron se resolveran desde servicios de edificio en un bloque posterior.
+func actualizar_necesidades(horas: float) -> void:
+	if horas <= 0.0:
+		return
+	var actividad := _actividad_de_tarea()
+	for id in ["hambre", "energia", "moral"]:
+		var regla = BaseDeDatos.necesidad(id)
+		if regla == null:
+			continue
+		var valor: float = necesidad(id) + float(regla.cambio_por_hora(actividad)) * horas
+		_asignar_necesidad(id, clampf(valor, 0.0, 100.0))
+	_anotar_estado()
+
+func _asignar_necesidad(id: String, valor: float) -> void:
+	match id:
+		"hambre": hambre = valor
+		"energia": energia_personal = valor
+		"moral": moral_personal = valor
+
+func _actividad_de_tarea() -> String:
+	match tarea:
+		Tarea.TRABAJANDO, Tarea.YENDO_A_TRABAJAR: return "trabajar"
+		Tarea.A_LA_TABERNA: return "taberna"
+		Tarea.DURMIENDO: return "dormir"
+		Tarea.EN_CASA: return "casa"
+		Tarea.COMIENDO: return "comer"
+		_: return "pasear"
+
 func montar(p_id: String, p_nombre: String, p_casa: Vector2i, p_taberna: Vector2i,
 		semilla: int, p_horario_id: String = "tripulacion",
 		p_trabajo: Vector2i = Vector2i(-1, -1), p_clave: String = "") -> void:
@@ -140,6 +169,8 @@ func serializar() -> Dictionary:
 
 ## La rutina sale del estado real del juego, no de un temporizador ciego.
 func actualizar(delta: float, _nivel: int) -> void:
+	if not Reloj.pausado:
+		actualizar_necesidades((24.0 / Reloj.DURACION_DIA_SEG) * delta * Reloj.velocidad)
 	_pensar(delta)
 	var distancia := destino - pos_tile
 	if distancia.length() <= 0.08:
