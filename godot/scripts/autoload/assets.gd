@@ -25,6 +25,7 @@ var defectos: Dictionary = {}
 
 var _assets: Dictionary = {}          ## clave -> Dictionary del manifiesto
 var _texturas: Dictionary = {}        ## clave -> Texture2D (caché)
+var _placeholder_cache: Dictionary = {} ## clave -> bool
 var _problemas: Array[String] = []
 
 func _ready() -> void:
@@ -37,6 +38,7 @@ func _ready() -> void:
 func cargar_manifiesto(ruta: String) -> bool:
 	_assets.clear()
 	_texturas.clear()
+	_placeholder_cache.clear()
 	_problemas.clear()
 
 	if not FileAccess.file_exists(ruta):
@@ -161,6 +163,38 @@ func huella(clave: String) -> Vector2i:
 	if h.size() < 2:
 		return Vector2i(1, 1)
 	return Vector2i(int(h[0]), int(h[1]))
+
+## Los primeros assets del kit se generaron con guías cyan y cruces magenta.
+## Se detectan por sus píxeles, no por nombres de archivo: así un mod puede
+## sustituir el PNG sin tocar código y el juego nunca mostrará una guía de
+## validación como si fuera arte final.
+func es_placeholder(clave: String) -> bool:
+	if _placeholder_cache.has(clave):
+		return _placeholder_cache[clave]
+	var textura_actual := textura(clave)
+	if textura_actual == null:
+		_placeholder_cache[clave] = true
+		return true
+	var imagen := textura_actual.get_image()
+	if imagen == null or imagen.is_empty():
+		_placeholder_cache[clave] = false
+		return false
+	var cyan := 0
+	var magenta := 0
+	var paso_x := maxi(1, imagen.get_width() / 96)
+	var paso_y := maxi(1, imagen.get_height() / 96)
+	for y in range(0, imagen.get_height(), paso_y):
+		for x in range(0, imagen.get_width(), paso_x):
+			var p := imagen.get_pixel(x, y)
+			if p.a < 0.5:
+				continue
+			if p.r < 0.25 and p.g > 0.75 and p.b > 0.75:
+				cyan += 1
+			elif p.r > 0.75 and p.g < 0.25 and p.b > 0.75:
+				magenta += 1
+	var resultado := cyan >= 2 and magenta >= 1
+	_placeholder_cache[clave] = resultado
+	return resultado
 
 ## Lo que el asset DECLARA sobre su luz. Vacío si no declara ninguna.
 ## Ojo: esto no enciende nada. Construir la PointLight2D y decidir cuándo se

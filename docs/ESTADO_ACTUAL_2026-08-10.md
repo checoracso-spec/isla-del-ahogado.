@@ -282,6 +282,26 @@ cosechar; esa ruta queda cubierta por la prueba de cultivos en mundo.
 La prueba de persistencia entre procesos tambien guarda una parcela fertilizada
 en el proceso A y verifica el indicador `fertilizada` en el proceso B.
 
+## Legibilidad del interior de la HerrerÃ­a
+
+La HerrerÃ­a conserva su layout y sus datos de producciÃ³n, pero ahora el
+montaje visual no muestra las guÃ­as cyan/magenta de los placeholders tÃ©cnicos.
+`Assets.es_placeholder()` las detecta por pÃ­xeles y `MuebleVisual` ofrece un
+reemplazo provisional limpio para banco, horno, yunque, estanterÃ­a, carbÃ³n,
+herramientas y panoplia. La fragua, el cofre y las escaleras siguen usando sus
+assets artÃ­sticos existentes.
+
+La colisiÃ³n continÃºa usando sÃ³lo la huella declarada de la base del mueble.
+Los interactuables reciben casillas de acceso libres alrededor de esa huella,
+por lo que el jugador no tiene que intentar ocupar el mismo tile que la fragua
+o el banco. Un respaldo continuo de suelo y zÃ³calos de muro tapa las juntas
+transparentes de los PNG sin modificar `Iso.gd` ni las texturas fuente.
+
+Este bloque pasa `prueba_jugador` con 189/189, `prueba_assets` con 89/89 y el
+arranque de `mundo.tscn` sin errores reales. Los muebles provisionales siguen
+siendo temporales: el siguiente pase artÃ­stico los sustituirÃ¡ por sprites
+definitivos sin cambiar los datos ni la lÃ³gica.
+
 ## Oferta dinamica del mercado
 
 `MercadoManager` conserva el stock en un `Inventario` independiente, pero sus

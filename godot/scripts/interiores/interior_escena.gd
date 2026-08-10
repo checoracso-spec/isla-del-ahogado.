@@ -22,6 +22,7 @@ const TransicionZonaScript := preload("res://scripts/interiores/transicion_zona.
 const EstacionCrafteoScript := preload("res://scripts/interiores/estacion_crafteo.gd")
 const PuestoMercadoScript := preload("res://scripts/interiores/puesto_mercado.gd")
 const PuestoTabernaScript := preload("res://scripts/interiores/puesto_taberna.gd")
+const MuebleVisualScript := preload("res://scripts/interiores/mueble_visual.gd")
 
 signal cofre_abierto(cofre: Cofre)
 signal transicion_solicitada(transicion: Interactuable, quien: Node)
@@ -172,8 +173,17 @@ func _montar_muebles_visual(def: InteriorDefinicion) -> void:
 		soporte.position = _punto_anclaje(_casilla_de(mueble), _huella_de(mueble))
 		_contenedor_para_capa(str(mueble.get("capa_visual", "mundo"))).add_child(soporte)
 		if clave != "" and Assets.existe(clave):
-			var sprite := Assets.sprite(clave)
-			soporte.add_child(sprite)
+			if Assets.es_placeholder(clave):
+				var reemplazo := MuebleVisualScript.new()
+				reemplazo.name = "VisualProvisional"
+				reemplazo.configurar(str(mueble.get("tipo", "mueble")), _huella_de(mueble))
+				soporte.add_child(reemplazo)
+			else:
+				var sprite := Assets.sprite(clave)
+				soporte.add_child(sprite)
+		if soporte is Interactuable:
+			(soporte as Interactuable).establecer_casillas_interaccion(
+				_casillas_de_acceso(_casilla_de(mueble), _huella_de(mueble)))
 
 ## Decide únicamente el orden visual. Transitabilidad y comportamiento siguen
 ## definidos por `solido`, `huella` y el tipo de objeto. Sin arte base modular,
@@ -212,6 +222,7 @@ func _montar_transiciones(def: InteriorDefinicion) -> void:
 		t.accion = str(mueble.get("accion", "Usar"))
 		t.position = _punto_anclaje(casilla, _huella_de(mueble))
 		t.usar_asset(str(mueble.get("asset", "")))
+		t.establecer_casillas_interaccion(_casillas_de_acceso(casilla, _huella_de(mueble)))
 		actores.add_child(t)
 		t.atravesada.connect(func(transicion: Interactuable, quien: Node):
 			transicion_solicitada.emit(transicion, quien))
@@ -239,6 +250,7 @@ func _montar_cofres(def: InteriorDefinicion) -> void:
 		c.zona_id = identidad.instancia
 		c.casilla_interior = casilla
 		c.position = _punto_anclaje(casilla, _huella_de(mueble))
+		c.establecer_casillas_interaccion(_casillas_de_acceso(casilla, _huella_de(mueble)))
 		actores.add_child(c)
 		Entidades.vincular(c.identidad, c)
 		c.abierto.connect(func(quien: Cofre): cofre_abierto.emit(quien))
@@ -252,10 +264,33 @@ func _casilla_de(mueble: Dictionary) -> Vector2i:
 	return c if c is Vector2i else Vector2i.ZERO
 
 func _huella_de(mueble: Dictionary) -> Vector2i:
-	var h: Variant = mueble.get("huella", Vector2i(1, 1))
+	var h: Variant = mueble.get("huella", null)
+	if h == null:
+		var clave := str(mueble.get("asset", ""))
+		if clave != "" and Assets.existe(clave):
+			return Assets.huella(clave)
+		h = Vector2i(1, 1)
 	if h is Vector2i:
 		return Vector2i(maxi(1, h.x), maxi(1, h.y))
 	return Vector2i(1, 1)
+
+func _casillas_de_acceso(origen: Vector2i, huella: Vector2i) -> Array[Vector2i]:
+	var puntos: Array[Vector2i] = []
+	var rejilla := transitable as TransitableRejilla
+	var candidatos: Array[Vector2i] = []
+	for dx in huella.x:
+		candidatos.append(origen + Vector2i(dx, -1))
+		candidatos.append(origen + Vector2i(dx, huella.y))
+	for dy in huella.y:
+		candidatos.append(origen + Vector2i(-1, dy))
+		candidatos.append(origen + Vector2i(huella.x, dy))
+	for candidato in candidatos:
+		if rejilla == null or rejilla.puede_pisar(candidato):
+			if candidato not in puntos:
+				puntos.append(candidato)
+	if puntos.is_empty():
+		puntos.append(origen)
+	return puntos
 
 func _punto_anclaje(origen: Vector2i, huella: Vector2i) -> Vector2:
 	if huella == Vector2i.ONE:
@@ -303,6 +338,27 @@ func _draw() -> void:
 			_muro(Vector2i(x, 0))
 		for y in range(1, definicion.alto):
 			_muro(Vector2i(0, y))
+	else:
+		# Los PNG de suelo tienen esquinas transparentes para conservar el
+		# rombo. El respaldo se dibuja en este nodo padre, antes de sus hijos,
+		# para cerrar sólo esas juntas sin alterar la estructura de ArteBase.
+		draw_colored_polygon(PackedVector2Array([
+			Iso.centro(0, 0) + Vector2(0, -Iso.MEDIO_Y),
+			Iso.centro(definicion.ancho - 1, 0) + Vector2(Iso.MEDIO_X, 0),
+			Iso.centro(definicion.ancho - 1, definicion.alto - 1) + Vector2(0, Iso.MEDIO_Y),
+			Iso.centro(0, definicion.alto - 1) + Vector2(-Iso.MEDIO_X, 0),
+		]), GlobalColors.PALETA["gris_oscuro"])
+		# Zócalos continuos bajo los sprites de pared. Las piezas conservan su
+		# arte y sus pivotes, pero los extremos transparentes ya no dejan ver
+		# el fondo entre una tabla y la siguiente.
+		var norte := PackedVector2Array()
+		for x in definicion.ancho:
+			norte.append(Iso.centro(x, 0))
+		draw_polyline(norte, GlobalColors.PALETA["marron_profundo"], 8.0, true)
+		var oeste := PackedVector2Array()
+		for y in range(1, definicion.alto):
+			oeste.append(Iso.centro(0, y))
+		draw_polyline(oeste, GlobalColors.PALETA["marron_profundo"], 8.0, true)
 
 	# Muebles como cajas de colores, hasta que haya sprites. Los cofres no:
 	# esos se dibujan solos, porque son nodos con estado propio.
@@ -312,8 +368,10 @@ func _draw() -> void:
 		if tipo == "cofre":
 			continue
 		var clave := str(mueble.get("asset", ""))
-		if clave != "" and Assets.existe(clave):
+		if clave != "" and Assets.existe(clave) and not Assets.es_placeholder(clave):
 			continue
+		if clave != "" and Assets.es_placeholder(clave):
+			continue # MuebleVisual ya reemplazó el placeholder técnico.
 		_caja(_casilla_de(mueble), tipo)
 
 func _es_muro(x: int, y: int) -> bool:

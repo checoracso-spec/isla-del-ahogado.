@@ -65,7 +65,7 @@ func _buscar_objetivo() -> void:
 			continue
 		if not i.disponible(self):
 			continue
-		var d := pos_tile.distance_to(Vector2(i.casilla()) + Vector2(0.5, 0.5))
+		var d := i.distancia_interaccion(pos_tile)
 		if d <= i.alcance and d < mejor_dist:
 			mejor = i
 			mejor_dist = d
