@@ -6,7 +6,7 @@
 - Rejilla isométrica 128×64; `scripts/mapa/iso.gd` no se ha modificado.
 - API pública de `scripts/autoload/almacen.gd` intacta.
 - 27 escenas `prueba_*.tscn` ejecutadas en headless.
-- 763 comprobaciones instrumentadas en verde; persistencia A/B, viaje global y
+- 765 comprobaciones instrumentadas en verde; persistencia A/B, viaje global y
   profundidad
   arrancan sin errores reales.
 - La escena principal `res://escenas/mundo.tscn` arranca sin `SCRIPT ERROR`,
@@ -27,6 +27,10 @@
 - Fuentes de recursos data-driven: naufragio, manglar, veta de azufre y
   semillero. Se agotan, regeneran, guardan su identidad y entregan lotes
   completos sin sobrepasar la capacidad del inventario.
+- El naufragio de la isla principal se ubica de forma determinista en la costa
+  transitable más cercana a la plaza, evitando bordes, edificios y duplicados;
+  así queda dentro del recorrido inicial de exploración sin convertir la
+  posición en un valor hardcodeado.
 - Parcelas de cítricos, caña y tabaco. Sembrar, crecer, cosechar y persistir;
   la cosecha no se ofrece si la mochila no puede recibirla completa.
 - Recolección automática opcional de la grúa del muelle. La red se instala
@@ -140,7 +144,7 @@ antiguas a `montar()` siguen funcionando y usan la casa como destino laboral
 por compatibilidad. Barbanegra ya demuestra el caso real: vive en la cabana
 del capitan y trabaja en la herreria.
 
-El bloque se verifico con 27 suites y 763 comprobaciones, incluido el arranque
+El bloque se verifico con 27 suites y 765 comprobaciones, incluido el arranque
 de `mundo.tscn`, sin modificar `iso.gd` ni la API publica de `Almacen`.
 
 ## Contenido remoto incorporado en este checkpoint

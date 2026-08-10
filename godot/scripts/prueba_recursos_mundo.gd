@@ -58,6 +58,12 @@ func _ejecutar() -> void:
 
 	var naufragio = por_tipo["restos_naufragio"]
 	_comprobar("el naufragio está junto al agua", _junto_a_agua(naufragio.casilla()))
+	_comprobar("el naufragio no aparece en el borde de la isla",
+		naufragio.casilla().x >= 2 and naufragio.casilla().y >= 2
+		and naufragio.casilla().x < Mundo.ANCHO - 2
+		and naufragio.casilla().y < Mundo.ALTO - 2)
+	_comprobar("el naufragio queda a distancia de exploración",
+		Vector2(naufragio.casilla() - mundo.isla.centro_plaza).length() < 15.0)
 	_comprobar("la identidad del naufragio es estable", naufragio.identidad != null
 		and naufragio.identidad.clave == "isla:restos_naufragio@%d,%d" % [naufragio.casilla().x, naufragio.casilla().y])
 

@@ -314,7 +314,7 @@ func _crear_fuentes_recurso_ampliadas() -> void:
 			continue
 		var casilla := Vector2i(-1, -1)
 		if def.zona == "costa":
-			casilla = _buscar_costa_libre()
+			casilla = _buscar_costa_libre(ubicadas)
 		else:
 			# El mapa actual aún no tiene biomas de bosque/montaña separados.
 			# El criterio queda en datos para cambiarlo cuando se amplíe el mapa.
@@ -363,11 +363,16 @@ func _buscar_tierra_libre(espesura_min: float, espesura_max: float,
 			return t
 	return Vector2i(-1, -1)
 
-func _buscar_costa_libre() -> Vector2i:
-	for y in range(1, ALTO - 1):
-		for x in range(1, ANCHO - 1):
+func _buscar_costa_libre(excluir: Array[Vector2i] = []) -> Vector2i:
+	## Elegimos la costa por proximidad al asentamiento, no por el primer píxel
+	## del barrido. Así el naufragio queda explorable desde la plaza y no en el
+	## borde de la isla, manteniendo una elección determinista entre partidas.
+	var mejor := Vector2i(-1, -1)
+	var mejor_distancia := INF
+	for y in range(2, ALTO - 2):
+		for x in range(2, ANCHO - 2):
 			var t := Vector2i(x, y)
-			if transitable.ocupadas.has(t) or not transitable.puede_pisar(t):
+			if t in excluir or transitable.ocupadas.has(t) or not transitable.puede_pisar(t):
 				continue
 			var tiene_arena := false
 			for nivel in isla.niveles_de(x, y):
@@ -381,9 +386,13 @@ func _buscar_costa_libre() -> Vector2i:
 				if isla.nivel(x + d.x, y + d.y) == GeneradorIsla.AGUA:
 					junto_agua = true
 					break
-			if junto_agua:
-				return t
-	return Vector2i(-1, -1)
+			if not junto_agua:
+				continue
+			var distancia := Vector2(t - isla.centro_plaza).length_squared()
+			if distancia < mejor_distancia:
+				mejor_distancia = distancia
+				mejor = t
+	return mejor
 
 func _crear_parcela_cultivo() -> void:
 	var excluir: Array[Vector2i] = []
