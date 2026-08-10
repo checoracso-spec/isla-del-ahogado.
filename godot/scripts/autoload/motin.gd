@@ -145,8 +145,12 @@ func _plagas() -> void:
 				incidente.emit("plaga", "%s: -%d %s" % [a.nombre, n, BaseDeDatos.nombre_item(id)])
 
 ## Placeholder honesto: cuando existan mejoras de almacén, léelas aquí.
-func _neutralizada(_a: AnimalData) -> bool:
-	return false
+func _neutralizada(a: AnimalData) -> bool:
+	if a == null or a.contramedida == "":
+		return false
+	if a.contramedida == "cofre_nivel_2":
+		return false
+	return AnimalesMundo.tiene_domestico(a.contramedida)
 
 # ---------------------------------------------------------------------------
 

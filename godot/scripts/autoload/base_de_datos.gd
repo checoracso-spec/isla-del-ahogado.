@@ -547,6 +547,12 @@ const TABLA_ANIMALES := [
 	  "produce": {}, "consume": { "raciones": 1 },
 	  "desc": "Asignables a un personaje: amplían el radio de visión en la niebla." },
 
+	{ "id": "gato_de_barco", "nombre": "Gato de Barco", "tipo": "utilidad",
+	  "habitat": "puerto", "domestico": true,
+	  "generar_en_mundo": true, "orden_mundo": 4,
+	  "produce": {}, "consume": {},
+	  "desc": "Mantiene las ratas lejos de las raciones del muelle." },
+
 	{ "id": "rata_muelle", "nombre": "Ratas de Muelle", "tipo": "plaga",
 	  "habitat": "puerto", "domestico": false,
 	  "produce": {}, "consume": { "raciones": 3 },

@@ -44,6 +44,16 @@ func anotar(animal: Node) -> void:
 func estado(instancia: String) -> Dictionary:
 	return (_estados.get(instancia, {}) as Dictionary).duplicate(true)
 
+func tiene_domestico(definicion_id: String) -> bool:
+	for animal in _vivas.values():
+		if animal == null or not is_instance_valid(animal):
+			continue
+		if str(animal.get("definicion_id")) == definicion_id:
+			var definicion = animal.get("definicion")
+			if definicion != null and bool(definicion.domestico):
+				return true
+	return false
+
 func _al_salir(instancia: String) -> void:
 	_vivas.erase(instancia)
 

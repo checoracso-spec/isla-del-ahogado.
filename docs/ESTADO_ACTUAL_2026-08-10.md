@@ -6,7 +6,7 @@
 - Rejilla isométrica 128×64; `scripts/mapa/iso.gd` no se ha modificado.
 - API pública de `scripts/autoload/almacen.gd` intacta.
 - 27 escenas `prueba_*.tscn` ejecutadas en headless.
-- 738 comprobaciones instrumentadas en verde; persistencia A/B, viaje global y
+- 741 comprobaciones instrumentadas en verde; persistencia A/B, viaje global y
   profundidad
   arrancan sin errores reales.
 - La escena principal `res://escenas/mundo.tscn` arranca sin `SCRIPT ERROR`,
@@ -68,8 +68,9 @@ velocidad, radio de deambular, ciclo nocturno, identidad y estado plano en
 desde `BaseDeDatos`: cerdo salvaje, cabra de montaña y loro vigía. Cada entidad
 usa la transitabilidad común, aparece con identidad estable y se incluye en el
 guardado; la suite A/B verifica que el cerdo conserva su posición entre
-procesos. El sistema todavía no implementa reproducción, producción diaria,
-manadas grandes ni comportamiento social.
+procesos. El gato de barco ya se genera en el puerto y neutraliza la
+contramedida declarada por las ratas. El sistema todavía no implementa
+reproducción, producción diaria, manadas grandes ni comportamiento social.
 
 ## Autoloads registrados
 
@@ -128,7 +129,7 @@ antiguas a `montar()` siguen funcionando y usan la casa como destino laboral
 por compatibilidad. Barbanegra ya demuestra el caso real: vive en la cabana
 del capitan y trabaja en la herreria.
 
-El bloque se verifico con 27 suites y 738 comprobaciones, incluido el arranque
+El bloque se verifico con 27 suites y 741 comprobaciones, incluido el arranque
 de `mundo.tscn`, sin modificar `iso.gd` ni la API publica de `Almacen`.
 
 ## Contenido remoto incorporado en este checkpoint

@@ -59,6 +59,16 @@ func _ready() -> void:
 	animal.actualizar(0.1, Actor.Detalle.CERCA)
 	_comprobar("el animal vuelve al ciclo diurno", animal.detalle != Actor.Detalle.DORMIDO)
 
+	var gato = AnimalScript.new()
+	add_child(gato)
+	var gato_montado: bool = bool(gato.montar("gato_de_barco", "isla:gato_de_barco@5,5",
+		Vector2i(5, 5), rejilla, 11))
+	_comprobar("monta el gato de barco desde datos", gato_montado)
+	_comprobar("el gato queda registrado como animal domestico",
+		gato_montado and AnimalesMundo.tiene_domestico("gato_de_barco"))
+	_comprobar("el gato neutraliza la plaga de ratas",
+		Motin._neutralizada(BaseDeDatos.animal("rata_muelle")))
+
 	print("=== %d/%d comprobaciones de animales ===" % [correctas, correctas + fallos])
 	get_tree().quit(0 if fallos == 0 else 1)
 
