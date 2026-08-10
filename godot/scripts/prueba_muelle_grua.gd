@@ -30,6 +30,10 @@ func _ejecutar() -> void:
 		return
 	boton.pressed.emit()
 	_comprobar("la red queda activa", MuelleManager.grua_activa)
+	_comprobar("la red usa la jornada de muelle", MuelleManager._recolector != null
+		and MuelleManager._recolector.horario_id == "muelle")
+	_comprobar("la red se detiene fuera de horario", not MuelleManager._recolector.en_horario(20.0)
+		and MuelleManager._recolector.en_horario(10.0))
 	_comprobar("se descuentan los materiales de instalación",
 		Almacen.cantidad("tablon_tratado") == 0 and Almacen.cantidad("doblon") == 0)
 	_comprobar("se detiene la receta automática antigua",

@@ -63,7 +63,7 @@ func estado() -> Dictionary:
 	return {
 		"activa": grua_activa,
 		"fuente": fuente_instancia,
-		"trabajadores": int(_recolector.trabajadores) if _recolector != null else 0,
+		"trabajadores": int(_recolector.trabajadores_efectivos()) if _recolector != null else 0,
 	}
 
 func _montar_recolector() -> void:
@@ -74,7 +74,7 @@ func _montar_recolector() -> void:
 	_recolector = RecolectorRecursoScript.new()
 	_recolector.name = "Recolector_Red_Arrastre"
 	add_child(_recolector)
-	_recolector.montar(fuente_instancia, "muelle_grua", 3, INTERVALO_HORAS)
+	_recolector.montar(fuente_instancia, "muelle_grua", 3, INTERVALO_HORAS, "muelle")
 	# En la isla, la grÃºa necesita estibadores vivos del muelle. El recolector
 	# conserva el modo estÃ¡tico para pruebas y zonas sin poblaciÃ³n.
 	_recolector.usar_trabajadores_npc = true

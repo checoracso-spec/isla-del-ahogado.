@@ -6,7 +6,7 @@
 - Rejilla isométrica 128×64; `scripts/mapa/iso.gd` no se ha modificado.
 - API pública de `scripts/autoload/almacen.gd` intacta.
 - 26 escenas `prueba_*.tscn` ejecutadas en headless.
-- 708 comprobaciones instrumentadas en verde; persistencia A/B, viaje global y
+- 710 comprobaciones instrumentadas en verde; persistencia A/B, viaje global y
   profundidad
   arrancan sin errores reales.
 - La escena principal `res://escenas/mundo.tscn` arranca sin `SCRIPT ERROR`,
@@ -121,7 +121,7 @@ antiguas a `montar()` siguen funcionando y usan la casa como destino laboral
 por compatibilidad. Barbanegra ya demuestra el caso real: vive en la cabana
 del capitan y trabaja en la herreria.
 
-El bloque se verifico con 26 suites y 708 comprobaciones, incluido el arranque
+El bloque se verifico con 26 suites y 710 comprobaciones, incluido el arranque
 de `mundo.tscn`, sin modificar `iso.gd` ni la API publica de `Almacen`.
 
 ## Contenido remoto incorporado en este checkpoint
@@ -230,6 +230,9 @@ La red de arrastre del muelle usa este modo: si no hay estibadores activos, no
 extrae restos; cuando un NPC vuelve a la tarea `TRABAJANDO`, la capacidad vuelve
 a estar disponible. La prueba de recoleccion verifica tambien que esta decision
 y su configuracion se serializan como datos planos.
+
+El recolector del muelle declara ademas `horario_id = "muelle"`: queda detenido
+durante la noche igual que el puesto de gestion y la estacion automatica vieja.
 
 Checkpoint de recoleccion: `a1c81d6` conecta la red de arrastre del muelle con
 los estibadores NPC activos y conserva el respaldo estatico.
