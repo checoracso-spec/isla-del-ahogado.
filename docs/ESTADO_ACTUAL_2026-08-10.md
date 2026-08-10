@@ -6,7 +6,7 @@
 - Rejilla isométrica 128×64; `scripts/mapa/iso.gd` no se ha modificado.
 - API pública de `scripts/autoload/almacen.gd` intacta.
 - 26 escenas `prueba_*.tscn` ejecutadas en headless.
-- 700 comprobaciones instrumentadas en verde; persistencia A/B, viaje global y
+- 701 comprobaciones instrumentadas en verde; persistencia A/B, viaje global y
   profundidad
   arrancan sin errores reales.
 - La escena principal `res://escenas/mundo.tscn` arranca sin `SCRIPT ERROR`,
@@ -121,7 +121,7 @@ antiguas a `montar()` siguen funcionando y usan la casa como destino laboral
 por compatibilidad. Barbanegra ya demuestra el caso real: vive en la cabana
 del capitan y trabaja en la herreria.
 
-El bloque se verifico con 26 suites y 700 comprobaciones, incluido el arranque
+El bloque se verifico con 26 suites y 701 comprobaciones, incluido el arranque
 de `mundo.tscn`, sin modificar `iso.gd` ni la API publica de `Almacen`.
 
 ## Contenido remoto incorporado en este checkpoint
@@ -202,6 +202,8 @@ edificio, número de trabajadores y horario del automatizador. `Mundo` y
 `ZonaRemota` sólo lo montan para cultivos que declaran esos campos; los demás
 siguen siendo parcelas manuales. El estado guardado continúa siendo el de
 `CultivosMundo`, por lo que no se serializan referencias a los componentes.
+En la isla, además, el automatizador puede consultar `NpcsMundo` para detenerse
+cuando no haya un trabajador real en el puesto declarado.
 
 `NpcsMundo` registra las entidades vivas y guarda solo diccionarios planos:
 posicion, direccion, destino, tarea y estado. Los piratas tienen identidades

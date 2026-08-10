@@ -412,6 +412,7 @@ func _montar_automatizador_cultivo(parcela: ParcelaCultivo) -> void:
 	var recolector = RecolectorCultivoScript.new()
 	recolector.name = "RecolectorCultivo_" + parcela.definicion_id
 	_objetos.add_child(recolector)
+	recolector.usar_trabajadores_npc = true
 	recolector.montar(parcela.identidad.instancia, def.automatizador_edificio,
 		def.automatizador_trabajadores, def.automatizador_horario_id)
 	recolectores_cultivo.append(recolector)
