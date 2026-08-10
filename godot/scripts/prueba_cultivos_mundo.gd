@@ -19,6 +19,7 @@ func _ready() -> void:
 
 func _ejecutar() -> void:
 	_comprobar("el mundo crea tres parcelas", mundo.parcelas_cultivo.size() == 3)
+	_comprobar("el cultivo con datos monta automatizador", mundo.recolectores_cultivo.size() == 1)
 	if mundo.parcelas_cultivo.size() < 3:
 		return
 	var por_tipo := {}

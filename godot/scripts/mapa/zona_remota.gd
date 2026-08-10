@@ -11,6 +11,7 @@ const COLOR_CAMINO := Color("8f6b4b")
 const TransicionGlobalScript := preload("res://scripts/mapa/transicion_global.gd")
 const FuenteRecursoScript := preload("res://scripts/mapa/fuente_recurso.gd")
 const ParcelaCultivoScript := preload("res://scripts/mapa/parcela_cultivo.gd")
+const RecolectorCultivoScript := preload("res://scripts/mapa/recolector_cultivo.gd")
 
 var destino_id: String = ""
 var ancho: int = 1
@@ -18,6 +19,7 @@ var alto: int = 1
 var transiciones: Array = []
 var fuentes_recurso: Array = []
 var parcelas_cultivo: Array = []
+var recolectores_cultivo: Array = []
 
 func construir(p_destino_id: String, p_ancho: int = 16, p_alto: int = 12) -> void:
 	destino_id = p_destino_id
@@ -44,8 +46,12 @@ func montar_contenido() -> void:
 	for parcela in parcelas_cultivo:
 		if parcela != null and is_instance_valid(parcela):
 			parcela.queue_free()
+	for recolector in recolectores_cultivo:
+		if recolector != null and is_instance_valid(recolector):
+			recolector.queue_free()
 	fuentes_recurso.clear()
 	parcelas_cultivo.clear()
+	recolectores_cultivo.clear()
 	var destino: Resource = BaseDeDatos.destino(destino_id)
 	if destino == null:
 		return
@@ -75,10 +81,22 @@ func montar_contenido() -> void:
 			str(destino.cultivos[i]), casilla.x, casilla.y]
 		if parcela.montar(str(destino.cultivos[i]), clave, casilla):
 			parcelas_cultivo.append(parcela)
+			_montar_automatizador_cultivo(parcela)
 			usadas.append(casilla)
 		else:
 			parcela.queue_free()
 	queue_redraw()
+
+func _montar_automatizador_cultivo(parcela: ParcelaCultivo) -> void:
+	var def := parcela.definicion()
+	if def == null or def.automatizador_edificio == "" or def.automatizador_trabajadores <= 0:
+		return
+	var recolector = RecolectorCultivoScript.new()
+	recolector.name = "RecolectorCultivo_" + parcela.definicion_id
+	actores.add_child(recolector)
+	recolector.montar(parcela.identidad.instancia, def.automatizador_edificio,
+		def.automatizador_trabajadores, def.automatizador_horario_id)
+	recolectores_cultivo.append(recolector)
 
 func _casilla_contenido(semilla: int, usadas: Array) -> Vector2i:
 	var margen := 2

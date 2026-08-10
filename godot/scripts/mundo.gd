@@ -9,6 +9,7 @@ const PanelMapaGlobalScript := preload("res://scripts/ui/panel_mapa_global.gd")
 const PuestoMuelleScript := preload("res://scripts/interiores/puesto_muelle.gd")
 const FuenteRecursoScript := preload("res://scripts/mapa/fuente_recurso.gd")
 const ParcelaCultivoScript := preload("res://scripts/mapa/parcela_cultivo.gd")
+const RecolectorCultivoScript := preload("res://scripts/mapa/recolector_cultivo.gd")
 const ZonaExteriorScript := preload("res://scripts/mapa/zona_exterior.gd")
 const ZonaRemotaScript := preload("res://scripts/mapa/zona_remota.gd")
 const AnimalScript := preload("res://scripts/mapa/animal.gd")
@@ -65,6 +66,7 @@ var piratas: Array[Pirata] = []
 var puertas: Array[Puerta] = []
 var fuentes_recurso: Array = []
 var parcelas_cultivo: Array = []
+var recolectores_cultivo: Array = []
 var animales: Array = []
 var zona_global_activa: Zona = null
 
@@ -398,9 +400,21 @@ func _crear_parcela_cultivo() -> void:
 		var clave := Entidades.clave_en(definicion_id, casilla)
 		if parcela.montar(definicion_id, clave, casilla):
 			parcelas_cultivo.append(parcela)
+			_montar_automatizador_cultivo(parcela)
 			excluir.append(casilla)
 		else:
 			parcela.queue_free()
+
+func _montar_automatizador_cultivo(parcela: ParcelaCultivo) -> void:
+	var def := parcela.definicion()
+	if def == null or def.automatizador_edificio == "" or def.automatizador_trabajadores <= 0:
+		return
+	var recolector = RecolectorCultivoScript.new()
+	recolector.name = "RecolectorCultivo_" + parcela.definicion_id
+	_objetos.add_child(recolector)
+	recolector.montar(parcela.identidad.instancia, def.automatizador_edificio,
+		def.automatizador_trabajadores, def.automatizador_horario_id)
+	recolectores_cultivo.append(recolector)
 
 func _crear_animales() -> void:
 	var ubicadas: Array[Vector2i] = []
