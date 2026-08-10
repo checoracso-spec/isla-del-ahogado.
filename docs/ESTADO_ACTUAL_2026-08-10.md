@@ -91,7 +91,7 @@ manadas grandes ni comportamiento social.
 - `97d35b4` — entidades animales guardables basadas en `Actor`.
 - `9684618` — población mínima de fauna data-driven y posición del cerdo
   verificada entre procesos.
-- `de20756` — transición jugable entre isla y zonas globales provisionales.
+- `e030b18` — transición jugable entre isla y zonas globales provisionales.
 
 ## Reglas de continuidad
 
