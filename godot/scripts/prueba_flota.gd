@@ -28,6 +28,12 @@ func _ejecutar() -> void:
 		FlotaMundo.cargar_mercancia("balandra_001", "ron", 2) == 2)
 	_comprobar("la bodega conserva la carga viva",
 		FlotaMundo.inventario_de("balandra_001").cantidad("ron") == 2)
+	FlotaMundo.barcos["balandra_001"]["capacidad_peso"] = 2.5
+	_comprobar("la bodega expone su peso ocupado", is_equal_approx(
+		FlotaMundo.peso_carga("balandra_001"), 2.4))
+	_comprobar("la bodega rechaza carga que supera el peso",
+		FlotaMundo.cargar_mercancia("balandra_001", "ron", 1) == 0)
+	FlotaMundo.barcos["balandra_001"]["capacidad_peso"] = 300.0
 	_comprobar("despacha la nave seleccionada",
 		FlotaMundo.despachar("balandra_001", "isla_principal", "isla_ceniza"))
 	_comprobar("la nave pasa al estado mar", FlotaMundo.estado("balandra_001").get("estado", "") == "mar")

@@ -37,6 +37,7 @@ func _recrear_predeterminados() -> void:
 			"provisiones": 50,
 			"carga": {},
 			"capacidad_carga": float(definicion.get("capacidad_volumen")),
+			"capacidad_peso": float(definicion.get("capacidad_peso")),
 		}
 		var inventario := Inventario.new()
 		inventario.capacidad = float(definicion.get("capacidad_volumen"))
@@ -58,9 +59,37 @@ func cargar_mercancia(instance_id: String, item_id: String, cantidad: int) -> in
 	var inv := inventario_de(instance_id)
 	if inv == null or not barcos.has(instance_id):
 		return 0
-	var aceptado := inv.anadir(item_id, cantidad)
+	var item: ItemData = BaseDeDatos.item(item_id)
+	if item == null or cantidad <= 0:
+		return 0
+	var peso_disponible := hueco_peso(instance_id)
+	var por_peso := cantidad
+	if item.peso > 0.0:
+		por_peso = mini(por_peso, int(floor(peso_disponible / item.peso)))
+	var aceptado := inv.anadir(item_id, por_peso)
 	_sincronizar_carga(instance_id)
 	return aceptado
+
+func peso_carga(instance_id: String) -> float:
+	var inv := inventario_de(instance_id)
+	if inv == null:
+		return 0.0
+	var total := 0.0
+	for id in inv.ids():
+		var item: ItemData = BaseDeDatos.item(str(id))
+		if item != null:
+			total += item.peso * inv.cantidad(str(id))
+	return total
+
+func hueco_peso(instance_id: String) -> float:
+	if not barcos.has(instance_id):
+		return 0.0
+	var b: Dictionary = barcos[instance_id]
+	var limite := float(b.get("capacidad_peso", 0.0))
+	if limite <= 0.0:
+		var def: Resource = BaseDeDatos.barco(str(b.get("definition_id", "")))
+		limite = float(def.capacidad_peso if def != null else 0.0)
+	return maxf(0.0, limite - peso_carga(instance_id))
 
 func descargar_mercancia(instance_id: String, item_id: String, cantidad: int) -> int:
 	var inv := inventario_de(instance_id)
@@ -176,6 +205,11 @@ func _cargar(datos: Dictionary) -> void:
 	_inventarios.clear()
 	for instance_id in barcos:
 		var b: Dictionary = barcos[instance_id]
+		if not b.has("capacidad_peso"):
+			var def: Resource = BaseDeDatos.barco(str(b.get("definition_id", "")))
+			if def != null:
+				b["capacidad_peso"] = def.capacidad_peso
+				barcos[instance_id] = b
 		var inv := Inventario.new()
 		inv.capacidad = float(b.get("capacidad_carga", 0.0))
 		inv.cargar({"items": b.get("carga", {}), "capacidad": inv.capacidad})
