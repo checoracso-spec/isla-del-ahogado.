@@ -1,0 +1,56 @@
+; Engine configuration file.
+; It's best edited using the editor UI and not directly,
+; since the parameters that go here are not all obvious.
+;
+; Format:
+;   [section] ; section goes between []
+;   param=value ; assign values to parameters
+
+config_version=5
+
+[animation]
+
+compatibility/default_parent_skeleton_in_mesh_instance_3d=true
+
+[application]
+
+config/name="Marea y Ceniza"
+config/description="Gestión de una guarida corsaria: logística, motín y expediciones."
+run/main_scene="res://escenas/mundo.tscn"
+config/features=PackedStringArray("4.7", "GL Compatibility")
+
+[autoload]
+
+Reloj="*res://scripts/autoload/reloj.gd"
+BaseDeDatos="*res://scripts/autoload/base_de_datos.gd"
+Plantel="*res://scripts/autoload/plantel.gd"
+Almacen="*res://scripts/autoload/almacen.gd"
+RastreoCarga="*res://scripts/autoload/rastreo_carga.gd"
+Motin="*res://scripts/autoload/motin.gd"
+Controles="*res://scripts/autoload/controles.gd"
+GlobalColors="*res://scripts/autoload/global_colors.gd"
+Guardado="*res://scripts/autoload/guardado.gd"
+Entidades="*res://scripts/autoload/entidades.gd"
+Assets="*res://scripts/autoload/assets.gd"
+Bolsa="*res://scripts/autoload/bolsa.gd"
+CraftingManager="*res://scripts/autoload/crafting_manager.gd"
+MercadoManager="*res://scripts/autoload/mercado_manager.gd"
+TabernaManager="*res://scripts/autoload/taberna_manager.gd"
+Ubicacion="*res://scripts/autoload/ubicacion.gd"
+Contenedores="*res://scripts/autoload/contenedores.gd"
+Interiores="*res://scripts/autoload/interiores.gd"
+RecursosMundo="*res://scripts/autoload/recursos_mundo.gd"
+MapaGlobal="*res://scripts/autoload/mapa_global.gd"
+
+[display]
+
+window/size/viewport_width=1280
+window/size/viewport_height=720
+window/size/window_width_override=1280
+window/size/window_height_override=720
+window/stretch/mode="canvas_items"
+
+[rendering]
+
+renderer/rendering_method="gl_compatibility"
+renderer/rendering_method.mobile="gl_compatibility"

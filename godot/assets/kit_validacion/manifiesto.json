@@ -1,0 +1,488 @@
+{
+	"version": 1,
+	"kit": "validacion",
+	"base": "res://assets/kit_validacion/",
+	"_nota": "Todo el pixel art se disena a resolucion LOGICA y se amplia x2 con Nearest. El PNG en disco es siempre el fisico. El validador exige tam_fisico == tam_logico * escala_pixel.",
+	"defectos": {
+		"escala_pixel": 2,
+		"filtro": "nearest",
+		"capa": "mundo"
+	},
+
+	"assets": {
+
+		"terreno.base": {
+			"tipo": "atlas_tile",
+			"archivo": "terreno/terreno_base.png",
+			"tam_fisico": [512, 64],
+			"tam_logico": [256, 32],
+			"celda_fisica": [128, 64],
+			"celda_logica": [64, 32],
+			"escala_pixel": 2,
+			"filtro": "nearest",
+			"capa": "terreno",
+			"celdas": { "hierba": 0, "tierra": 1, "arena": 2, "agua": 3 }
+		},
+
+		"terreno.trans.hierba_arena": {
+			"tipo": "atlas_mascara",
+			"archivo": "terreno/trans_hierba_arena.png",
+			"tam_fisico": [2048, 64],
+			"tam_logico": [1024, 32],
+			"celda_fisica": [128, 64],
+			"celda_logica": [64, 32],
+			"escala_pixel": 2,
+			"filtro": "nearest",
+			"capa": "terreno",
+			"orden": "mascara_explicita",
+			"_orden_nota": "celda n = mascara n. bit0 arriba, bit1 derecha, bit2 abajo, bit3 izquierda",
+			"nivel_a": "hierba",
+			"nivel_b": "arena"
+		},
+
+		"edificio.kit_casa.cuerpo": {
+			"tipo": "sprite",
+			"archivo": "edificios/kit_casa_cuerpo.png",
+			"tam_fisico": [384, 448],
+			"tam_logico": [192, 224],
+			"escala_pixel": 2,
+			"pivote": [192, 384],
+			"filtro": "nearest",
+			"capa": "mundo",
+			"orden_hijo": "cuerpo",
+			"huella": [3, 3]
+		},
+
+		"edificio.kit_casa.tejado": {
+			"tipo": "sprite",
+			"archivo": "edificios/kit_casa_tejado.png",
+			"tam_fisico": [384, 448],
+			"tam_logico": [192, 224],
+			"escala_pixel": 2,
+			"pivote": [192, 384],
+			"filtro": "nearest",
+			"capa": "mundo",
+			"orden_hijo": "tejado",
+			"pareja": "edificio.kit_casa.cuerpo",
+			"ocultable": true
+		},
+
+		"edificio.kit_casa.puerta": {
+			"tipo": "sprite",
+			"archivo": "edificios/kit_casa_puerta.png",
+			"tam_fisico": [128, 96],
+			"tam_logico": [64, 48],
+			"escala_pixel": 2,
+			"pivote": [64, 80],
+			"filtro": "nearest",
+			"capa": "marcas_suelo"
+		},
+
+		"edificio.capitania_v1.cuerpo": {
+			"tipo": "sprite",
+			"archivo": "edificios/arte/capitania_v1_cuerpo.png",
+			"tam_fisico": [384, 448],
+			"tam_logico": [192, 224],
+			"escala_pixel": 2,
+			"pivote": [192, 384],
+			"filtro": "nearest",
+			"capa": "mundo",
+			"orden_hijo": "cuerpo",
+			"huella": [3, 3]
+		},
+
+		"edificio.capitania_v1.tejado": {
+			"tipo": "sprite",
+			"archivo": "edificios/arte/capitania_v1_tejado.png",
+			"tam_fisico": [384, 448],
+			"tam_logico": [192, 224],
+			"escala_pixel": 2,
+			"pivote": [192, 384],
+			"filtro": "nearest",
+			"capa": "mundo",
+			"orden_hijo": "tejado",
+			"pareja": "edificio.capitania_v1.cuerpo",
+			"ocultable": true
+		},
+
+		"edificio.capitania_v1.puerta": {
+			"tipo": "sprite",
+			"archivo": "edificios/arte/capitania_v1_puerta.png",
+			"tam_fisico": [128, 96],
+			"tam_logico": [64, 48],
+			"escala_pixel": 2,
+			"pivote": [64, 80],
+			"filtro": "nearest",
+			"capa": "marcas_suelo"
+		},
+
+		"interior.suelo_madera": {
+			"tipo": "atlas_tile",
+			"archivo": "interiores/int_suelo_madera.png",
+			"tam_fisico": [256, 64],
+			"tam_logico": [128, 32],
+			"celda_fisica": [128, 64],
+			"celda_logica": [64, 32],
+			"escala_pixel": 2,
+			"filtro": "nearest",
+			"capa": "terreno",
+			"celdas": { "a": 0, "b": 1 }
+		},
+
+		"interior.capitania_v1.suelo_madera": {
+			"tipo": "atlas_tile",
+			"archivo": "interiores/arte/capitania_v1_suelo_madera.png",
+			"tam_fisico": [256, 64],
+			"tam_logico": [128, 32],
+			"celda_fisica": [128, 64],
+			"celda_logica": [64, 32],
+			"escala_pixel": 2,
+			"filtro": "nearest",
+			"capa": "terreno",
+			"celdas": { "a": 0, "b": 1 }
+		},
+
+		"interior.muro_norte": {
+			"tipo": "sprite",
+			"archivo": "interiores/int_muro_norte.png",
+			"tam_fisico": [128, 112],
+			"tam_logico": [64, 56],
+			"escala_pixel": 2,
+			"pivote": [64, 96],
+			"filtro": "nearest",
+			"capa": "mundo"
+		},
+
+		"interior.muro_oeste": {
+			"tipo": "sprite",
+			"archivo": "interiores/int_muro_oeste.png",
+			"tam_fisico": [128, 112],
+			"tam_logico": [64, 56],
+			"escala_pixel": 2,
+			"pivote": [64, 96],
+			"filtro": "nearest",
+			"capa": "mundo"
+		},
+
+		"interior.capitania_v1.muro_norte": {
+			"tipo": "sprite",
+			"archivo": "interiores/arte/capitania_v1_muro_norte.png",
+			"tam_fisico": [128, 112],
+			"tam_logico": [64, 56],
+			"escala_pixel": 2,
+			"pivote": [64, 96],
+			"filtro": "nearest",
+			"capa": "mundo"
+		},
+
+		"interior.capitania_v1.muro_oeste": {
+			"tipo": "sprite",
+			"archivo": "interiores/arte/capitania_v1_muro_oeste.png",
+			"tam_fisico": [128, 112],
+			"tam_logico": [64, 56],
+			"escala_pixel": 2,
+			"pivote": [64, 96],
+			"filtro": "nearest",
+			"capa": "mundo"
+		},
+
+		"interior.herreria_v1.suelo_piedra": {
+			"tipo": "atlas_tile",
+			"archivo": "interiores/arte/herreria/herreria_v1_suelo_piedra.png",
+			"tam_fisico": [256, 64], "tam_logico": [128, 32],
+			"celda_fisica": [128, 64], "celda_logica": [64, 32],
+			"escala_pixel": 2, "filtro": "nearest", "capa": "terreno",
+			"celdas": { "piedra": 0, "tinta": 1 }
+		},
+
+		"interior.herreria_v1.muro_norte": {
+			"tipo": "sprite",
+			"archivo": "interiores/arte/herreria/herreria_v1_muro_norte.png",
+			"tam_fisico": [128, 112], "tam_logico": [64, 56], "escala_pixel": 2,
+			"pivote": [64, 96], "filtro": "nearest", "capa": "mundo"
+		},
+
+		"interior.herreria_v1.muro_oeste": {
+			"tipo": "sprite",
+			"archivo": "interiores/arte/herreria/herreria_v1_muro_oeste.png",
+			"tam_fisico": [128, 112], "tam_logico": [64, 56], "escala_pixel": 2,
+			"pivote": [64, 96], "filtro": "nearest", "capa": "mundo"
+		},
+
+		"interior.herreria_v1.ventana_norte": {
+			"tipo": "sprite",
+			"archivo": "interiores/arte/herreria/herreria_v1_ventana_norte.png",
+			"tam_fisico": [128, 112], "tam_logico": [64, 56], "escala_pixel": 2,
+			"pivote": [64, 96], "filtro": "nearest", "capa": "mundo"
+		},
+
+		"interior.herreria_v1.ventana_oeste": {
+			"tipo": "sprite",
+			"archivo": "interiores/arte/herreria/herreria_v1_ventana_oeste.png",
+			"tam_fisico": [128, 112], "tam_logico": [64, 56], "escala_pixel": 2,
+			"pivote": [64, 96], "filtro": "nearest", "capa": "mundo"
+		},
+
+		"mueble.herreria.herramientas_colgadas": {
+			"tipo": "sprite",
+			"archivo": "interiores/arte/herreria/herramientas_colgadas.png",
+			"tam_fisico": [128, 128], "tam_logico": [64, 64], "escala_pixel": 2,
+			"pivote": [64, 112], "filtro": "nearest", "capa": "mundo"
+		},
+
+		"mueble.herreria.panoplia_armas": {
+			"tipo": "sprite",
+			"archivo": "interiores/arte/herreria/panoplia_armas.png",
+			"tam_fisico": [128, 144], "tam_logico": [64, 72], "escala_pixel": 2,
+			"pivote": [64, 128], "filtro": "nearest", "capa": "mundo"
+		},
+
+		"mueble.herreria.fragua": {
+			"tipo": "sprite",
+			"archivo": "interiores/arte/herreria/fragua.png",
+			"tam_fisico": [192, 256], "tam_logico": [96, 128], "escala_pixel": 2,
+			"pivote": [96, 240], "filtro": "nearest", "capa": "mundo",
+			"huella": [2, 1]
+		},
+
+		"mueble.herreria.banco_trabajo": {
+			"tipo": "sprite",
+			"archivo": "interiores/arte/herreria/banco_trabajo.png",
+			"tam_fisico": [192, 160], "tam_logico": [96, 80], "escala_pixel": 2,
+			"pivote": [96, 144], "filtro": "nearest", "capa": "mundo",
+			"huella": [2, 1]
+		},
+
+		"mueble.herreria.horno": {
+			"tipo": "sprite",
+			"archivo": "interiores/arte/herreria/horno.png",
+			"tam_fisico": [160, 256], "tam_logico": [80, 128], "escala_pixel": 2,
+			"pivote": [80, 240], "filtro": "nearest", "capa": "mundo",
+			"huella": [1, 1]
+		},
+
+		"mueble.herreria.yunque": {
+			"tipo": "sprite",
+			"archivo": "interiores/arte/herreria/yunque.png",
+			"tam_fisico": [128, 112], "tam_logico": [64, 56], "escala_pixel": 2,
+			"pivote": [64, 96], "filtro": "nearest", "capa": "mundo",
+			"huella": [1, 1]
+		},
+
+		"mueble.herreria.estanteria_herramientas": {
+			"tipo": "sprite",
+			"archivo": "interiores/arte/herreria/estanteria_herramientas.png",
+			"tam_fisico": [128, 192], "tam_logico": [64, 96], "escala_pixel": 2,
+			"pivote": [64, 176], "filtro": "nearest", "capa": "mundo",
+			"huella": [1, 1]
+		},
+
+		"mueble.herreria.deposito_carbon": {
+			"tipo": "sprite",
+			"archivo": "interiores/arte/herreria/deposito_carbon.png",
+			"tam_fisico": [128, 112], "tam_logico": [64, 56], "escala_pixel": 2,
+			"pivote": [64, 96], "filtro": "nearest", "capa": "mundo",
+			"huella": [1, 1]
+		},
+
+		"mueble.herreria.mesa_trabajo": {
+			"tipo": "sprite",
+			"archivo": "interiores/arte/herreria/mesa_trabajo.png",
+			"tam_fisico": [192, 128], "tam_logico": [96, 64], "escala_pixel": 2,
+			"pivote": [96, 112], "filtro": "nearest", "capa": "mundo",
+			"huella": [2, 1]
+		},
+
+		"mueble.capitania.escritorio": {
+			"tipo": "sprite",
+			"archivo": "interiores/arte/muebles/escritorio_capitania.png",
+			"tam_fisico": [192, 128], "tam_logico": [96, 64], "escala_pixel": 2,
+			"pivote": [96, 112], "filtro": "nearest", "capa": "mundo",
+			"huella": [2, 1]
+		},
+
+		"mueble.comun.banco_madera": {
+			"tipo": "sprite",
+			"archivo": "interiores/arte/muebles/banco_madera.png",
+			"tam_fisico": [160, 96], "tam_logico": [80, 48], "escala_pixel": 2,
+			"pivote": [80, 80], "filtro": "nearest", "capa": "mundo",
+			"huella": [1, 1]
+		},
+
+		"mueble.comun.escalera_madera": {
+			"tipo": "sprite",
+			"archivo": "interiores/arte/muebles/escalera_madera.png",
+			"tam_fisico": [160, 224], "tam_logico": [80, 112], "escala_pixel": 2,
+			"pivote": [80, 208], "filtro": "nearest", "capa": "mundo",
+			"huella": [1, 2]
+		},
+
+		"mueble.comun.escalera_madera_bajada": {
+			"tipo": "sprite",
+			"archivo": "interiores/arte/muebles/escalera_madera_bajada.png",
+			"tam_fisico": [160, 224], "tam_logico": [80, 112], "escala_pixel": 2,
+			"pivote": [80, 208], "filtro": "nearest", "capa": "mundo",
+			"huella": [1, 2]
+		},
+
+		"mueble.capitania.estanteria_nautica": {
+			"tipo": "sprite",
+			"archivo": "interiores/arte/muebles/estanteria_nautica.png",
+			"tam_fisico": [128, 192], "tam_logico": [64, 96], "escala_pixel": 2,
+			"pivote": [64, 176], "filtro": "nearest", "capa": "mundo",
+			"huella": [1, 1]
+		},
+
+		"mueble.comun.chimenea_piedra": {
+			"tipo": "sprite",
+			"archivo": "interiores/arte/muebles/chimenea_piedra.png",
+			"tam_fisico": [160, 224], "tam_logico": [80, 112], "escala_pixel": 2,
+			"pivote": [80, 208], "filtro": "nearest", "capa": "mundo",
+			"huella": [1, 1]
+		},
+
+		"mueble.comun.cofre_hierro.cerrado": {
+			"tipo": "sprite",
+			"archivo": "interiores/arte/muebles/cofre_cerrado.png",
+			"tam_fisico": [128, 144], "tam_logico": [64, 72], "escala_pixel": 2,
+			"pivote": [64, 128], "filtro": "nearest", "capa": "mundo",
+			"huella": [1, 1]
+		},
+
+		"mueble.comun.cofre_hierro.abierto": {
+			"tipo": "sprite",
+			"archivo": "interiores/arte/muebles/cofre_abierto.png",
+			"tam_fisico": [128, 144], "tam_logico": [64, 72], "escala_pixel": 2,
+			"pivote": [64, 128], "filtro": "nearest", "capa": "mundo",
+			"huella": [1, 1]
+		},
+
+		"actor.corsario.idle": {
+			"tipo": "animacion",
+			"archivo": "personajes/corsario_idle.png",
+			"tam_fisico": [256, 384],
+			"tam_logico": [128, 192],
+			"fotograma_fisico": [64, 96],
+			"fotograma_logico": [32, 48],
+			"escala_pixel": 2,
+			"pivote": [32, 84],
+			"fotogramas": 4,
+			"direcciones": ["abajo", "izquierda", "arriba", "derecha"],
+			"fps": 4,
+			"bucle": true,
+			"filtro": "nearest",
+			"capa": "mundo"
+		},
+
+		"actor.corsario.walk": {
+			"tipo": "animacion",
+			"archivo": "personajes/corsario_walk.png",
+			"tam_fisico": [512, 384],
+			"tam_logico": [256, 192],
+			"fotograma_fisico": [64, 96],
+			"fotograma_logico": [32, 48],
+			"escala_pixel": 2,
+			"pivote": [32, 84],
+			"fotogramas": 8,
+			"direcciones": ["abajo", "izquierda", "arriba", "derecha"],
+			"fps": 10,
+			"bucle": true,
+			"filtro": "nearest",
+			"capa": "mundo"
+		},
+
+		"objeto.cofre.cerrado": {
+			"tipo": "sprite",
+			"archivo": "objetos/cofre_cerrado.png",
+			"tam_fisico": [96, 96], "tam_logico": [48, 48], "escala_pixel": 2,
+			"pivote": [48, 76], "filtro": "nearest", "capa": "mundo",
+			"huella": [1, 1]
+		},
+
+		"objeto.cofre.abierto": {
+			"tipo": "sprite",
+			"archivo": "objetos/cofre_abierto.png",
+			"tam_fisico": [96, 96], "tam_logico": [48, 48], "escala_pixel": 2,
+			"pivote": [48, 76], "filtro": "nearest", "capa": "mundo",
+			"huella": [1, 1]
+		},
+
+		"objeto.barril": {
+			"tipo": "sprite",
+			"archivo": "objetos/barril.png",
+			"tam_fisico": [80, 96], "tam_logico": [40, 48], "escala_pixel": 2,
+			"pivote": [40, 76], "filtro": "nearest", "capa": "mundo",
+			"huella": [1, 1]
+		},
+
+		"objeto.caja": {
+			"tipo": "sprite",
+			"archivo": "objetos/caja.png",
+			"tam_fisico": [80, 80], "tam_logico": [40, 40], "escala_pixel": 2,
+			"pivote": [40, 64], "filtro": "nearest", "capa": "mundo",
+			"huella": [1, 1]
+		},
+
+		"objeto.farol": {
+			"tipo": "sprite",
+			"archivo": "objetos/farol.png",
+			"tam_fisico": [64, 112], "tam_logico": [32, 56], "escala_pixel": 2,
+			"pivote": [32, 96], "filtro": "nearest", "capa": "mundo",
+			"huella": [1, 1],
+			"luz": {
+				"_nota": "El sprite lleva la llama y un brillo inmediato pequeno. El halo grande NO se pinta: lo hace esta luz. El asset DECLARA que puede tener luz; encenderla es decision de la logica.",
+				"color": "#ffc76a",
+				"energia": 0.9,
+				"escala": 3.0,
+				"desplazamiento": [0, -76],
+				"solo_de_noche": true
+			}
+		},
+
+		"ui.panel": {
+			"tipo": "nueve_partes",
+			"archivo": "ui/panel.png",
+			"tam_fisico": [48, 48], "tam_logico": [24, 24], "escala_pixel": 2,
+			"margenes": [16, 16, 16, 16],
+			"filtro": "nearest", "capa": "hud"
+		},
+
+		"ui.barra.fondo": {
+			"tipo": "nueve_partes",
+			"archivo": "ui/barra_fondo.png",
+			"tam_fisico": [64, 16], "tam_logico": [32, 8], "escala_pixel": 2,
+			"margenes": [6, 6, 0, 0],
+			"filtro": "nearest", "capa": "hud"
+		},
+
+		"ui.barra.salud": {
+			"tipo": "nueve_partes",
+			"archivo": "ui/barra_salud.png",
+			"tam_fisico": [64, 16], "tam_logico": [32, 8], "escala_pixel": 2,
+			"margenes": [6, 6, 0, 0],
+			"filtro": "nearest", "capa": "hud"
+		},
+
+		"ui.barra.energia": {
+			"tipo": "nueve_partes",
+			"archivo": "ui/barra_energia.png",
+			"tam_fisico": [64, 16], "tam_logico": [32, 8], "escala_pixel": 2,
+			"margenes": [6, 6, 0, 0],
+			"filtro": "nearest", "capa": "hud"
+		},
+
+		"ui.ranura": {
+			"tipo": "sprite",
+			"archivo": "ui/ranura.png",
+			"tam_fisico": [40, 40], "tam_logico": [20, 20], "escala_pixel": 2,
+			"pivote": [0, 0], "filtro": "nearest", "capa": "hud"
+		},
+
+		"ui.ranura_activa": {
+			"tipo": "sprite",
+			"archivo": "ui/ranura_activa.png",
+			"tam_fisico": [40, 40], "tam_logico": [20, 20], "escala_pixel": 2,
+			"pivote": [0, 0], "filtro": "nearest", "capa": "hud"
+		}
+	}
+}

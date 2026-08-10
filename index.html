@@ -1,0 +1,1729 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="UTF-8" />
+<title>Marea y Ceniza</title>
+<style>
+  :root {
+    --panel-bg: rgba(26, 20, 14, 0.9);
+    --panel-border: #a8813f;
+    --gold: #e8c37a;
+    --parchment: #f2e2c0;
+    --ink: #2a1f14;
+  }
+
+  html, body {
+    margin: 0; padding: 0; height: 100%; overflow: hidden;
+    background: #0d1218;
+    font-family: 'Trebuchet MS', 'Segoe UI', sans-serif;
+    -webkit-font-smoothing: antialiased;
+    user-select: none;
+  }
+  canvas { display: block; }
+
+  .panel {
+    background: var(--panel-bg);
+    border: 2px solid var(--panel-border);
+    border-radius: 6px;
+    box-shadow: 0 4px 18px rgba(0,0,0,.55), inset 0 0 30px rgba(0,0,0,.35);
+    color: var(--parchment);
+  }
+
+  /* --- HUD arriba izquierda: reloj + necesidades --- */
+  #topleft { position: fixed; top: 12px; left: 12px; z-index: 10; padding: 10px 14px; min-width: 200px; pointer-events: none; }
+  #reloj { font-size: 15px; font-weight: bold; color: var(--gold); letter-spacing: .5px; }
+  .need { margin-top: 8px; }
+  .need-label { display: flex; justify-content: space-between; font-size: 11px; opacity: .85; margin-bottom: 3px; }
+  .bar-bg { height: 8px; background: rgba(0,0,0,.55); border: 1px solid rgba(168,129,63,.5); border-radius: 4px; overflow: hidden; }
+  .bar-fill { height: 100%; transition: width .3s ease; }
+  #bar-hambre  { background: linear-gradient(90deg,#b5652c,#e2a04a); }
+  #bar-energia { background: linear-gradient(90deg,#2c6fb5,#4aabe2); }
+
+  /* --- Misión arriba derecha --- */
+  #quest-panel { position: fixed; top: 12px; right: 12px; z-index: 10; padding: 10px 14px; width: 250px; pointer-events: none; }
+  #quest-title { font-size: 13px; font-weight: bold; color: var(--gold); margin-bottom: 4px; }
+  #quest-desc { font-size: 12px; opacity: .9; line-height: 1.4; }
+  #quest-progress { font-size: 12px; margin-top: 6px; }
+  .obj-done { color: #8fd07a; }
+  .obj-pending { color: #e5c07b; }
+
+  /* --- Inventario abajo derecha --- */
+  #inv-panel { position: fixed; bottom: 12px; right: 12px; z-index: 10; padding: 8px 12px; min-width: 160px; pointer-events: none; }
+  #inv-title { font-size: 11px; color: var(--gold); text-transform: uppercase; letter-spacing: 1px; margin-bottom: 6px; }
+  .inv-row { display: flex; justify-content: space-between; gap: 14px; font-size: 13px; padding: 2px 0; }
+  .inv-qty { font-weight: bold; color: var(--gold); }
+  .inv-empty { font-size: 12px; opacity: .5; font-style: italic; }
+
+  /* --- Prompt de interacción --- */
+  #prompt { position: fixed; bottom: 96px; left: 50%; transform: translateX(-50%); z-index: 12; padding: 8px 18px; font-size: 15px; display: none; pointer-events: none; white-space: nowrap; }
+  #prompt .key { display: inline-block; background: var(--gold); color: var(--ink); font-weight: bold; border-radius: 4px; padding: 1px 8px; margin-right: 8px; }
+
+  /* --- Atajos abajo izquierda --- */
+  #help { position: fixed; bottom: 12px; left: 12px; z-index: 10; padding: 7px 12px; font-size: 11px; opacity: .85; pointer-events: none; }
+  #help b { color: var(--gold); }
+
+  /* --- Avisos flotantes --- */
+  #toasts { position: fixed; top: 92px; left: 50%; transform: translateX(-50%); z-index: 30; display: flex; flex-direction: column; gap: 6px; align-items: center; pointer-events: none; }
+  .toast { padding: 8px 18px; font-size: 14px; color: var(--gold); animation: fadein .2s ease; }
+  @keyframes fadein { from { opacity: 0; transform: translateY(-6px); } }
+
+  /* --- Modales --- */
+  .modal { position: fixed; inset: 0; z-index: 40; display: none; align-items: center; justify-content: center; background: rgba(0,0,0,.55); }
+  .modal.open { display: flex; }
+  .modal-box { padding: 20px 24px; width: min(640px, 92vw); max-height: 82vh; overflow-y: auto; }
+  .modal-box h2 { margin: 0 0 4px; font-size: 20px; color: var(--gold); letter-spacing: 1px; }
+  .modal-sub { font-size: 12px; opacity: .7; margin-bottom: 16px; line-height: 1.4; }
+  .modal-close { font-size: 11px; opacity: .6; margin-top: 16px; text-align: center; }
+
+  .card { border: 1px solid rgba(168,129,63,.45); border-radius: 5px; padding: 10px 12px; margin-bottom: 8px; background: rgba(0,0,0,.25); display: flex; justify-content: space-between; align-items: center; gap: 12px; }
+  .card.locked { opacity: .45; }
+  .card.owned { border-color: #6f9c5a; background: rgba(60,90,45,.25); }
+  .card-name { font-size: 14px; font-weight: bold; }
+  .card-desc { font-size: 11px; opacity: .75; margin-top: 3px; line-height: 1.35; }
+  .card-cost { font-size: 11px; margin-top: 5px; }
+  .cost-ok { color: #8fd07a; }
+  .cost-bad { color: #d98080; }
+  .btn { background: var(--gold); color: var(--ink); border: none; border-radius: 4px; padding: 7px 14px; font-size: 12px; font-weight: bold; cursor: pointer; font-family: inherit; white-space: nowrap; }
+  .btn:hover:not(:disabled) { background: #f5d89a; }
+  .btn:disabled { background: #6b5c40; color: #38301f; cursor: not-allowed; }
+  .tag-owned { font-size: 11px; color: #8fd07a; font-weight: bold; white-space: nowrap; }
+
+  /* --- Diálogo --- */
+  #dialogue { align-items: flex-end; padding-bottom: 9vh; }
+  #dlg-name { font-size: 16px; color: var(--gold); font-weight: bold; margin-bottom: 8px; }
+  #dlg-text { font-size: 14px; line-height: 1.6; margin-bottom: 16px; }
+  #dlg-actions { display: flex; gap: 10px; flex-wrap: wrap; }
+
+  #loading { position: fixed; inset: 0; display: flex; align-items: center; justify-content: center; font-family: monospace; font-size: 18px; color: #ffe9b8; background: #0d1218; z-index: 50; }
+</style>
+</head>
+<body>
+<canvas id="game"></canvas>
+
+<div id="topleft" class="panel">
+  <div id="reloj">Día 1 — 08:00</div>
+  <div class="need">
+    <div class="need-label"><span>Hambre</span><span id="val-hambre">100%</span></div>
+    <div class="bar-bg"><div class="bar-fill" id="bar-hambre" style="width:100%"></div></div>
+  </div>
+  <div class="need">
+    <div class="need-label"><span>Energía</span><span id="val-energia">100%</span></div>
+    <div class="bar-bg"><div class="bar-fill" id="bar-energia" style="width:100%"></div></div>
+  </div>
+</div>
+
+<div id="quest-panel" class="panel">
+  <div id="quest-title">Sin misión</div>
+  <div id="quest-desc">Sigue el camino de tablones hacia el pueblo.</div>
+  <div id="quest-progress"></div>
+</div>
+
+<div id="inv-panel" class="panel">
+  <div id="inv-title">Morral</div>
+  <div id="inv-list"><div class="inv-empty">vacío</div></div>
+</div>
+
+<div id="prompt" class="panel"><span class="key">E</span><span id="prompt-text"></span></div>
+<div id="toasts"></div>
+
+<div id="help" class="panel">
+  <b>WASD</b> moverse · <b>E</b> interactuar · <b>C</b> crafteo · <b>T</b> tecnología · <b>ESC</b> cerrar
+</div>
+
+<div id="craft" class="modal">
+  <div class="modal-box panel">
+    <h2>Taller de crafteo</h2>
+    <div class="modal-sub">Combina materiales para fabricar objetos. Se abren recetas nuevas al aprender oficios en el árbol de tecnología.</div>
+    <div id="craft-list"></div>
+    <div class="modal-close">Pulsa <b>C</b> o <b>ESC</b> para cerrar</div>
+  </div>
+</div>
+
+<div id="tech" class="modal">
+  <div class="modal-box panel">
+    <h2>Árbol de tecnología</h2>
+    <div class="modal-sub">Invierte materiales para aprender oficios. Cada oficio abre recetas nuevas y mejora lo que puedes hacer.</div>
+    <div id="tech-list"></div>
+    <div class="modal-close">Pulsa <b>T</b> o <b>ESC</b> para cerrar</div>
+  </div>
+</div>
+
+<div id="dialogue" class="modal">
+  <div class="modal-box panel">
+    <div id="dlg-name"></div>
+    <div id="dlg-text"></div>
+    <div id="dlg-actions"></div>
+  </div>
+</div>
+
+<div id="loading">Cargando...</div>
+
+<script>
+// ============================================================
+// MAREA Y CENIZA — prototipo isométrico 2D
+//
+// Reinicio del proyecto (2026-08-07): mecánicas antes que gráficos.
+// El arte es procedural pero deliberado; cada dibujo vive en una
+// función de SPRITES para poder cambiarlo por arte real sin tocar
+// la lógica del juego.
+//
+// El mundo NO es aleatorio: las zonas, el pueblo y los caminos están
+// diseñados a mano (ver TRAZADO_MUNDO). La vegetación se siembra con
+// densidad por zona, no esparcida uniformemente.
+// ============================================================
+
+'use strict';
+
+// ---------------------------------------------------------------
+// CONFIGURACIÓN
+// ---------------------------------------------------------------
+const TW = 128, TH = 64;           // ancho/alto de un tile isométrico (proporción 2:1)
+const MAPA_W = 92, MAPA_H = 92;    // tamaño del mundo en tiles
+const DURACION_DIA_MS = 240000;    // un día completo = 4 minutos
+const HORA_INICIAL = 7.5;
+const ALCANCE_INTERACCION = 1.6;   // en tiles
+const VEL_JUGADOR = 3.4;           // tiles por segundo
+
+// ---------------------------------------------------------------
+// DATOS DEL JUEGO (todo data-driven: ampliar aquí, no en la lógica)
+// ---------------------------------------------------------------
+const ITEMS = {
+  madera:  { nombre: 'Madera',   icono: '🪵' },
+  piedra:  { nombre: 'Piedra',   icono: '🪨' },
+  fibra:   { nombre: 'Fibra',    icono: '🌾' },
+  baya:    { nombre: 'Bayas',    icono: '🍒', comida: 28 },
+  tablon:  { nombre: 'Tablón',   icono: '🟫' },
+  cuerda:  { nombre: 'Cuerda',   icono: '🪢' },
+  hacha:   { nombre: 'Hacha',    icono: '🪓', herramienta: 'madera' },
+  pico:    { nombre: 'Pico',     icono: '⛏️', herramienta: 'piedra' },
+  antorcha:{ nombre: 'Antorcha', icono: '🕯️' },
+  moneda:  { nombre: 'Monedas',  icono: '🪙' },
+};
+
+const RECETAS = [
+  { id: 'tablon',   sale: { tablon: 1 },   entra: { madera: 2 },                        tech: 'carpinteria', desc: 'Madera escuadrada, base de toda construcción.' },
+  { id: 'cuerda',   sale: { cuerda: 1 },   entra: { fibra: 3 },                         tech: 'carpinteria', desc: 'Fibra trenzada. Sirve para atar y para aparejos.' },
+  { id: 'antorcha', sale: { antorcha: 1 }, entra: { tablon: 1, fibra: 2 },              tech: 'supervivencia', desc: 'Alumbra la noche.' },
+  { id: 'hacha',    sale: { hacha: 1 },    entra: { tablon: 2, piedra: 3, cuerda: 1 },  tech: 'herreria', desc: 'Duplica la madera que sacas de cada árbol.' },
+  { id: 'pico',     sale: { pico: 1 },     entra: { tablon: 2, piedra: 4, cuerda: 1 },  tech: 'herreria', desc: 'Duplica la piedra que sacas de cada roca.' },
+];
+
+const TECH = {
+  supervivencia: { nombre: 'Supervivencia', costo: { fibra: 4 },                 req: [],               desc: 'Lo básico para no morir en la playa. Abre la antorcha.' },
+  carpinteria:   { nombre: 'Carpintería',   costo: { madera: 10, piedra: 4 },    req: ['supervivencia'], desc: 'Trabajar la madera. Abre tablones y cuerda.' },
+  herreria:      { nombre: 'Herrería',      costo: { tablon: 5, piedra: 10 },    req: ['carpinteria'],   desc: 'Forjar metal y piedra. Abre hacha y pico.' },
+  navegacion:    { nombre: 'Navegación',    costo: { tablon: 12, cuerda: 6 },    req: ['carpinteria'],   desc: 'Leer el mar y reparar cascos. (Abrirá el barco y las islas.)' },
+  fe:            { nombre: 'Fe y Comunidad',costo: { tablon: 8, moneda: 40 },    req: ['carpinteria'],   desc: 'Ganarte al pueblo. (Abrirá la capilla y el cementerio.)' },
+};
+
+// `desc` es la nota del diario (voz del narrador).
+// `pedido` es lo que el NPC dice en voz alta al ofrecer el encargo.
+const MISIONES = [
+  {
+    id: 'q1', titulo: 'Náufrago',
+    desc: 'Maese Oren quiere ver si sirves para algo. Trae materiales del bosque.',
+    pedido: 'Otro que escupe el mar. Si quieres quedarte, gánatelo: tráeme 6 de madera y 4 de piedra del bosque. Ahí verás si sirves.',
+    objetivo: { madera: 6, piedra: 4 },
+    recompensa: { moneda: 25 },
+    entrega: 'oren',
+  },
+  {
+    id: 'q2', titulo: 'Manos de artesano',
+    desc: 'Aprende Carpintería y fabrica 4 tablones para demostrarlo.',
+    pedido: 'Cargar troncos lo hace cualquier mulo. Aprende Carpintería y tráeme 4 tablones hechos por tus manos.',
+    objetivo: { tablon: 4 },
+    recompensa: { moneda: 40, fibra: 6 },
+    entrega: 'oren',
+  },
+  {
+    id: 'q3', titulo: 'Herramienta propia',
+    desc: 'Forja tu primera hacha. Nadie sobrevive aquí con las manos desnudas.',
+    pedido: 'Nadie dura aquí con las manos desnudas. Aprende Herrería en mi fragua y fórjate un hacha. Entonces hablaremos en serio.',
+    objetivo: { hacha: 1 },
+    recompensa: { moneda: 60, piedra: 10 },
+    entrega: 'oren',
+  },
+  {
+    id: 'q4', titulo: 'Rumbo al mar',
+    desc: 'Reúne tablones y cuerda para empezar a reparar un casco.',
+    pedido: 'Hay un casco varado en la playa que aún respira. Tráeme 10 tablones y 4 cuerdas y empezamos a repararlo. El mar paga mejor que esta tierra.',
+    objetivo: { tablon: 10, cuerda: 4 },
+    recompensa: { moneda: 120 },
+    entrega: 'bertha',
+  },
+];
+
+// Precios de compra del mercader (monedas por unidad)
+const PRECIOS = { madera: 2, piedra: 3, fibra: 2, baya: 3, tablon: 7, cuerda: 8 };
+
+// ---------------------------------------------------------------
+// TRAZADO DEL MUNDO — diseñado a mano, no aleatorio
+// ---------------------------------------------------------------
+const TRAZADO_MUNDO = {
+  // franjas horizontales (por fila y)
+  mar:    { desde: 84 },
+  playa:  { desde: 77, hasta: 84 },
+
+  // El pueblo: una calle principal con casas a ambos lados y una plaza.
+  pueblo: {
+    calleY: 44,                       // fila de la calle principal
+    calleDesde: 20, calleHasta: 62,
+    plaza: { x: 37, y: 40, w: 10, h: 9 },
+    fuente: { x: 41, y: 44 },
+    edificios: [
+      // fila norte (miran al sur, hacia la calle)
+      { x: 22, y: 37, w: 5, h: 4, tipo: 'casa',    nombre: 'Casa de los Vela' },
+      { x: 29, y: 37, w: 4, h: 4, tipo: 'casa',    nombre: 'Casa vacía' },
+      { x: 49, y: 37, w: 5, h: 4, tipo: 'taberna', nombre: 'Taberna El Ancla' },
+      { x: 56, y: 37, w: 4, h: 4, tipo: 'casa',    nombre: 'Casa de Bertha' },
+      // fila sur (miran al norte)
+      { x: 23, y: 48, w: 4, h: 4, tipo: 'casa',    nombre: 'Casa de piedra' },
+      { x: 29, y: 48, w: 5, h: 4, tipo: 'herreria',nombre: 'Herrería de Oren' },
+      { x: 50, y: 48, w: 5, h: 4, tipo: 'granero', nombre: 'Granero comunal' },
+      { x: 57, y: 48, w: 4, h: 4, tipo: 'casa',    nombre: 'Casa del molinero' },
+    ],
+    puestos: [ { x: 39, y: 41 }, { x: 44, y: 41 }, { x: 39, y: 47 } ],
+  },
+
+  // caminos: lista de tramos rectos {x1,y1,x2,y2}
+  caminos: [
+    { x1: 41, y1: 44, x2: 41, y2: 80 },   // plaza → playa
+    { x1: 20, y1: 44, x2: 62, y2: 44 },   // calle principal
+    { x1: 62, y1: 44, x2: 74, y2: 30 },   // pueblo → cantera
+    { x1: 41, y1: 40, x2: 30, y2: 22 },   // plaza → bosque norte
+  ],
+
+  // zonas de bosque: {x, y, r, densidad}
+  bosques: [
+    { x: 18, y: 18, r: 15, densidad: 0.34 },
+    { x: 70, y: 14, r: 16, densidad: 0.30 },
+    { x: 12, y: 58, r: 12, densidad: 0.26 },
+    { x: 76, y: 62, r: 13, densidad: 0.24 },
+    { x: 44, y: 14, r: 10, densidad: 0.20 },
+  ],
+
+  // cantera de piedra
+  cantera: { x: 74, y: 28, r: 7 },
+
+  // naufragio y punto de aparición
+  naufragio: { x: 44, y: 79 },
+  aparicion: { x: 41, y: 77 },
+};
+
+// ---------------------------------------------------------------
+// ESTADO DEL JUEGO
+// ---------------------------------------------------------------
+const estado = {
+  jugador: { x: TRAZADO_MUNDO.aparicion.x, y: TRAZADO_MUNDO.aparicion.y, dir: 0, animando: 0 },
+  inventario: {},
+  tech: {},                 // { carpinteria: true, ... }
+  misionActual: 0,          // índice en MISIONES
+  misionEntregada: {},      // { q1: true }
+  necesidades: { hambre: 100, energia: 100 },
+  relacion: { oren: 0, bertha: 0 },
+  tiempoMs: (HORA_INICIAL / 24) * DURACION_DIA_MS,
+  dia: 1,
+  cansado: false,
+};
+
+// ---------------------------------------------------------------
+// UTILIDADES
+// ---------------------------------------------------------------
+function aleatorioSemilla(semilla) {
+  let s = semilla % 2147483647;
+  if (s <= 0) s += 2147483646;
+  return () => { s = (s * 16807) % 2147483647; return (s - 1) / 2147483646; };
+}
+const rnd = aleatorioSemilla(20260807);
+
+const clamp = (v, a, b) => Math.max(a, Math.min(b, v));
+const lerp = (a, b, t) => a + (b - a) * t;
+const dist = (ax, ay, bx, by) => Math.hypot(ax - bx, ay - by);
+
+// Proyección isométrica
+const isoX = (x, y) => (x - y) * (TW / 2);
+const isoY = (x, y) => (x + y) * (TH / 2);
+
+// ---------------------------------------------------------------
+// CARGA DE IMÁGENES
+// Arte CC0 de OpenGameArt (ver CREDITOS.md). Se cargan con <img> y no
+// con fetch() a propósito: al abrir el juego con file:// el navegador
+// bloquea fetch de archivos locales, pero sí permite <img src="...">.
+// ---------------------------------------------------------------
+const IMAGENES = {
+  terreno:   'assets/sprites/terreno.png',   // 5 tiles de 128x64 en fila
+  casa_a:    'assets/sprites/casa_a.png',
+  casa_b:    'assets/sprites/casa_b.png',
+  casa_c:    'assets/sprites/casa_c.png',
+  casa_d:    'assets/sprites/casa_d.png',
+  cobertizo: 'assets/sprites/cobertizo.png',
+};
+const IMG = {};
+
+function cargarImagenes() {
+  return Promise.all(Object.entries(IMAGENES).map(([clave, src]) => new Promise((resolver) => {
+    const img = new Image();
+    img.onload = () => { IMG[clave] = img; resolver(); };
+    img.onerror = () => { IMG[clave] = null; console.warn('No se pudo cargar', src); resolver(); };
+    img.src = src;
+  })));
+}
+
+// Índice de cada terreno dentro de la fila de tiles de terreno.png
+const TILE_TERRENO = { CESPED_A: 0, CESPED_B: 1, TIERRA_CLARA: 2, TIERRA_OSCURA: 3, ARENA: 4 };
+
+// ---------------------------------------------------------------
+// CONSTRUCCIÓN DEL MUNDO
+// ---------------------------------------------------------------
+const TERRENO = { CESPED: 0, ARENA: 1, AGUA: 2, CAMINO: 3, PLAZA: 4, TIERRA: 5 };
+
+const mapa = [];        // mapa[y][x] = { t: TERRENO, v: variación 0..1 }
+const solido = [];      // solido[y][x] = bool
+const entidades = [];   // todo lo que se dibuja y ordena por profundidad
+const nodos = [];       // recursos recolectables (subconjunto de entidades)
+const npcs = [];
+
+function enMapa(x, y) { return x >= 0 && y >= 0 && x < MAPA_W && y < MAPA_H; }
+
+function construirMundo() {
+  const P = TRAZADO_MUNDO;
+
+  // --- 1. terreno base por franjas ---
+  for (let y = 0; y < MAPA_H; y++) {
+    mapa[y] = []; solido[y] = [];
+    for (let x = 0; x < MAPA_W; x++) {
+      let t = TERRENO.CESPED;
+      if (y >= P.mar.desde) t = TERRENO.AGUA;
+      else if (y >= P.playa.desde) t = TERRENO.ARENA;
+      // borde de la isla: agua alrededor para que el mapa se sienta acotado
+      if (x < 3 || x > MAPA_W - 4 || y < 3) t = TERRENO.AGUA;
+      mapa[y][x] = { t, v: rnd() };
+      solido[y][x] = (t === TERRENO.AGUA);
+    }
+  }
+
+  // --- 2. caminos ---
+  for (const c of P.caminos) trazarCamino(c.x1, c.y1, c.x2, c.y2, 2);
+
+  // --- 3. plaza del pueblo ---
+  const pz = P.pueblo.plaza;
+  for (let y = pz.y; y < pz.y + pz.h; y++)
+    for (let x = pz.x; x < pz.x + pz.w; x++)
+      if (enMapa(x, y) && mapa[y][x].t !== TERRENO.AGUA) mapa[y][x].t = TERRENO.PLAZA;
+
+  // --- 4. edificios del pueblo ---
+  for (const e of P.pueblo.edificios) {
+    for (let y = e.y; y < e.y + e.h; y++)
+      for (let x = e.x; x < e.x + e.w; x++)
+        if (enMapa(x, y)) { mapa[y][x].t = TERRENO.TIERRA; solido[y][x] = true; }
+    entidades.push({ tipo: 'edificio', x: e.x, y: e.y, w: e.w, h: e.h, clase: e.tipo, nombre: e.nombre, ordY: e.y + e.h });
+  }
+
+  // fuente en la plaza
+  const f = P.pueblo.fuente;
+  entidades.push({ tipo: 'fuente', x: f.x, y: f.y, ordY: f.y });
+  marcarSolido(f.x, f.y, 2);
+
+  // puestos de mercado
+  P.pueblo.puestos.forEach((p, i) => {
+    entidades.push({ tipo: 'puesto', x: p.x, y: p.y, variante: i % 3, ordY: p.y });
+    marcarSolido(p.x, p.y, 1);
+  });
+
+  // vallas de huerta detrás de las casas del sur
+  for (let x = 35; x < 48; x++) {
+    if (x >= 37 && x <= 40) continue; // hueco de paso
+    ponerEntidad('valla', x, 53);
+  }
+
+  // --- 5. bosques (densidad por zona, con claros) ---
+  for (const b of P.bosques) {
+    for (let y = Math.max(4, b.y - b.r); y < Math.min(MAPA_H - 4, b.y + b.r); y++) {
+      for (let x = Math.max(4, b.x - b.r); x < Math.min(MAPA_W - 4, b.x + b.r); x++) {
+        const d = dist(x, y, b.x, b.y);
+        if (d > b.r) continue;
+        if (!zonaLibre(x, y)) continue;
+        // más denso en el centro del bosque, más ralo en el borde
+        const p = b.densidad * (1 - (d / b.r) * 0.75);
+        if (rnd() > p) continue;
+        const r = rnd();
+        if (r < 0.72)      nuevoNodo('arbol', x, y);
+        else if (r < 0.86) nuevoNodo('arbusto', x, y);
+        else               ponerEntidad('mata', x, y);
+      }
+    }
+  }
+
+  // --- 6. cantera ---
+  const q = P.cantera;
+  for (let y = q.y - q.r; y < q.y + q.r; y++) {
+    for (let x = q.x - q.r; x < q.x + q.r; x++) {
+      if (!enMapa(x, y) || !zonaLibre(x, y)) continue;
+      const d = dist(x, y, q.x, q.y);
+      if (d > q.r) continue;
+      if (rnd() < 0.30 * (1 - d / q.r)) nuevoNodo('roca', x, y);
+      else if (rnd() < 0.05) mapa[y][x].t = TERRENO.TIERRA;
+    }
+  }
+  // algunas rocas sueltas repartidas por la pradera
+  for (let i = 0; i < 90; i++) {
+    const x = 5 + Math.floor(rnd() * (MAPA_W - 10));
+    const y = 5 + Math.floor(rnd() * (P.playa.desde - 8));
+    if (zonaLibre(x, y)) nuevoNodo('roca', x, y);
+  }
+  // arbustos de bayas cerca del pueblo y la playa (comida temprana)
+  for (let i = 0; i < 70; i++) {
+    const x = 5 + Math.floor(rnd() * (MAPA_W - 10));
+    const y = 5 + Math.floor(rnd() * (P.playa.desde - 6));
+    if (zonaLibre(x, y)) nuevoNodo('arbusto', x, y);
+  }
+
+  // --- 7. playa: palmeras y naufragio ---
+  for (let i = 0; i < 34; i++) {
+    const x = 5 + Math.floor(rnd() * (MAPA_W - 10));
+    const y = P.playa.desde + Math.floor(rnd() * 6);
+    if (zonaLibre(x, y)) ponerEntidad('palmera', x, y, { solido: true });
+  }
+  entidades.push({ tipo: 'naufragio', x: P.naufragio.x, y: P.naufragio.y, ordY: P.naufragio.y + 2 });
+  marcarSolido(P.naufragio.x, P.naufragio.y, 2);
+
+  // fogata junto al naufragio: sirve para descansar
+  entidades.push({ tipo: 'fogata', x: P.naufragio.x - 3, y: P.naufragio.y - 1, ordY: P.naufragio.y - 1 });
+
+  // --- 8. NPCs con su rutina diaria ---
+  npcs.push(crearNPC({
+    id: 'oren', nombre: 'Maese Oren', oficio: 'herrero', color: '#8a5a3a',
+    // horario: (hora de inicio, destino)
+    rutina: [
+      { h: 6,  x: 31, y: 47, act: 'trabajando en la fragua' },
+      { h: 13, x: 41, y: 43, act: 'almorzando en la plaza' },
+      { h: 15, x: 31, y: 47, act: 'de vuelta en la fragua' },
+      { h: 20, x: 51, y: 40, act: 'bebiendo en la taberna' },
+      { h: 23, x: 31, y: 51, act: 'durmiendo' },
+    ],
+  }));
+  npcs.push(crearNPC({
+    id: 'bertha', nombre: 'Bertha la Mercadera', oficio: 'mercader', color: '#7a4a6a',
+    rutina: [
+      { h: 7,  x: 39, y: 41, act: 'montando el puesto' },
+      { h: 12, x: 44, y: 41, act: 'atendiendo el mercado' },
+      { h: 19, x: 51, y: 40, act: 'cenando en la taberna' },
+      { h: 22, x: 57, y: 40, act: 'durmiendo' },
+    ],
+  }));
+
+  entidades.push(...nodos, ...npcs);
+}
+
+function zonaLibre(x, y) {
+  if (!enMapa(x, y)) return false;
+  const t = mapa[y][x].t;
+  if (t !== TERRENO.CESPED && t !== TERRENO.ARENA) return false;
+  if (solido[y][x]) return false;
+  // no invadir el pueblo
+  const P = TRAZADO_MUNDO.pueblo;
+  if (x > 17 && x < 65 && y > 33 && y < 56) return false;
+  return true;
+}
+
+function marcarSolido(x, y, r) {
+  for (let j = y - r + 1; j <= y + r - 1; j++)
+    for (let i = x - r + 1; i <= x + r - 1; i++)
+      if (enMapa(i, j)) solido[j][i] = true;
+}
+
+function ponerEntidad(tipo, x, y, opts = {}) {
+  entidades.push({ tipo, x, y, ordY: y, v: rnd() });
+  if (opts.solido !== false) solido[y][x] = true;
+}
+
+let idNodo = 0;
+function nuevoNodo(tipo, x, y) {
+  const n = {
+    tipo: 'nodo', clase: tipo, x, y, ordY: y, v: rnd(),
+    id: idNodo++, agotado: false, reapareceEn: 0,
+  };
+  nodos.push(n);
+  solido[y][x] = true;
+  return n;
+}
+
+function trazarCamino(x1, y1, x2, y2, ancho) {
+  const pasos = Math.ceil(Math.hypot(x2 - x1, y2 - y1)) * 2;
+  for (let i = 0; i <= pasos; i++) {
+    const t = i / pasos;
+    const cx = Math.round(lerp(x1, x2, t));
+    const cy = Math.round(lerp(y1, y2, t));
+    for (let dy = -ancho + 1; dy < ancho; dy++)
+      for (let dx = -ancho + 1; dx < ancho; dx++) {
+        const x = cx + dx, y = cy + dy;
+        if (enMapa(x, y) && mapa[y][x].t !== TERRENO.AGUA) mapa[y][x].t = TERRENO.CAMINO;
+      }
+  }
+}
+
+function crearNPC(cfg) {
+  const primero = cfg.rutina[0];
+  return {
+    ...cfg, tipo: 'npc',
+    x: primero.x, y: primero.y, ordY: primero.y,
+    destino: { x: primero.x, y: primero.y },
+    actividad: primero.act,
+  };
+}
+
+// ---------------------------------------------------------------
+// ARTE — dibujo procedural. Cada función es reemplazable por sprites.
+// ---------------------------------------------------------------
+const COLORES_TERRENO = {
+  [TERRENO.CESPED]: ['#4f8f42', '#57994a', '#4a8a3d'],
+  [TERRENO.ARENA]:  ['#ddc98c', '#e3d195', '#d6c084'],
+  [TERRENO.AGUA]:   ['#2d6a9f', '#316fa6', '#2a6398'],
+  [TERRENO.CAMINO]: ['#a8916a', '#b09a73', '#a08a63'],
+  [TERRENO.PLAZA]:  ['#9a9a92', '#a2a29a', '#93938b'],
+  [TERRENO.TIERRA]: ['#8a7355', '#937c5c', '#836d50'],
+};
+
+function rombo(ctx, sx, sy, relleno, borde) {
+  ctx.beginPath();
+  ctx.moveTo(sx, sy - TH / 2);
+  ctx.lineTo(sx + TW / 2, sy);
+  ctx.lineTo(sx, sy + TH / 2);
+  ctx.lineTo(sx - TW / 2, sy);
+  ctx.closePath();
+  ctx.fillStyle = relleno; ctx.fill();
+  if (borde) { ctx.strokeStyle = borde; ctx.lineWidth = 1; ctx.stroke(); }
+}
+
+function sombra(ctx, sx, sy, rx, ry) {
+  ctx.beginPath();
+  ctx.ellipse(sx, sy, rx, ry, 0, 0, Math.PI * 2);
+  ctx.fillStyle = 'rgba(0,0,0,0.22)';
+  ctx.fill();
+}
+
+// Cuánto del alto del sprite queda por debajo de la esquina sur de la parcela.
+// Se ajusta a ojo: los renders traen sombra y algo de aire bajo el edificio.
+const ANCLA_EDIFICIO = 0.10;
+
+// Reparte los sprites disponibles entre los tipos de edificio del pueblo.
+// Se usa la posición como semilla para que cada casa conserve siempre el
+// mismo aspecto entre partidas.
+function claveImagenEdificio(e) {
+  if (e.clase === 'taberna')  return 'casa_b';
+  if (e.clase === 'herreria') return 'casa_c';
+  if (e.clase === 'granero')  return 'cobertizo';
+  const variantes = ['casa_a', 'casa_c', 'casa_d'];
+  return variantes[(e.x + e.y) % variantes.length];
+}
+
+const SPRITES = {
+  arbol(ctx, sx, sy, e) {
+    const alto = 46 + e.v * 16;
+    sombra(ctx, sx, sy, 15, 7);
+    // tronco
+    ctx.fillStyle = '#6b4a2c';
+    ctx.fillRect(sx - 3.5, sy - alto * 0.42, 7, alto * 0.42);
+    // copa en tres capas (da volumen sin sombreado complejo)
+    const capas = [
+      { dy: 0.40, r: 20, c: '#2f6b30' },
+      { dy: 0.62, r: 16, c: '#3a7d38' },
+      { dy: 0.82, r: 11, c: '#458d41' },
+    ];
+    for (const c of capas) {
+      ctx.beginPath();
+      ctx.ellipse(sx, sy - alto * c.dy, c.r + e.v * 3, (c.r + e.v * 3) * 0.82, 0, 0, Math.PI * 2);
+      ctx.fillStyle = c.c; ctx.fill();
+    }
+    // brillo del sol en la copa
+    ctx.beginPath();
+    ctx.ellipse(sx - 5, sy - alto * 0.78, 6, 4.5, -0.4, 0, Math.PI * 2);
+    ctx.fillStyle = 'rgba(255,255,255,0.13)'; ctx.fill();
+  },
+
+  arbusto(ctx, sx, sy, e) {
+    sombra(ctx, sx, sy, 11, 5);
+    ctx.beginPath();
+    ctx.ellipse(sx, sy - 8, 13, 10, 0, 0, Math.PI * 2);
+    ctx.fillStyle = '#3d7a3a'; ctx.fill();
+    ctx.beginPath();
+    ctx.ellipse(sx - 4, sy - 11, 7, 6, 0, 0, Math.PI * 2);
+    ctx.fillStyle = '#478a42'; ctx.fill();
+    // bayas
+    if (!e.agotado) {
+      ctx.fillStyle = '#c8384a';
+      for (let i = 0; i < 4; i++) {
+        const a = e.v * 6 + i * 1.7;
+        ctx.beginPath();
+        ctx.arc(sx + Math.cos(a) * 7, sy - 9 + Math.sin(a) * 5, 2.1, 0, Math.PI * 2);
+        ctx.fill();
+      }
+    }
+  },
+
+  roca(ctx, sx, sy, e) {
+    const s = 0.85 + e.v * 0.5;
+    sombra(ctx, sx, sy, 15 * s, 7 * s);
+    ctx.beginPath();
+    ctx.moveTo(sx - 15 * s, sy);
+    ctx.lineTo(sx - 9 * s, sy - 15 * s);
+    ctx.lineTo(sx + 3 * s, sy - 18 * s);
+    ctx.lineTo(sx + 14 * s, sy - 8 * s);
+    ctx.lineTo(sx + 11 * s, sy + 2 * s);
+    ctx.closePath();
+    ctx.fillStyle = '#8b8b86'; ctx.fill();
+    // cara iluminada
+    ctx.beginPath();
+    ctx.moveTo(sx - 9 * s, sy - 15 * s);
+    ctx.lineTo(sx + 3 * s, sy - 18 * s);
+    ctx.lineTo(sx + 1 * s, sy - 7 * s);
+    ctx.lineTo(sx - 7 * s, sy - 5 * s);
+    ctx.closePath();
+    ctx.fillStyle = '#a2a29c'; ctx.fill();
+  },
+
+  mata(ctx, sx, sy, e) {
+    ctx.strokeStyle = '#4a8340'; ctx.lineWidth = 2;
+    for (let i = 0; i < 5; i++) {
+      const dx = (i - 2) * 3.5;
+      ctx.beginPath();
+      ctx.moveTo(sx + dx, sy);
+      ctx.quadraticCurveTo(sx + dx + 2, sy - 8, sx + dx + (e.v > .5 ? 4 : -4), sy - 13);
+      ctx.stroke();
+    }
+  },
+
+  palmera(ctx, sx, sy, e) {
+    const alto = 52 + e.v * 18;
+    const curva = (e.v - 0.5) * 18;
+    sombra(ctx, sx, sy, 13, 6);
+    ctx.strokeStyle = '#8a6a44'; ctx.lineWidth = 6; ctx.lineCap = 'round';
+    ctx.beginPath();
+    ctx.moveTo(sx, sy);
+    ctx.quadraticCurveTo(sx + curva * 0.5, sy - alto * 0.6, sx + curva, sy - alto);
+    ctx.stroke();
+    // hojas
+    ctx.strokeStyle = '#2f7a45'; ctx.lineWidth = 5;
+    for (let i = 0; i < 6; i++) {
+      const a = (i / 6) * Math.PI * 2;
+      ctx.beginPath();
+      ctx.moveTo(sx + curva, sy - alto);
+      ctx.quadraticCurveTo(
+        sx + curva + Math.cos(a) * 14, sy - alto - 6 + Math.sin(a) * 7,
+        sx + curva + Math.cos(a) * 26, sy - alto + 4 + Math.sin(a) * 13
+      );
+      ctx.stroke();
+    }
+    ctx.lineCap = 'butt';
+  },
+
+  fuente(ctx, sx, sy) {
+    const w = TW * 0.9, h = TH * 0.9;
+    // base de piedra
+    ctx.beginPath();
+    ctx.moveTo(sx, sy - h / 2); ctx.lineTo(sx + w / 2, sy);
+    ctx.lineTo(sx, sy + h / 2); ctx.lineTo(sx - w / 2, sy);
+    ctx.closePath();
+    ctx.fillStyle = '#9d9d94'; ctx.fill();
+    ctx.strokeStyle = '#7d7d75'; ctx.lineWidth = 2; ctx.stroke();
+    // agua
+    ctx.beginPath();
+    ctx.ellipse(sx, sy - 3, w * 0.30, h * 0.30, 0, 0, Math.PI * 2);
+    ctx.fillStyle = '#4a97c4'; ctx.fill();
+    // pilar central
+    ctx.fillStyle = '#b0b0a6';
+    ctx.fillRect(sx - 4, sy - 22, 8, 20);
+    ctx.beginPath(); ctx.arc(sx, sy - 24, 6, 0, Math.PI * 2); ctx.fill();
+  },
+
+  puesto(ctx, sx, sy, e) {
+    const toldos = ['#b5443f', '#3f7bb5', '#3f9d5c'];
+    sombra(ctx, sx, sy, 22, 9);
+    // mostrador
+    ctx.fillStyle = '#8a6a44';
+    ctx.fillRect(sx - 22, sy - 16, 44, 14);
+    ctx.fillStyle = '#6f5436';
+    ctx.fillRect(sx - 22, sy - 4, 44, 5);
+    // postes
+    ctx.fillStyle = '#6f5436';
+    ctx.fillRect(sx - 22, sy - 44, 4, 30);
+    ctx.fillRect(sx + 18, sy - 44, 4, 30);
+    // toldo a rayas
+    const c = toldos[e.variante || 0];
+    for (let i = 0; i < 6; i++) {
+      ctx.fillStyle = i % 2 ? c : '#efe3cd';
+      ctx.fillRect(sx - 24 + i * 8, sy - 50, 8, 10);
+    }
+  },
+
+  valla(ctx, sx, sy) {
+    ctx.strokeStyle = '#8a6a44'; ctx.lineWidth = 3;
+    ctx.beginPath(); ctx.moveTo(sx - 14, sy - 2); ctx.lineTo(sx - 14, sy - 18); ctx.stroke();
+    ctx.beginPath(); ctx.moveTo(sx + 14, sy - 2); ctx.lineTo(sx + 14, sy - 18); ctx.stroke();
+    ctx.lineWidth = 2.5;
+    ctx.beginPath(); ctx.moveTo(sx - 16, sy - 8);  ctx.lineTo(sx + 16, sy - 8);  ctx.stroke();
+    ctx.beginPath(); ctx.moveTo(sx - 16, sy - 15); ctx.lineTo(sx + 16, sy - 15); ctx.stroke();
+  },
+
+  fogata(ctx, sx, sy) {
+    sombra(ctx, sx, sy, 16, 7);
+    // piedras alrededor
+    ctx.fillStyle = '#8b8b86';
+    for (let i = 0; i < 6; i++) {
+      const a = (i / 6) * Math.PI * 2;
+      ctx.beginPath();
+      ctx.ellipse(sx + Math.cos(a) * 14, sy + Math.sin(a) * 7, 5, 3.5, 0, 0, Math.PI * 2);
+      ctx.fill();
+    }
+    // leños
+    ctx.strokeStyle = '#6b4a2c'; ctx.lineWidth = 4; ctx.lineCap = 'round';
+    ctx.beginPath(); ctx.moveTo(sx - 7, sy + 2); ctx.lineTo(sx + 7, sy - 5); ctx.stroke();
+    ctx.beginPath(); ctx.moveTo(sx + 7, sy + 2); ctx.lineTo(sx - 7, sy - 5); ctx.stroke();
+    ctx.lineCap = 'butt';
+    // llama animada
+    const p = Math.sin(rendimiento.t * 6) * 0.5 + 0.5;
+    ctx.beginPath();
+    ctx.moveTo(sx - 7, sy - 4);
+    ctx.quadraticCurveTo(sx - 3, sy - 20 - p * 6, sx, sy - 26 - p * 8);
+    ctx.quadraticCurveTo(sx + 4, sy - 18 - p * 5, sx + 7, sy - 4);
+    ctx.closePath();
+    ctx.fillStyle = '#e8892a'; ctx.fill();
+    ctx.beginPath();
+    ctx.moveTo(sx - 3.5, sy - 4);
+    ctx.quadraticCurveTo(sx, sy - 15 - p * 5, sx + 3.5, sy - 4);
+    ctx.closePath();
+    ctx.fillStyle = '#f6d14a'; ctx.fill();
+  },
+
+  naufragio(ctx, sx, sy) {
+    sombra(ctx, sx, sy + 6, 62, 20);
+    // casco inclinado
+    ctx.save();
+    ctx.translate(sx, sy);
+    ctx.rotate(-0.13);
+    ctx.beginPath();
+    ctx.moveTo(-60, -6); ctx.lineTo(52, -14);
+    ctx.quadraticCurveTo(62, 6, 40, 16);
+    ctx.lineTo(-44, 22);
+    ctx.quadraticCurveTo(-64, 12, -60, -6);
+    ctx.closePath();
+    ctx.fillStyle = '#6b4529'; ctx.fill();
+    ctx.strokeStyle = '#4d3220'; ctx.lineWidth = 3; ctx.stroke();
+    // tablas
+    ctx.strokeStyle = 'rgba(0,0,0,0.18)'; ctx.lineWidth = 2;
+    for (let i = -1; i < 3; i++) {
+      ctx.beginPath(); ctx.moveTo(-56, i * 8); ctx.lineTo(46, i * 8 - 6); ctx.stroke();
+    }
+    // cubierta
+    ctx.beginPath();
+    ctx.moveTo(-52, -8); ctx.lineTo(44, -15); ctx.lineTo(40, -22); ctx.lineTo(-48, -15);
+    ctx.closePath();
+    ctx.fillStyle = '#87613c'; ctx.fill();
+    ctx.restore();
+    // mástil roto
+    ctx.strokeStyle = '#7a5636'; ctx.lineWidth = 7; ctx.lineCap = 'round';
+    ctx.beginPath(); ctx.moveTo(sx - 6, sy - 12); ctx.lineTo(sx + 8, sy - 74); ctx.stroke();
+    ctx.lineWidth = 5;
+    ctx.beginPath(); ctx.moveTo(sx - 16, sy - 52); ctx.lineTo(sx + 26, sy - 60); ctx.stroke();
+    ctx.lineCap = 'butt';
+    // vela desgarrada
+    ctx.beginPath();
+    ctx.moveTo(sx - 12, sy - 54); ctx.lineTo(sx + 22, sy - 60);
+    ctx.lineTo(sx + 16, sy - 34); ctx.lineTo(sx + 4, sy - 42); ctx.lineTo(sx - 6, sy - 30);
+    ctx.closePath();
+    ctx.fillStyle = 'rgba(232,222,198,0.82)'; ctx.fill();
+  },
+
+  // Edificio con sprite renderizado (arte CC0). Se escala al tamaño real de
+  // su parcela para que la escena mantenga la proporción, y si la imagen no
+  // cargó se recurre al dibujo por código de más abajo.
+  edificio(ctx, sx, sy, e) {
+    const img = IMG[claveImagenEdificio(e)];
+    if (!img) { SPRITES.edificioProcedural(ctx, sx, sy, e); return; }
+
+    // sx,sy apuntan a la esquina norte de la parcela; se calculan el centro
+    // y la esquina sur para anclar el sprite sobre el suelo correctamente.
+    const centroX = sx + (isoX(e.x + e.w / 2, e.y + e.h / 2) - isoX(e.x, e.y));
+    const surY    = sy + (isoY(e.x + e.w,     e.y + e.h)     - isoY(e.x, e.y));
+
+    const anchoDestino = (e.w + e.h) * (TW / 2);
+    const escala = anchoDestino / img.width;
+    const altoDestino = img.height * escala;
+
+    ctx.drawImage(img, centroX - anchoDestino / 2, surY - altoDestino + ANCLA_EDIFICIO * altoDestino,
+                  anchoDestino, altoDestino);
+
+    if (e.nombre) {
+      ctx.font = '11px Trebuchet MS';
+      ctx.textAlign = 'center';
+      const ancho = ctx.measureText(e.nombre).width + 12;
+      const cy = surY - altoDestino - 6;
+      ctx.fillStyle = 'rgba(20,15,10,0.62)';
+      ctx.fillRect(centroX - ancho / 2, cy - 12, ancho, 16);
+      ctx.fillStyle = '#e8c37a';
+      ctx.fillText(e.nombre, centroX, cy);
+      ctx.textAlign = 'left';
+    }
+  },
+
+  edificioProcedural(ctx, sx, sy, e) {
+    // Dibuja un volumen isométrico real: base, dos caras de muro y tejado a
+    // dos aguas. El tejado se construye con la cumbrera sobre el lado largo.
+    const paleta = {
+      casa:     { muro: '#e2d3b4', muroOsc: '#c9b998', techo: '#8f4a3c', techoOsc: '#743a2e', viga: '#7a5a3a' },
+      herreria: { muro: '#b9a892', muroOsc: '#9c8c78', techo: '#5a5a62', techoOsc: '#46464e', viga: '#5c4632' },
+      taberna:  { muro: '#dcc9a4', muroOsc: '#c0ae8b', techo: '#6f5230', techoOsc: '#584124', viga: '#6b4a2c' },
+      granero:  { muro: '#a86f4a', muroOsc: '#8d5b3c', techo: '#7d5136', techoOsc: '#63402a', viga: '#6b4a2c' },
+    }[e.clase] || {};
+    const alturaMuro = 46;
+    const alturaTecho = 30;
+
+    // 4 esquinas de la base en pantalla (relativas a la esquina norte)
+    const N = { x: isoX(e.x, e.y),               y: isoY(e.x, e.y) };
+    const E = { x: isoX(e.x + e.w, e.y),         y: isoY(e.x + e.w, e.y) };
+    const S = { x: isoX(e.x + e.w, e.y + e.h),   y: isoY(e.x + e.w, e.y + e.h) };
+    const W = { x: isoX(e.x, e.y + e.h),         y: isoY(e.x, e.y + e.h) };
+    const off = (p) => ({ x: sx + (p.x - N.x), y: sy + (p.y - N.y) });
+    const n = off(N), es = off(E), s = off(S), w = off(W);
+    const sube = (p, h) => ({ x: p.x, y: p.y - h });
+
+    // sombra proyectada
+    ctx.beginPath();
+    ctx.moveTo(n.x, n.y); ctx.lineTo(es.x, es.y); ctx.lineTo(s.x + 10, s.y + 5); ctx.lineTo(w.x + 10, w.y + 5);
+    ctx.closePath(); ctx.fillStyle = 'rgba(0,0,0,0.18)'; ctx.fill();
+
+    const nT = sube(n, alturaMuro), eT = sube(es, alturaMuro),
+          sT = sube(s, alturaMuro), wT = sube(w, alturaMuro);
+
+    // cara sureste (más iluminada)
+    ctx.beginPath();
+    ctx.moveTo(es.x, es.y); ctx.lineTo(s.x, s.y); ctx.lineTo(sT.x, sT.y); ctx.lineTo(eT.x, eT.y);
+    ctx.closePath(); ctx.fillStyle = paleta.muro; ctx.fill();
+    // cara suroeste (en sombra)
+    ctx.beginPath();
+    ctx.moveTo(w.x, w.y); ctx.lineTo(s.x, s.y); ctx.lineTo(sT.x, sT.y); ctx.lineTo(wT.x, wT.y);
+    ctx.closePath(); ctx.fillStyle = paleta.muroOsc; ctx.fill();
+
+    // entramado de vigas (estilo medieval de madera vista)
+    ctx.strokeStyle = paleta.viga; ctx.lineWidth = 3;
+    ctx.beginPath(); ctx.moveTo(es.x, es.y - 2); ctx.lineTo(eT.x, eT.y + 2); ctx.stroke();
+    ctx.beginPath(); ctx.moveTo(s.x, s.y - 2);   ctx.lineTo(sT.x, sT.y + 2); ctx.stroke();
+    ctx.beginPath(); ctx.moveTo(w.x, w.y - 2);   ctx.lineTo(wT.x, wT.y + 2); ctx.stroke();
+    ctx.lineWidth = 2.5;
+    ctx.beginPath(); ctx.moveTo(eT.x, eT.y + 6); ctx.lineTo(sT.x, sT.y + 6); ctx.stroke();
+    ctx.beginPath(); ctx.moveTo(wT.x, wT.y + 6); ctx.lineTo(sT.x, sT.y + 6); ctx.stroke();
+
+    // puerta en la cara sureste
+    const pmx = (es.x + s.x) / 2, pmy = (es.y + s.y) / 2;
+    ctx.fillStyle = '#5c3d22';
+    ctx.beginPath();
+    ctx.moveTo(pmx - 8, pmy - 2); ctx.lineTo(pmx + 8, pmy - 6);
+    ctx.lineTo(pmx + 8, pmy - 30); ctx.lineTo(pmx - 8, pmy - 26);
+    ctx.closePath(); ctx.fill();
+    ctx.fillStyle = '#c9a558';
+    ctx.beginPath(); ctx.arc(pmx + 4, pmy - 16, 1.8, 0, Math.PI * 2); ctx.fill();
+
+    // ventana en la cara suroeste
+    const vmx = (w.x + s.x) / 2, vmy = (w.y + s.y) / 2;
+    ctx.fillStyle = '#3d5a72';
+    ctx.beginPath();
+    ctx.moveTo(vmx - 7, vmy - 20); ctx.lineTo(vmx + 7, vmy - 24);
+    ctx.lineTo(vmx + 7, vmy - 38); ctx.lineTo(vmx - 7, vmy - 34);
+    ctx.closePath(); ctx.fill();
+
+    // --- tejado a dos aguas: cumbrera sobre el eje más largo ---
+    const cumbreraEnX = e.w >= e.h;
+    let a1, a2; // extremos de la cumbrera
+    if (cumbreraEnX) {
+      a1 = { x: (nT.x + wT.x) / 2, y: (nT.y + wT.y) / 2 - alturaTecho };
+      a2 = { x: (eT.x + sT.x) / 2, y: (eT.y + sT.y) / 2 - alturaTecho };
+      // faldón noreste
+      ctx.beginPath();
+      ctx.moveTo(nT.x, nT.y); ctx.lineTo(eT.x, eT.y); ctx.lineTo(a2.x, a2.y); ctx.lineTo(a1.x, a1.y);
+      ctx.closePath(); ctx.fillStyle = paleta.techo; ctx.fill();
+      ctx.strokeStyle = paleta.techoOsc; ctx.lineWidth = 1.5; ctx.stroke();
+      // faldón suroeste
+      ctx.beginPath();
+      ctx.moveTo(wT.x, wT.y); ctx.lineTo(sT.x, sT.y); ctx.lineTo(a2.x, a2.y); ctx.lineTo(a1.x, a1.y);
+      ctx.closePath(); ctx.fillStyle = paleta.techoOsc; ctx.fill();
+      // hastiales (triángulos de los extremos)
+      ctx.beginPath();
+      ctx.moveTo(nT.x, nT.y); ctx.lineTo(wT.x, wT.y); ctx.lineTo(a1.x, a1.y);
+      ctx.closePath(); ctx.fillStyle = paleta.muro; ctx.fill();
+    } else {
+      a1 = { x: (nT.x + eT.x) / 2, y: (nT.y + eT.y) / 2 - alturaTecho };
+      a2 = { x: (wT.x + sT.x) / 2, y: (wT.y + sT.y) / 2 - alturaTecho };
+      ctx.beginPath();
+      ctx.moveTo(nT.x, nT.y); ctx.lineTo(wT.x, wT.y); ctx.lineTo(a2.x, a2.y); ctx.lineTo(a1.x, a1.y);
+      ctx.closePath(); ctx.fillStyle = paleta.techoOsc; ctx.fill();
+      ctx.beginPath();
+      ctx.moveTo(eT.x, eT.y); ctx.lineTo(sT.x, sT.y); ctx.lineTo(a2.x, a2.y); ctx.lineTo(a1.x, a1.y);
+      ctx.closePath(); ctx.fillStyle = paleta.techo; ctx.fill();
+      ctx.strokeStyle = paleta.techoOsc; ctx.lineWidth = 1.5; ctx.stroke();
+      ctx.beginPath();
+      ctx.moveTo(eT.x, eT.y); ctx.lineTo(nT.x, nT.y); ctx.lineTo(a1.x, a1.y);
+      ctx.closePath(); ctx.fillStyle = paleta.muro; ctx.fill();
+    }
+    // cumbrera
+    ctx.strokeStyle = paleta.techoOsc; ctx.lineWidth = 3;
+    ctx.beginPath(); ctx.moveTo(a1.x, a1.y); ctx.lineTo(a2.x, a2.y); ctx.stroke();
+
+    // chimenea (o humo de fragua)
+    const chx = lerp(a1.x, a2.x, 0.28), chy = lerp(a1.y, a2.y, 0.28);
+    ctx.fillStyle = '#8b7d6b';
+    ctx.fillRect(chx - 5, chy - 20, 10, 22);
+    ctx.fillStyle = '#6f6355';
+    ctx.fillRect(chx - 6, chy - 23, 12, 4);
+    // humo
+    ctx.fillStyle = 'rgba(220,220,220,0.30)';
+    for (let i = 0; i < 3; i++) {
+      const p = (rendimiento.t * 0.5 + i * 0.33) % 1;
+      ctx.beginPath();
+      ctx.arc(chx + Math.sin(p * 6 + e.x) * 6, chy - 24 - p * 34, 4 + p * 7, 0, Math.PI * 2);
+      ctx.fill();
+    }
+
+    // cartel con el nombre del edificio
+    if (e.nombre) {
+      ctx.font = '10px Trebuchet MS';
+      ctx.textAlign = 'center';
+      const ancho = ctx.measureText(e.nombre).width + 12;
+      const cy = Math.min(a1.y, a2.y) - 16;
+      const cx = (a1.x + a2.x) / 2;
+      ctx.fillStyle = 'rgba(20,15,10,0.62)';
+      ctx.fillRect(cx - ancho / 2, cy - 11, ancho, 15);
+      ctx.fillStyle = '#e8c37a';
+      ctx.fillText(e.nombre, cx, cy);
+      ctx.textAlign = 'left';
+    }
+  },
+
+  npc(ctx, sx, sy, e) {
+    personaje(ctx, sx, sy, e.color, '#2f2a24');
+    ctx.font = 'bold 11px Trebuchet MS';
+    ctx.textAlign = 'center';
+    ctx.fillStyle = 'rgba(20,15,10,0.6)';
+    const ancho = ctx.measureText(e.nombre).width + 10;
+    ctx.fillRect(sx - ancho / 2, sy - 60, ancho, 14);
+    ctx.fillStyle = '#f2e2c0';
+    ctx.fillText(e.nombre, sx, sy - 50);
+    ctx.textAlign = 'left';
+  },
+
+  jugador(ctx, sx, sy) {
+    personaje(ctx, sx, sy, '#9c4a3a', '#3a2a1e', estado.jugador.animando);
+  },
+};
+
+// Dibuja una figura humana isométrica sencilla pero legible.
+function personaje(ctx, sx, sy, colorRopa, colorPelo, faseAnim = 0) {
+  const bob = Math.sin(faseAnim * 9) * 1.6;
+  sombra(ctx, sx, sy, 10, 5);
+  // piernas
+  const paso = Math.sin(faseAnim * 9) * 3;
+  ctx.fillStyle = '#3f3324';
+  ctx.fillRect(sx - 5, sy - 13, 4, 13 + paso);
+  ctx.fillRect(sx + 1, sy - 13, 4, 13 - paso);
+  // cuerpo
+  ctx.fillStyle = colorRopa;
+  ctx.beginPath();
+  ctx.roundRect(sx - 8, sy - 30 + bob, 16, 19, 4);
+  ctx.fill();
+  // brazos
+  ctx.fillStyle = colorRopa;
+  ctx.fillRect(sx - 11, sy - 28 + bob, 4, 13);
+  ctx.fillRect(sx + 7, sy - 28 + bob, 4, 13);
+  // cabeza
+  ctx.fillStyle = '#e8b98c';
+  ctx.beginPath(); ctx.arc(sx, sy - 37 + bob, 7.5, 0, Math.PI * 2); ctx.fill();
+  // pelo
+  ctx.fillStyle = colorPelo;
+  ctx.beginPath();
+  ctx.arc(sx, sy - 39 + bob, 7.5, Math.PI, Math.PI * 2);
+  ctx.fill();
+}
+
+// ---------------------------------------------------------------
+// MOTOR DE RENDER
+// ---------------------------------------------------------------
+const canvas = document.getElementById('game');
+const ctx = canvas.getContext('2d');
+const camara = { x: 0, y: 0 };
+const rendimiento = { t: 0 };
+
+function ajustarCanvas() {
+  const dpr = Math.min(window.devicePixelRatio || 1, 2);
+  canvas.width = Math.max(window.innerWidth, 1) * dpr;
+  canvas.height = Math.max(window.innerHeight, 1) * dpr;
+  canvas.style.width = window.innerWidth + 'px';
+  canvas.style.height = window.innerHeight + 'px';
+  ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+}
+window.addEventListener('resize', ajustarCanvas);
+
+function dibujar() {
+  const W = window.innerWidth, H = window.innerHeight;
+  ctx.clearRect(0, 0, W, H);
+  ctx.fillStyle = '#22415c';
+  ctx.fillRect(0, 0, W, H);
+
+  // la cámara sigue al jugador
+  camara.x = isoX(estado.jugador.x, estado.jugador.y) - W / 2;
+  camara.y = isoY(estado.jugador.x, estado.jugador.y) - H / 2;
+
+  const pantX = (x, y) => isoX(x, y) - camara.x;
+  const pantY = (x, y) => isoY(x, y) - camara.y;
+
+  // --- suelo (sólo los tiles visibles) ---
+  const margen = 2;
+  for (let y = 0; y < MAPA_H; y++) {
+    for (let x = 0; x < MAPA_W; x++) {
+      const sx = pantX(x, y), sy = pantY(x, y);
+      if (sx < -TW || sx > W + TW || sy < -TH * margen || sy > H + TH * 4) continue;
+      const celda = mapa[y][x];
+
+      if (celda.t === TERRENO.AGUA) {
+        // El pack de terreno no trae tile de agua, así que el mar se pinta
+        // por código con olas suaves. Combina bien con el resto.
+        const ola = Math.sin(rendimiento.t * 1.4 + (x + y) * 0.4) * 0.5 + 0.5;
+        rombo(ctx, sx, sy, ola > 0.66 ? '#356fa8' : '#2d6a9f');
+        continue;
+      }
+
+      const hoja = IMG.terreno;
+      if (hoja) {
+        let idx;
+        switch (celda.t) {
+          case TERRENO.ARENA:  idx = TILE_TERRENO.ARENA; break;
+          case TERRENO.CAMINO: idx = TILE_TERRENO.TIERRA_CLARA; break;
+          case TERRENO.PLAZA:  idx = TILE_TERRENO.TIERRA_CLARA; break;
+          case TERRENO.TIERRA: idx = TILE_TERRENO.TIERRA_OSCURA; break;
+          default:             idx = celda.v < 0.5 ? TILE_TERRENO.CESPED_A : TILE_TERRENO.CESPED_B;
+        }
+        // +1px de solape para que no se vean costuras entre rombos vecinos
+        ctx.drawImage(hoja, idx * TW, 0, TW, TH, sx - TW / 2, sy - TH / 2, TW + 1, TH + 1);
+      } else {
+        const paleta = COLORES_TERRENO[celda.t];
+        rombo(ctx, sx, sy, paleta[Math.floor(celda.v * paleta.length)]);
+      }
+    }
+  }
+
+  // --- entidades ordenadas por profundidad ---
+  const visibles = [];
+  for (const e of entidades) {
+    if (e.tipo === 'nodo' && e.agotado) continue;
+    const sx = pantX(e.x, e.y), sy = pantY(e.x, e.y);
+    if (sx < -160 || sx > W + 160 || sy < -160 || sy > H + 200) continue;
+    visibles.push({ e, sx, sy, orden: e.x + (e.ordY ?? e.y) });
+  }
+  const j = estado.jugador;
+  visibles.push({ e: { tipo: 'jugador' }, sx: pantX(j.x, j.y), sy: pantY(j.x, j.y), orden: j.x + j.y });
+  visibles.sort((a, b) => a.orden - b.orden);
+
+  for (const v of visibles) {
+    const e = v.e;
+    if (e.tipo === 'nodo') {
+      const f = SPRITES[e.clase];
+      if (f) f(ctx, v.sx, v.sy, e);
+    } else {
+      const f = SPRITES[e.tipo];
+      if (f) f(ctx, v.sx, v.sy, e);
+    }
+    // resaltar el objetivo de interacción
+    if (e === objetivoInteraccion) {
+      ctx.save();
+      ctx.strokeStyle = 'rgba(232,195,122,0.9)';
+      ctx.lineWidth = 2;
+      ctx.setLineDash([4, 4]);
+      ctx.beginPath();
+      ctx.ellipse(v.sx, v.sy, 20, 10, 0, 0, Math.PI * 2);
+      ctx.stroke();
+      ctx.restore();
+    }
+  }
+
+  aplicarLuzDelDia(W, H);
+}
+
+// Tinte de color según la hora: amanecer cálido, día neutro, noche azul.
+function aplicarLuzDelDia(W, H) {
+  const h = horaActual();
+  const claves = [
+    { h: 0,  c: [12, 22, 55],  a: 0.55 },
+    { h: 5,  c: [12, 22, 55],  a: 0.55 },
+    { h: 7,  c: [255, 150, 80], a: 0.24 },
+    { h: 9,  c: [255, 255, 255], a: 0 },
+    { h: 17, c: [255, 255, 255], a: 0 },
+    { h: 19, c: [255, 120, 70], a: 0.24 },
+    { h: 21, c: [12, 22, 55],  a: 0.55 },
+    { h: 24, c: [12, 22, 55],  a: 0.55 },
+  ];
+  let k0 = claves[0], k1 = claves[claves.length - 1];
+  for (let i = 0; i < claves.length - 1; i++) {
+    if (h >= claves[i].h && h <= claves[i + 1].h) { k0 = claves[i]; k1 = claves[i + 1]; break; }
+  }
+  const f = (h - k0.h) / ((k1.h - k0.h) || 1);
+  const a = lerp(k0.a, k1.a, f);
+  if (a <= 0.001) return;
+  const c = [0, 1, 2].map(i => Math.round(lerp(k0.c[i], k1.c[i], f)));
+  ctx.save();
+  ctx.globalCompositeOperation = 'multiply';
+  ctx.fillStyle = `rgba(${c[0]},${c[1]},${c[2]},${a})`;
+  ctx.fillRect(0, 0, W, H);
+  ctx.restore();
+}
+
+// ---------------------------------------------------------------
+// TIEMPO
+// ---------------------------------------------------------------
+function horaActual() { return (estado.tiempoMs / DURACION_DIA_MS) * 24 % 24; }
+
+function actualizarReloj() {
+  const h = horaActual();
+  const hh = String(Math.floor(h)).padStart(2, '0');
+  const mm = String(Math.floor((h % 1) * 60)).padStart(2, '0');
+  document.getElementById('reloj').textContent = `Día ${estado.dia} — ${hh}:${mm}`;
+}
+
+// ---------------------------------------------------------------
+// MOVIMIENTO Y COLISIÓN
+// ---------------------------------------------------------------
+const teclas = {};
+window.addEventListener('keydown', (ev) => {
+  const k = ev.key.toLowerCase();
+  teclas[k] = true;
+  if (k === 'e') interactuar();
+  if (k === 'c') alternarModal('craft');
+  if (k === 't') alternarModal('tech');
+  if (k === 'escape') cerrarModales();
+});
+window.addEventListener('keyup', (ev) => { teclas[ev.key.toLowerCase()] = false; });
+
+function bloqueado(x, y) {
+  const tx = Math.round(x), ty = Math.round(y);
+  if (!enMapa(tx, ty)) return true;
+  return solido[ty][tx];
+}
+
+function moverJugador(dt) {
+  let dx = 0, dy = 0;
+  // En isométrico, "arriba en pantalla" = restar en ambos ejes.
+  if (teclas['w'] || teclas['arrowup'])    { dx -= 1; dy -= 1; }
+  if (teclas['s'] || teclas['arrowdown'])  { dx += 1; dy += 1; }
+  if (teclas['a'] || teclas['arrowleft'])  { dx -= 1; dy += 1; }
+  if (teclas['d'] || teclas['arrowright']) { dx += 1; dy -= 1; }
+
+  if (dx === 0 && dy === 0) { estado.jugador.animando = 0; return; }
+
+  const largo = Math.hypot(dx, dy);
+  const vel = VEL_JUGADOR * (estado.cansado ? 0.55 : 1) * dt;
+  dx = (dx / largo) * vel;
+  dy = (dy / largo) * vel;
+  estado.jugador.animando += dt;
+
+  // se prueba cada eje por separado para poder deslizarse por las paredes
+  const j = estado.jugador;
+  if (!bloqueado(j.x + dx, j.y)) j.x = clamp(j.x + dx, 1, MAPA_W - 2);
+  if (!bloqueado(j.x, j.y + dy)) j.y = clamp(j.y + dy, 1, MAPA_H - 2);
+}
+
+// ---------------------------------------------------------------
+// INTERACCIÓN
+// ---------------------------------------------------------------
+let objetivoInteraccion = null;
+
+const ACCIONES_NODO = {
+  arbol:   { verbo: 'Talar',      recurso: 'madera', base: 2, herramienta: 'hacha', respawn: 55 },
+  roca:    { verbo: 'Picar',      recurso: 'piedra', base: 2, herramienta: 'pico',  respawn: 70 },
+  arbusto: { verbo: 'Recolectar', recurso: 'fibra',  base: 2, extra: 'baya',        respawn: 40 },
+};
+
+function buscarObjetivo() {
+  const j = estado.jugador;
+  let mejor = null, mejorD = ALCANCE_INTERACCION;
+
+  for (const n of nodos) {
+    if (n.agotado) continue;
+    const d = dist(j.x, j.y, n.x, n.y);
+    if (d < mejorD) { mejorD = d; mejor = n; }
+  }
+  for (const n of npcs) {
+    const d = dist(j.x, j.y, n.x, n.y);
+    if (d < mejorD) { mejorD = d; mejor = n; }
+  }
+  for (const e of entidades) {
+    if (e.tipo !== 'fogata') continue;
+    const d = dist(j.x, j.y, e.x, e.y);
+    if (d < mejorD) { mejorD = d; mejor = e; }
+  }
+  objetivoInteraccion = mejor;
+
+  const el = document.getElementById('prompt');
+  if (!mejor) { el.style.display = 'none'; return; }
+  let texto = '';
+  if (mejor.tipo === 'nodo') {
+    const a = ACCIONES_NODO[mejor.clase];
+    texto = `${a.verbo} — ${ITEMS[a.recurso].nombre}`;
+  } else if (mejor.tipo === 'npc') {
+    texto = `Hablar con ${mejor.nombre}`;
+  } else if (mejor.tipo === 'fogata') {
+    texto = 'Descansar junto a la fogata';
+  }
+  document.getElementById('prompt-text').textContent = texto;
+  el.style.display = 'block';
+}
+
+function interactuar() {
+  if (document.querySelector('.modal.open')) return;
+  // Se recalcula el objetivo aquí en vez de fiarse del último cuadro dibujado:
+  // así pulsar E responde a dónde está el jugador AHORA, no hace un frame.
+  buscarObjetivo();
+  const o = objetivoInteraccion;
+  if (!o) return;
+  if (o.tipo === 'nodo') recolectar(o);
+  else if (o.tipo === 'npc') abrirDialogo(o);
+  else if (o.tipo === 'fogata') descansar();
+}
+
+function recolectar(nodo) {
+  if (estado.necesidades.energia < 4) { aviso('Estás agotado. Descansa junto a una fogata.'); return; }
+  const a = ACCIONES_NODO[nodo.clase];
+  let cantidad = a.base;
+  if (a.herramienta && tiene(a.herramienta)) cantidad *= 2;
+
+  darItem(a.recurso, cantidad);
+  let msg = `+${cantidad} ${ITEMS[a.recurso].nombre}`;
+  if (a.extra && Math.random() < 0.65) { darItem(a.extra, 1); msg += `, +1 ${ITEMS[a.extra].nombre}`; }
+  aviso(msg);
+
+  estado.necesidades.energia = Math.max(0, estado.necesidades.energia - 3.5);
+  nodo.agotado = true;
+  nodo.reapareceEn = estado.tiempoMs + a.respawn * 1000;
+  solido[nodo.y][nodo.x] = false;
+  objetivoInteraccion = null;
+  refrescarUI();
+}
+
+function descansar() {
+  estado.necesidades.energia = 100;
+  estado.tiempoMs += DURACION_DIA_MS * (7 / 24);   // duermes unas 7 horas
+  aviso('Descansas junto al fuego. Energía restaurada.');
+  refrescarUI();
+}
+
+// ---------------------------------------------------------------
+// INVENTARIO
+// ---------------------------------------------------------------
+function darItem(id, n = 1) { estado.inventario[id] = (estado.inventario[id] || 0) + n; }
+function quitarItem(id, n = 1) {
+  estado.inventario[id] = Math.max(0, (estado.inventario[id] || 0) - n);
+  if (estado.inventario[id] === 0) delete estado.inventario[id];
+}
+function tiene(id, n = 1) { return (estado.inventario[id] || 0) >= n; }
+function tieneTodo(costo) { return Object.entries(costo).every(([k, v]) => tiene(k, v)); }
+function cobrar(costo) { Object.entries(costo).forEach(([k, v]) => quitarItem(k, v)); }
+
+function pintarInventario() {
+  const cont = document.getElementById('inv-list');
+  const claves = Object.keys(estado.inventario).filter(k => estado.inventario[k] > 0);
+  if (!claves.length) { cont.innerHTML = '<div class="inv-empty">vacío</div>'; return; }
+  cont.innerHTML = claves.map(k =>
+    `<div class="inv-row"><span>${ITEMS[k].icono} ${ITEMS[k].nombre}</span><span class="inv-qty">${estado.inventario[k]}</span></div>`
+  ).join('');
+}
+
+// ---------------------------------------------------------------
+// NECESIDADES
+// ---------------------------------------------------------------
+function actualizarNecesidades(dt) {
+  const n = estado.necesidades;
+  n.hambre = Math.max(0, n.hambre - dt * 0.55);
+  n.energia = Math.max(0, n.energia - dt * 0.30);
+
+  // comer automáticamente si hay bayas y el hambre aprieta
+  if (n.hambre < 30 && tiene('baya')) {
+    quitarItem('baya');
+    n.hambre = Math.min(100, n.hambre + ITEMS.baya.comida);
+    aviso('Comes unas bayas.');
+    pintarInventario();
+  }
+  estado.cansado = n.energia < 20 || n.hambre < 12;
+
+  document.getElementById('bar-hambre').style.width = n.hambre + '%';
+  document.getElementById('bar-energia').style.width = n.energia + '%';
+  document.getElementById('val-hambre').textContent = Math.round(n.hambre) + '%';
+  document.getElementById('val-energia').textContent = Math.round(n.energia) + '%';
+}
+
+// ---------------------------------------------------------------
+// NPCs — rutina diaria simulada (sin IA generativa, todo local)
+// ---------------------------------------------------------------
+function actualizarNPCs(dt) {
+  const h = horaActual();
+  for (const npc of npcs) {
+    // elige el tramo de rutina vigente según la hora
+    let tramo = npc.rutina[npc.rutina.length - 1];
+    for (const r of npc.rutina) if (h >= r.h) tramo = r;
+    npc.destino = { x: tramo.x, y: tramo.y };
+    npc.actividad = tramo.act;
+
+    const dx = npc.destino.x - npc.x, dy = npc.destino.y - npc.y;
+    const d = Math.hypot(dx, dy);
+    if (d > 0.15) {
+      const v = 1.6 * dt;
+      npc.x += (dx / d) * Math.min(v, d);
+      npc.y += (dy / d) * Math.min(v, d);
+      npc.ordY = npc.y;
+    }
+  }
+}
+
+// ---------------------------------------------------------------
+// DIÁLOGO
+// ---------------------------------------------------------------
+function abrirDialogo(npc) {
+  const mision = MISIONES[estado.misionActual];
+  const h = Math.floor(horaActual());
+  const saludo = h < 12 ? 'Buenos días' : h < 20 ? 'Buenas tardes' : 'Buenas noches';
+  const rel = estado.relacion[npc.id] || 0;
+
+  let texto = `«${saludo}. Ando ${npc.actividad}.»`;
+  const acciones = [];
+
+  // ¿tiene una misión pendiente conmigo?
+  if (mision && mision.entrega === npc.id) {
+    const completa = tieneTodo(mision.objetivo);
+    if (!estado.misionEntregada[mision.id + '_dada']) {
+      texto = `«${saludo}. ${mision.pedido}»`;
+      acciones.push({ txt: 'Acepto el encargo', fn: () => {
+        estado.misionEntregada[mision.id + '_dada'] = true;
+        aviso(`Nueva misión: ${mision.titulo}`);
+        cerrarModales(); refrescarUI();
+      }});
+    } else if (completa) {
+      texto = `«¡Vaya! Lo has traído todo. Eso merece una recompensa.»`;
+      acciones.push({ txt: 'Entregar', fn: () => { entregarMision(mision, npc); }});
+    } else {
+      const falta = Object.entries(mision.objetivo)
+        .filter(([k, v]) => !tiene(k, v))
+        .map(([k, v]) => `${v - (estado.inventario[k] || 0)} de ${ITEMS[k].nombre}`)
+        .join(', ');
+      texto = `«Aún te falta: ${falta}. Vuelve cuando lo tengas.»`;
+    }
+  } else if (rel >= 2) {
+    texto = `«${saludo}, amigo. Me alegra verte por aquí. Ando ${npc.actividad}.»`;
+  }
+
+  // el mercader siempre puede comprar
+  if (npc.oficio === 'mercader') {
+    acciones.push({ txt: 'Vender materiales', fn: () => abrirVenta(npc) });
+  }
+  acciones.push({ txt: 'Despedirse', fn: cerrarModales });
+
+  mostrarDialogo(npc.nombre, texto, acciones);
+}
+
+function entregarMision(mision, npc) {
+  cobrar(mision.objetivo);
+  Object.entries(mision.recompensa).forEach(([k, v]) => darItem(k, v));
+  estado.misionEntregada[mision.id] = true;
+  estado.relacion[npc.id] = (estado.relacion[npc.id] || 0) + 1;
+  estado.misionActual++;
+  const premio = Object.entries(mision.recompensa)
+    .map(([k, v]) => `${v} ${ITEMS[k].nombre}`).join(', ');
+  aviso(`Misión completada: ${mision.titulo} (+${premio})`);
+  cerrarModales();
+  refrescarUI();
+}
+
+function abrirVenta(npc) {
+  const vendibles = Object.keys(estado.inventario).filter(k => PRECIOS[k] && estado.inventario[k] > 0);
+  if (!vendibles.length) {
+    mostrarDialogo(npc.nombre, '«No traes nada que me sirva, muchacho.»', [{ txt: 'Volver', fn: cerrarModales }]);
+    return;
+  }
+  const acciones = vendibles.map(k => ({
+    txt: `Vender ${estado.inventario[k]} ${ITEMS[k].nombre} (${PRECIOS[k] * estado.inventario[k]} 🪙)`,
+    fn: () => {
+      const n = estado.inventario[k];
+      darItem('moneda', PRECIOS[k] * n);
+      quitarItem(k, n);
+      aviso(`Vendes ${n} ${ITEMS[k].nombre} por ${PRECIOS[k] * n} monedas`);
+      refrescarUI();
+      abrirVenta(npc);
+    },
+  }));
+  acciones.push({ txt: 'Volver', fn: cerrarModales });
+  mostrarDialogo(npc.nombre, '«A ver qué traes. Pago en monedas contantes.»', acciones);
+}
+
+function mostrarDialogo(nombre, texto, acciones) {
+  document.getElementById('dlg-name').textContent = nombre;
+  document.getElementById('dlg-text').textContent = texto;
+  const cont = document.getElementById('dlg-actions');
+  cont.innerHTML = '';
+  acciones.forEach(a => {
+    const b = document.createElement('button');
+    b.className = 'btn';
+    b.textContent = a.txt;
+    b.onclick = a.fn;
+    cont.appendChild(b);
+  });
+  cerrarModales();
+  document.getElementById('dialogue').classList.add('open');
+}
+
+// ---------------------------------------------------------------
+// MISIONES (panel)
+// ---------------------------------------------------------------
+function pintarMision() {
+  const mision = MISIONES[estado.misionActual];
+  const t = document.getElementById('quest-title');
+  const d = document.getElementById('quest-desc');
+  const p = document.getElementById('quest-progress');
+
+  if (!mision) {
+    t.textContent = 'Todo en orden';
+    d.textContent = 'Has cumplido con todos los encargos por ahora.';
+    p.innerHTML = '';
+    return;
+  }
+  const dada = estado.misionEntregada[mision.id + '_dada'];
+  if (!dada) {
+    const quien = mision.entrega === 'oren' ? 'Maese Oren' : 'Bertha la Mercadera';
+    t.textContent = 'Buscar trabajo';
+    d.textContent = `Habla con ${quien} en el pueblo para recibir un encargo.`;
+    p.innerHTML = '';
+    return;
+  }
+  t.textContent = mision.titulo;
+  d.textContent = mision.desc;
+  p.innerHTML = Object.entries(mision.objetivo).map(([k, v]) => {
+    const n = estado.inventario[k] || 0;
+    const ok = n >= v;
+    return `<div class="${ok ? 'obj-done' : 'obj-pending'}">${ok ? '✔' : '•'} ${ITEMS[k].nombre}: ${Math.min(n, v)}/${v}</div>`;
+  }).join('');
+}
+
+// ---------------------------------------------------------------
+// CRAFTEO Y TECNOLOGÍA (paneles)
+// ---------------------------------------------------------------
+function textoCosto(costo) {
+  return Object.entries(costo).map(([k, v]) => {
+    const ok = tiene(k, v);
+    return `<span class="${ok ? 'cost-ok' : 'cost-bad'}">${ITEMS[k].icono} ${v} ${ITEMS[k].nombre}</span>`;
+  }).join(' · ');
+}
+
+function pintarCrafteo() {
+  const cont = document.getElementById('craft-list');
+  const disponibles = RECETAS.filter(r => estado.tech[r.tech]);
+  if (!disponibles.length) {
+    cont.innerHTML = '<div class="modal-sub">Todavía no conoces ninguna receta. Abre el <b>árbol de tecnología (T)</b> y aprende un oficio.</div>';
+    return;
+  }
+  cont.innerHTML = '';
+  disponibles.forEach(r => {
+    const puede = tieneTodo(r.entra);
+    const salida = Object.entries(r.sale).map(([k, v]) => `${v} ${ITEMS[k].nombre}`).join(', ');
+    const card = document.createElement('div');
+    card.className = 'card';
+    card.innerHTML = `
+      <div>
+        <div class="card-name">${ITEMS[Object.keys(r.sale)[0]].icono} ${salida}</div>
+        <div class="card-desc">${r.desc}</div>
+        <div class="card-cost">Cuesta: ${textoCosto(r.entra)}</div>
+      </div>`;
+    const b = document.createElement('button');
+    b.className = 'btn';
+    b.textContent = 'Fabricar';
+    b.disabled = !puede;
+    b.onclick = () => {
+      if (!tieneTodo(r.entra)) return;
+      cobrar(r.entra);
+      Object.entries(r.sale).forEach(([k, v]) => darItem(k, v));
+      aviso(`Fabricas ${salida}`);
+      refrescarUI();
+      pintarCrafteo();
+    };
+    card.appendChild(b);
+    cont.appendChild(card);
+  });
+}
+
+function pintarTech() {
+  const cont = document.getElementById('tech-list');
+  cont.innerHTML = '';
+  Object.entries(TECH).forEach(([id, t]) => {
+    const aprendido = !!estado.tech[id];
+    const reqOk = t.req.every(r => estado.tech[r]);
+    const puede = !aprendido && reqOk && tieneTodo(t.costo);
+
+    const card = document.createElement('div');
+    card.className = 'card' + (aprendido ? ' owned' : (reqOk ? '' : ' locked'));
+    const reqTxt = t.req.length ? `<div class="card-desc">Requiere: ${t.req.map(r => TECH[r].nombre).join(', ')}</div>` : '';
+    card.innerHTML = `
+      <div>
+        <div class="card-name">${t.nombre}</div>
+        <div class="card-desc">${t.desc}</div>
+        ${reqTxt}
+        ${aprendido ? '' : `<div class="card-cost">Cuesta: ${textoCosto(t.costo)}</div>`}
+      </div>`;
+    if (aprendido) {
+      const s = document.createElement('span');
+      s.className = 'tag-owned';
+      s.textContent = '✔ Aprendido';
+      card.appendChild(s);
+    } else {
+      const b = document.createElement('button');
+      b.className = 'btn';
+      b.textContent = 'Aprender';
+      b.disabled = !puede;
+      b.onclick = () => {
+        if (!tieneTodo(t.costo) || !reqOk) return;
+        cobrar(t.costo);
+        estado.tech[id] = true;
+        aviso(`Has aprendido ${t.nombre}`);
+        refrescarUI();
+        pintarTech();
+      };
+      card.appendChild(b);
+    }
+    cont.appendChild(card);
+  });
+}
+
+// ---------------------------------------------------------------
+// UI GENERAL
+// ---------------------------------------------------------------
+function alternarModal(id) {
+  const el = document.getElementById(id);
+  const abierto = el.classList.contains('open');
+  cerrarModales();
+  if (!abierto) {
+    el.classList.add('open');
+    if (id === 'craft') pintarCrafteo();
+    if (id === 'tech') pintarTech();
+  }
+}
+function cerrarModales() {
+  document.querySelectorAll('.modal').forEach(m => m.classList.remove('open'));
+}
+
+function aviso(msg) {
+  const cont = document.getElementById('toasts');
+  const el = document.createElement('div');
+  el.className = 'toast panel';
+  el.textContent = msg;
+  cont.appendChild(el);
+  setTimeout(() => el.remove(), 2600);
+}
+
+function refrescarUI() {
+  pintarInventario();
+  pintarMision();
+  guardar();
+}
+
+// ---------------------------------------------------------------
+// GUARDADO
+// ---------------------------------------------------------------
+const CLAVE_GUARDADO = 'marea-y-ceniza-v1';
+let ultimoGuardado = 0;
+function guardar() {
+  try {
+    localStorage.setItem(CLAVE_GUARDADO, JSON.stringify({
+      inventario: estado.inventario, tech: estado.tech,
+      misionActual: estado.misionActual, misionEntregada: estado.misionEntregada,
+      necesidades: estado.necesidades, relacion: estado.relacion,
+      jugador: { x: estado.jugador.x, y: estado.jugador.y },
+      tiempoMs: estado.tiempoMs, dia: estado.dia,
+    }));
+  } catch (e) { /* almacenamiento no disponible: se juega sin guardar */ }
+}
+function cargar() {
+  try {
+    const raw = localStorage.getItem(CLAVE_GUARDADO);
+    if (!raw) return;
+    const d = JSON.parse(raw);
+    Object.assign(estado.inventario, d.inventario || {});
+    Object.assign(estado.tech, d.tech || {});
+    Object.assign(estado.necesidades, d.necesidades || {});
+    Object.assign(estado.relacion, d.relacion || {});
+    Object.assign(estado.misionEntregada, d.misionEntregada || {});
+    estado.misionActual = d.misionActual || 0;
+    estado.tiempoMs = d.tiempoMs ?? estado.tiempoMs;
+    estado.dia = d.dia || 1;
+    if (d.jugador) { estado.jugador.x = d.jugador.x; estado.jugador.y = d.jugador.y; }
+  } catch (e) { /* guardado corrupto: se empieza de cero */ }
+}
+
+// ---------------------------------------------------------------
+// BUCLE PRINCIPAL
+// ---------------------------------------------------------------
+let ultimo = performance.now();
+function bucle(ahora) {
+  const dt = Math.min((ahora - ultimo) / 1000, 0.1);
+  ultimo = ahora;
+  rendimiento.t += dt;
+
+  // tiempo del mundo
+  const antes = Math.floor(estado.tiempoMs / DURACION_DIA_MS);
+  estado.tiempoMs += dt * 1000;
+  const despues = Math.floor(estado.tiempoMs / DURACION_DIA_MS);
+  if (despues > antes) { estado.dia++; aviso(`Amanece el día ${estado.dia}`); }
+
+  // reaparición de recursos
+  for (const n of nodos) {
+    if (n.agotado && estado.tiempoMs >= n.reapareceEn) {
+      n.agotado = false;
+      solido[n.y][n.x] = true;
+    }
+  }
+
+  if (!document.querySelector('.modal.open')) moverJugador(dt);
+  actualizarNPCs(dt);
+  actualizarNecesidades(dt);
+  buscarObjetivo();
+  actualizarReloj();
+  dibujar();
+
+  // guardado periódico
+  if (ahora - ultimoGuardado > 10000) { ultimoGuardado = ahora; guardar(); }
+
+  requestAnimationFrame(bucle);
+}
+
+// ---------------------------------------------------------------
+// ARRANQUE
+// ---------------------------------------------------------------
+async function iniciar() {
+  ajustarCanvas();
+  await cargarImagenes();
+  construirMundo();
+  cargar();
+  refrescarUI();
+  document.getElementById('loading').style.display = 'none';
+  requestAnimationFrame(bucle);
+
+  // Enganche de depuración: permite inspeccionar y manipular el juego desde
+  // la consola del navegador sin tener que jugarlo a mano.
+  window.__juego = {
+    estado, teclas, mapa, solido, entidades, nodos, npcs, camara,
+    TRAZADO_MUNDO, ITEMS, RECETAS, TECH, MISIONES,
+    irA: (x, y) => { estado.jugador.x = x; estado.jugador.y = y; },
+    dar: (id, n = 1) => { darItem(id, n); refrescarUI(); },
+    borrarGuardado: () => localStorage.removeItem(CLAVE_GUARDADO),
+  };
+}
+
+iniciar().catch((err) => {
+  console.error(err);
+  const el = document.getElementById('loading');
+  el.textContent = 'Error al iniciar: ' + err.message;
+  el.style.color = '#ff8080';
+});
+</script>
+</body>
+</html>

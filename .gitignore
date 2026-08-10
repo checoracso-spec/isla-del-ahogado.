@@ -1,0 +1,9 @@
+# Caché de Godot: se regenera sola al importar, no aporta nada versionar.
+godot/.godot/
+
+# Material fuente de los packs de arte (211 MB): no es lo que Codex edita
+# de noche, y ensuciaría el repo. El README explica de dónde sale.
+assets_raw/
+
+# Restos del intento en 3D descartado el 2026-08-07.
+_archivo_3d/
