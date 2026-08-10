@@ -796,6 +796,8 @@ func _process(_delta: float) -> void:
 	_actualizar_hud()
 	_raton_sobre_edificio()
 	_actualizar_oclusiones()
+	if zona_global_activa is ZonaRemota and jugador != null:
+		zona_global_activa.actualizar_chunks_cerca(jugador.pos_tile)
 
 func _actualizar_oclusiones() -> void:
 	if jugador == null or Interiores.dentro():

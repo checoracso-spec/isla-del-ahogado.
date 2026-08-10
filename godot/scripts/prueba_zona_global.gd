@@ -47,6 +47,12 @@ func _ejecutar() -> void:
 	_comprobar("puede reactivar un chunk",
 		zona.activar_chunk(Vector2i.ZERO)
 		and zona.chunks["0,0"].activo)
+	zona.actualizar_chunks_cerca(Vector2(1.0, 1.0), 0)
+	_comprobar("activa sólo el chunk cercano",
+		zona.chunks["0,0"].activo and not zona.chunks["1,1"].activo)
+	zona.actualizar_chunks_cerca(Vector2(8.0, 8.0), 1)
+	_comprobar("reactiva el vecindario al cambiar de chunk",
+		zona.chunks["0,0"].activo and zona.chunks["1,1"].activo)
 	_comprobar("Portobello monta sus recursos desde datos",
 		zona.fuentes_recurso.size() == 1)
 	_comprobar("Portobello no inventa cultivos",

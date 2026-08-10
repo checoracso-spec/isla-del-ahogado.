@@ -23,6 +23,7 @@ var fuentes_recurso: Array = []
 var parcelas_cultivo: Array = []
 var recolectores_cultivo: Array = []
 var chunks: Dictionary = {} ## "x,y" -> ZonaChunk
+var _centro_chunks_activo: Vector2i = Vector2i(2147483647, 2147483647)
 
 func construir(p_destino_id: String, p_ancho: int = 16, p_alto: int = 12) -> void:
 	destino_id = p_destino_id
@@ -44,6 +45,7 @@ func _montar_chunks() -> void:
 		if existente != null and is_instance_valid(existente):
 			existente.queue_free()
 	chunks.clear()
+	_centro_chunks_activo = Vector2i(2147483647, 2147483647)
 	var columnas := ceili(float(ancho) / TAMANO_CHUNK)
 	var filas := ceili(float(alto) / TAMANO_CHUNK)
 	for cy in range(filas):
@@ -80,6 +82,9 @@ func activar_chunk(coordenada: Vector2i, activo: bool = true) -> bool:
 
 func actualizar_chunks_cerca(posicion: Vector2, radio: int = 1) -> void:
 	var centro := chunk_de_casilla(Vector2i(floori(posicion.x), floori(posicion.y)))
+	if centro == _centro_chunks_activo:
+		return
+	_centro_chunks_activo = centro
 	for clave in chunks:
 		var chunk = chunks[clave]
 		var cerca := absi(chunk.coordenada.x - centro.x) <= radio \
