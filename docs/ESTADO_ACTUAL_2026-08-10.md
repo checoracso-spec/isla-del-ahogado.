@@ -6,7 +6,7 @@
 - Rejilla isométrica 128×64; `scripts/mapa/iso.gd` no se ha modificado.
 - API pública de `scripts/autoload/almacen.gd` intacta.
 - 24 escenas `prueba_*.tscn` ejecutadas en headless.
-- 661 comprobaciones instrumentadas en verde; persistencia A/B, viaje global y
+- 663 comprobaciones instrumentadas en verde; persistencia A/B, viaje global y
   profundidad
   arrancan sin errores reales.
 - La escena principal `res://escenas/mundo.tscn` arranca sin `SCRIPT ERROR`,
@@ -139,7 +139,11 @@ La configuracion actual es:
 El HUD muestra el rastreo de la zona activa. La prueba de viaje verifica el
 contenido de Isla Ceniza y la prueba A/B recolecta una veta en el proceso A y
 confirma su cantidad restante tras cargar en el proceso B. El checkpoint queda
-en 24 suites y 661 comprobaciones, sin errores reales de Godot.
+en 24 suites y 663 comprobaciones, sin errores reales de Godot.
+
+Checkpoint de roster: `c89f221` obtiene los personajes activos desde los campos
+`puesto` de `PersonajeData`; `PUESTOS` queda solamente como respaldo para datos
+antiguos.
 
 Checkpoint de rutinas: `b77a684` separa vivienda y puesto de trabajo para los
 personajes que ya tienen esos datos declarados.
