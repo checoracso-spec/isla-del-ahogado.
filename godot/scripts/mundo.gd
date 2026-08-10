@@ -700,7 +700,7 @@ func _montar_logistica() -> void:
 				casa_id = datos.casa_id
 		p.montar(id, datos.nombre if datos != null else id, _puerta_de(casa_id), taberna,
 			semilla, datos.horario_id if datos != null else "tripulacion",
-			_puerta_de(puesto_id))
+			_puerta_de(puesto_id), "", puesto_id)
 		piratas.append(p)
 		semilla += 31
 
@@ -762,6 +762,7 @@ func _abrir(edificio: String, receta: String, gente: int, horario_id: String = "
 	e.edificio_id = edificio
 	e.receta_id = receta
 	e.trabajadores = gente
+	e.usar_trabajadores_npc = true
 	e.horario_id = horario_id
 	e.actividades_productivas = actividades_productivas
 	e.name = "%s_%s" % [edificio, receta]

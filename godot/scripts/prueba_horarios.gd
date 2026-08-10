@@ -63,9 +63,25 @@ func _ready() -> void:
 	_comprobar("el montaje antiguo conserva trabajo igual a casa",
 		pirata.trabajo == pirata.casa)
 	pirata.montar("prueba_rutina", "Pirata Rutina", Vector2i(2, 2), Vector2i(6, 6),
-		11, "herrero", Vector2i(8, 8))
+		11, "herrero", Vector2i(8, 8), "", "herreria")
 	_comprobar("la rutina acepta un destino de trabajo separado",
 		pirata.casa == Vector2i(2, 2) and pirata.trabajo == Vector2i(8, 8))
+	pirata.tarea = Pirata.Tarea.TRABAJANDO
+	NpcsMundo.anotar(pirata)
+	_comprobar("NpcsMundo cuenta el puesto activo",
+		NpcsMundo.trabajadores_activos("herreria") == 1)
+	var estacion_dinamica := EstacionTrabajo.new()
+	add_child(estacion_dinamica)
+	estacion_dinamica.edificio_id = "herreria"
+	estacion_dinamica.trabajadores = 4
+	estacion_dinamica.usar_trabajadores_npc = true
+	_comprobar("la estacion usa trabajadores NPC reales",
+		estacion_dinamica.trabajadores_efectivos() == 1)
+	pirata.tarea = Pirata.Tarea.DURMIENDO
+	NpcsMundo.anotar(pirata)
+	_comprobar("la estacion se queda sin trabajadores fuera de turno",
+		estacion_dinamica.trabajadores_efectivos() == 0)
+	estacion_dinamica.free()
 	_comprobar("el pirata tiene identidad estable", pirata.identidad != null)
 	_comprobar("el NPC expone un inventario base propio",
 		pirata.inventario() != null and pirata.inventario() is Inventario)

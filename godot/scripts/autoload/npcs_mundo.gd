@@ -19,6 +19,9 @@ func registrar(npc: Node) -> bool:
 	if identidad == null:
 		return false
 	var id := str(identidad.instancia)
+	for anterior in _vivos.keys():
+		if anterior != id and _vivos[anterior] == npc:
+			_vivos.erase(anterior)
 	_vivos[id] = npc
 	if _estados.has(id):
 		npc.call("aplicar_estado", _estados[id])
@@ -39,6 +42,17 @@ func anotar(npc: Node) -> void:
 
 func estado(instancia: String) -> Dictionary:
 	return (_estados.get(instancia, {}) as Dictionary).duplicate(true)
+
+func trabajadores_activos(edificio_id: String) -> int:
+	var total := 0
+	for npc in _vivos.values():
+		if npc == null or not is_instance_valid(npc):
+			continue
+		if str(npc.get("puesto_id")) != edificio_id:
+			continue
+		if int(npc.get("tarea")) == 0: # Pirata.Tarea.TRABAJANDO
+			total += 1
+	return total
 
 func _al_salir(instancia: String) -> void:
 	_vivos.erase(instancia)

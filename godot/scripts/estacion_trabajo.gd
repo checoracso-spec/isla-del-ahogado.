@@ -19,6 +19,7 @@ signal reanudada()
 @export var horario_id: String = ""        ## vacío = producción continua
 @export var actividades_productivas: Array = ["trabajar"]
 @export var actividades_preparacion: Array = []
+@export var usar_trabajadores_npc: bool = false
 
 var progreso: float = 0.0
 var calidad_lote: float = 1.0
@@ -43,10 +44,18 @@ func _receta() -> RecetaData:
 ## Velocidad real: escala con trabajadores, la habilidad del personaje asignado
 ## (Barbanegra en la herrería) y baja cuando la tripulación está descontenta.
 func velocidad() -> float:
-	var v := float(maxi(0, trabajadores))
+	var v := float(trabajadores_efectivos())
 	v *= Plantel.factor("velocidad_produccion", edificio_id)
 	v *= lerpf(1.0, 0.45, Motin.nivel / 100.0)
 	return v
+
+func trabajadores_efectivos() -> int:
+	if not usar_trabajadores_npc:
+		return maxi(0, trabajadores)
+	var gestor := get_node_or_null("/root/NpcsMundo")
+	if gestor == null or not gestor.has_method("trabajadores_activos"):
+		return maxi(0, trabajadores)
+	return maxi(0, int(gestor.call("trabajadores_activos", edificio_id)))
 
 ## Una estación sólo se detiene por horario si se le asignó uno. Esto permite
 ## migrar edificio por edificio sin cambiar el comportamiento de los demás.
@@ -70,7 +79,7 @@ func _process(delta: float) -> void:
 	if estado_operativo() != "abierta":
 		return
 	var r := _receta()
-	if r == null or trabajadores <= 0:
+	if r == null or trabajadores_efectivos() <= 0:
 		return
 	if cuota_diaria > 0 and producido_hoy >= cuota_diaria:
 		return
@@ -127,7 +136,7 @@ func porcentaje() -> float:
 func estado_texto() -> String:
 	if not activa:
 		return "apagada"
-	if trabajadores <= 0:
+	if trabajadores_efectivos() <= 0:
 		return "sin trabajadores"
 	if not en_horario():
 		return "fuera de horario"

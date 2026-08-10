@@ -6,7 +6,7 @@
 - Rejilla isométrica 128×64; `scripts/mapa/iso.gd` no se ha modificado.
 - API pública de `scripts/autoload/almacen.gd` intacta.
 - 26 escenas `prueba_*.tscn` ejecutadas en headless.
-- 693 comprobaciones instrumentadas en verde; persistencia A/B, viaje global y
+- 696 comprobaciones instrumentadas en verde; persistencia A/B, viaje global y
   profundidad
   arrancan sin errores reales.
 - La escena principal `res://escenas/mundo.tscn` arranca sin `SCRIPT ERROR`,
@@ -121,7 +121,7 @@ antiguas a `montar()` siguen funcionando y usan la casa como destino laboral
 por compatibilidad. Barbanegra ya demuestra el caso real: vive en la cabana
 del capitan y trabaja en la herreria.
 
-El bloque se verifico con 26 suites y 693 comprobaciones, incluido el arranque
+El bloque se verifico con 26 suites y 696 comprobaciones, incluido el arranque
 de `mundo.tscn`, sin modificar `iso.gd` ni la API publica de `Almacen`.
 
 ## Contenido remoto incorporado en este checkpoint
@@ -176,6 +176,17 @@ guardados posteriores vuelven a ser la fuente de verdad.
 personal. La ruta consume una racion y un ron del NPC y recupera sus
 necesidades, sin pasar por `Bolsa`, `Motin` ni `Almacen`. La ruta antigua de la
 mochila del jugador sigue separada y cubierta por su prueba existente.
+
+## Trabajadores activos y produccion
+
+`NpcsMundo.trabajadores_activos()` cuenta los NPCs con `puesto_id` coincidente
+y tarea `TRABAJANDO`. `EstacionTrabajo` puede activar
+`usar_trabajadores_npc` para sustituir el numero estatico por ese conteo;
+`Mundo` lo activa para sus estaciones. Asi un horario de NPC afecta la
+produccion real: fuera de turno la estacion no progresa, y al volver al puesto
+recupera su velocidad configurada por trabajadores. Las escenas de prueba que
+crean estaciones aisladas conservan el comportamiento anterior mediante el
+valor por defecto `false`.
 
 `NpcsMundo` registra las entidades vivas y guarda solo diccionarios planos:
 posicion, direccion, destino, tarea y estado. Los piratas tienen identidades

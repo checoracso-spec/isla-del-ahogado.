@@ -17,6 +17,7 @@ var nombre_mostrado: String = "Pirata"
 var identidad: Identidad = null
 var casa: Vector2i = Vector2i.ZERO
 var trabajo: Vector2i = Vector2i.ZERO
+var puesto_id: String = ""
 var taberna: Vector2i = Vector2i.ZERO
 var horario_id: String = "tripulacion"
 var horario: HorarioData = null
@@ -140,9 +141,14 @@ func _actividad_de_tarea() -> String:
 
 func montar(p_id: String, p_nombre: String, p_casa: Vector2i, p_taberna: Vector2i,
 		semilla: int, p_horario_id: String = "tripulacion",
-		p_trabajo: Vector2i = Vector2i(-1, -1), p_clave: String = "") -> void:
+		p_trabajo: Vector2i = Vector2i(-1, -1), p_clave: String = "",
+		p_puesto_id: String = "") -> void:
 	id_personaje = p_id
 	nombre_mostrado = p_nombre
+	var datos_personaje: PersonajeData = BaseDeDatos.personaje(p_id)
+	puesto_id = p_puesto_id
+	if puesto_id == "" and datos_personaje != null:
+		puesto_id = datos_personaje.puesto_id
 	var clave := p_clave if p_clave != "" else p_id
 	if clave == "":
 		clave = "marinero_%d" % semilla
@@ -202,6 +208,7 @@ func aplicar_estado(datos: Dictionary) -> void:
 		destino = Vector2(float(objetivo.get("x", pos_tile.x)), float(objetivo.get("y", pos_tile.y)))
 	tarea = int(datos.get("tarea", tarea))
 	estado = str(datos.get("estado", estado))
+	puesto_id = str(datos.get("puesto_id", puesto_id))
 	_aplicar_posicion()
 	queue_redraw()
 
@@ -213,6 +220,7 @@ func serializar() -> Dictionary:
 		"destino": {"x": destino.x, "y": destino.y},
 		"tarea": tarea,
 		"estado": estado,
+		"puesto_id": puesto_id,
 		"inventario": inventario_personal.serializar(),
 		"oro_personal": oro_personal,
 		"necesidades": {
