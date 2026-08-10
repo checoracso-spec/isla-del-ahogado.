@@ -16,6 +16,11 @@ func _ready() -> void:
 	get_tree().quit(0 if fallos == 0 else 1)
 
 func _ejecutar() -> void:
+	_comprobar("la isla expone una ZonaExterior formal", mundo.zona_exterior != null)
+	_comprobar("la ZonaExterior reutiliza los actores del mundo",
+		mundo.zona_exterior != null and mundo.zona_exterior.actores == mundo.get_node("Objetos"))
+	_comprobar("la ZonaExterior conserva los límites de la isla",
+		mundo.zona_exterior != null and mundo.zona_exterior.limites() == mundo.limites_exterior())
 	_comprobar("el mundo crea cuatro fuentes de recursos", mundo.fuentes_recurso.size() == 4)
 	if mundo.fuentes_recurso.size() < 4:
 		return

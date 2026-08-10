@@ -8,6 +8,7 @@ const PanelMuelleScript := preload("res://scripts/ui/panel_muelle.gd")
 const PuestoMuelleScript := preload("res://scripts/interiores/puesto_muelle.gd")
 const FuenteRecursoScript := preload("res://scripts/mapa/fuente_recurso.gd")
 const ParcelaCultivoScript := preload("res://scripts/mapa/parcela_cultivo.gd")
+const ZonaExteriorScript := preload("res://scripts/mapa/zona_exterior.gd")
 ## La isla en pantalla, enchufada a la logística que ya existía.
 ##
 ## Aquí no se inventa ninguna regla nueva: los edificios humean porque su
@@ -52,6 +53,7 @@ var constructor: ConstructorTileset
 ## calculaba al colocarlos y se tiraba; ahora se conserva aquí y es lo que
 ## impide que el jugador atraviese las casas.
 var transitable: TransitableIsla
+var zona_exterior: Zona
 var jugador: Jugador
 var casillas_edificio: Dictionary = {}       ## id_edificio -> Vector2i
 var visuales: Dictionary = {}                ## id_edificio -> EdificioVisual
@@ -163,6 +165,9 @@ func _construir_mundo() -> void:
 	add_child(_objetos)
 
 	transitable = TransitableIsla.new(isla)
+	zona_exterior = ZonaExteriorScript.new()
+	zona_exterior.montar("isla_principal", transitable, _objetos)
+	add_child(zona_exterior)
 
 	_pintar_terreno()
 	_colocar_edificios()
@@ -413,7 +418,7 @@ func camara() -> CamaraIsla:
 	return _camara
 
 func limites_exterior() -> Rect2i:
-	return transitable.limites()
+	return zona_exterior.limites() if zona_exterior != null else transitable.limites()
 
 ## Apaga o enciende la isla entera. Cuando el mundo crezca y haya que liberar
 ## memoria de verdad, este es el único sitio que cambia.
@@ -426,9 +431,12 @@ func mostrar_exterior(visible_ahora: bool) -> void:
 
 ## Devuelve al jugador al exterior en la casilla indicada.
 func recibir_jugador(quien: Jugador, en: Vector2) -> void:
+	if zona_exterior != null:
+		zona_exterior.recibir(quien, en)
+		return
 	if quien.get_parent() != _objetos:
 		quien.reparent(_objetos, false)
-	quien.transitable = transitable
+		quien.transitable = transitable
 	if transitable.cabe_en(en, quien.huella):
 		quien.colocar(en)
 	else:

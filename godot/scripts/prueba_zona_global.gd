@@ -39,7 +39,7 @@ func _ejecutar() -> void:
 	zona.activar()
 	_comprobar("la zona puede reactivarse", zona.visible
 		and zona.process_mode == Node.PROCESS_MODE_INHERIT)
-	zona.queue_free()
+	zona.free()
 
 func _comprobar(nombre: String, condicion: bool, detalle: String = "") -> void:
 	if condicion:
