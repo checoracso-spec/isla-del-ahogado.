@@ -23,6 +23,7 @@ const EstacionCrafteoScript := preload("res://scripts/interiores/estacion_crafte
 const PuestoMercadoScript := preload("res://scripts/interiores/puesto_mercado.gd")
 const PuestoTabernaScript := preload("res://scripts/interiores/puesto_taberna.gd")
 const MuebleVisualScript := preload("res://scripts/interiores/mueble_visual.gd")
+const ArteBaseScript := preload("res://scripts/interiores/arte_base.gd")
 
 signal cofre_abierto(cofre: Cofre)
 signal transicion_solicitada(transicion: Interactuable, quien: Node)
@@ -91,7 +92,8 @@ func _montar_arte_base(def: InteriorDefinicion) -> void:
 	if not _arte_base_activo:
 		return
 
-	_arte_base = Node2D.new()
+	var arte_base = ArteBaseScript.new()
+	_arte_base = arte_base
 	_arte_base.name = "ArteBase"
 	_arte_base.show_behind_parent = true
 	add_child(_arte_base)
@@ -102,6 +104,14 @@ func _montar_arte_base(def: InteriorDefinicion) -> void:
 	if datos_suelo.has("celda_fisica"):
 		var c: Array = datos_suelo["celda_fisica"]
 		celda = Vector2(float(c[0]), float(c[1]))
+	var respaldo_polygon := PackedVector2Array([
+		Iso.centro(0, 0) + Vector2(0, -Iso.MEDIO_Y),
+		Iso.centro(def.ancho - 1, 0) + Vector2(Iso.MEDIO_X, 0),
+		Iso.centro(def.ancho - 1, def.alto - 1) + Vector2(0, Iso.MEDIO_Y),
+		Iso.centro(0, def.alto - 1) + Vector2(-Iso.MEDIO_X, 0),
+	])
+	var tonos_respaldo: Array = COLOR_SUELO.get(def.suelo, COLOR_SUELO["piedra"])
+	arte_base.configurar_respaldo(respaldo_polygon, tonos_respaldo[1].lightened(0.02))
 	# El suelo visual incluye también las casillas perimetrales bajo los muros.
 	# La transitabilidad continúa bloqueándolas; dibujarlas sólo evita que las
 	# paredes parezcan flotar separadas del cuarto.
@@ -338,19 +348,6 @@ func _draw() -> void:
 			_muro(Vector2i(x, 0))
 		for y in range(1, definicion.alto):
 			_muro(Vector2i(0, y))
-	else:
-		# Las esquinas transparentes de los tiles de piedra dejan ver el fondo
-		# entre rombos. Cerramos sólo ese hueco con un tono cercano al suelo,
-		# nunca con el color oscuro de la interfaz. Los PNG siguen dibujándose
-		# encima y conservan sus bordes pixel-art.
-		var base_suelo: Array = COLOR_SUELO.get(definicion.suelo, COLOR_SUELO["piedra"])
-		var tono_juntas: Color = base_suelo[1].lightened(0.02)
-		draw_colored_polygon(PackedVector2Array([
-			Iso.centro(0, 0) + Vector2(0, -Iso.MEDIO_Y),
-			Iso.centro(definicion.ancho - 1, 0) + Vector2(Iso.MEDIO_X, 0),
-			Iso.centro(definicion.ancho - 1, definicion.alto - 1) + Vector2(0, Iso.MEDIO_Y),
-			Iso.centro(0, definicion.alto - 1) + Vector2(-Iso.MEDIO_X, 0),
-		]), tono_juntas)
 	# Muebles como cajas de colores, hasta que haya sprites. Los cofres no:
 	# esos se dibujan solos, porque son nodos con estado propio.
 	for m in definicion.muebles:

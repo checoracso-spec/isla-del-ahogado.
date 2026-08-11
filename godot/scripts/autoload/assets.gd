@@ -181,10 +181,8 @@ func es_placeholder(clave: String) -> bool:
 		return false
 	var cyan := 0
 	var magenta := 0
-	var paso_x := maxi(1, imagen.get_width() / 96)
-	var paso_y := maxi(1, imagen.get_height() / 96)
-	for y in range(0, imagen.get_height(), paso_y):
-		for x in range(0, imagen.get_width(), paso_x):
+	for y in imagen.get_height():
+		for x in imagen.get_width():
 			var p := imagen.get_pixel(x, y)
 			if p.a < 0.5:
 				continue
@@ -192,6 +190,9 @@ func es_placeholder(clave: String) -> bool:
 				cyan += 1
 			elif p.r > 0.75 and p.g < 0.25 and p.b > 0.75:
 				magenta += 1
+			if cyan >= 2 and magenta >= 1:
+				_placeholder_cache[clave] = true
+				return true
 	var resultado := cyan >= 2 and magenta >= 1
 	_placeholder_cache[clave] = resultado
 	return resultado
