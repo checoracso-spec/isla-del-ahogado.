@@ -339,27 +339,18 @@ func _draw() -> void:
 		for y in range(1, definicion.alto):
 			_muro(Vector2i(0, y))
 	else:
-		# Los PNG de suelo tienen esquinas transparentes para conservar el
-		# rombo. El respaldo se dibuja en este nodo padre, antes de sus hijos,
-		# para cerrar sólo esas juntas sin alterar la estructura de ArteBase.
+		# Las esquinas transparentes de los tiles de piedra dejan ver el fondo
+		# entre rombos. Cerramos sólo ese hueco con un tono cercano al suelo,
+		# nunca con el color oscuro de la interfaz. Los PNG siguen dibujándose
+		# encima y conservan sus bordes pixel-art.
+		var base_suelo: Array = COLOR_SUELO.get(definicion.suelo, COLOR_SUELO["piedra"])
+		var tono_juntas: Color = base_suelo[1].lightened(0.02)
 		draw_colored_polygon(PackedVector2Array([
 			Iso.centro(0, 0) + Vector2(0, -Iso.MEDIO_Y),
 			Iso.centro(definicion.ancho - 1, 0) + Vector2(Iso.MEDIO_X, 0),
 			Iso.centro(definicion.ancho - 1, definicion.alto - 1) + Vector2(0, Iso.MEDIO_Y),
 			Iso.centro(0, definicion.alto - 1) + Vector2(-Iso.MEDIO_X, 0),
-		]), GlobalColors.PALETA["gris_oscuro"])
-		# Zócalos continuos bajo los sprites de pared. Las piezas conservan su
-		# arte y sus pivotes, pero los extremos transparentes ya no dejan ver
-		# el fondo entre una tabla y la siguiente.
-		var norte := PackedVector2Array()
-		for x in definicion.ancho:
-			norte.append(Iso.centro(x, 0))
-		draw_polyline(norte, GlobalColors.PALETA["marron_profundo"], 8.0, true)
-		var oeste := PackedVector2Array()
-		for y in range(1, definicion.alto):
-			oeste.append(Iso.centro(0, y))
-		draw_polyline(oeste, GlobalColors.PALETA["marron_profundo"], 8.0, true)
-
+		]), tono_juntas)
 	# Muebles como cajas de colores, hasta que haya sprites. Los cofres no:
 	# esos se dibujan solos, porque son nodos con estado propio.
 	for m in definicion.muebles:
