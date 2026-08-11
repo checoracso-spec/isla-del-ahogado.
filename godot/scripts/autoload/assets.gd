@@ -186,9 +186,9 @@ func es_placeholder(clave: String) -> bool:
 			var p := imagen.get_pixel(x, y)
 			if p.a < 0.5:
 				continue
-			if p.r < 0.25 and p.g > 0.75 and p.b > 0.75:
+			if p.r < 0.45 and p.g > 0.70 and p.b > 0.65:
 				cyan += 1
-			elif p.r > 0.75 and p.g < 0.25 and p.b > 0.75:
+			elif p.r > 0.90 and p.g < 0.35 and p.b > 0.70:
 				magenta += 1
 			if cyan >= 2 and magenta >= 1:
 				_placeholder_cache[clave] = true
