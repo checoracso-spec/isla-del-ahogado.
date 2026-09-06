@@ -1,4 +1,4 @@
-[gd_scene load_steps=8 format=3]
+[gd_scene load_steps=10 format=3]
 
 [ext_resource type="Script" path="res://scripts/world/world_root.gd" id="1_world"]
 [ext_resource type="Script" path="res://scripts/ui/touch_controls.gd" id="2_touch_layer"]
@@ -7,6 +7,7 @@
 [ext_resource type="PackedScene" path="res://scenes/world/collectible.tscn" id="5_collectible"]
 [ext_resource type="Script" path="res://scripts/world/interaction_system.gd" id="6_interaction"]
 [ext_resource type="PackedScene" path="res://scenes/ui/hud.tscn" id="7_hud"]
+[ext_resource type="Script" path="res://scripts/world/content_system.gd" id="8_content"]
 
 [node name="World" type="Node2D"]
 script = ExtResource("1_world")
@@ -27,6 +28,9 @@ position = Vector2(750, 384)
 script = ExtResource("6_interaction")
 player_path = NodePath("../CharactersAndObjects/Player")
 
+[node name="ContentSystem" type="Node2D" parent="."]
+script = ExtResource("8_content")
+
 [node name="DayNightOverlay" type="CanvasLayer" parent="."]
 layer = 8
 
@@ -35,6 +39,15 @@ offset_right = 1280.0
 offset_bottom = 720.0
 mouse_filter = 2
 color = Color(0.08, 0.13, 0.32, 0)
+
+[node name="AbyssOverlay" type="CanvasLayer" parent="."]
+layer = 9
+
+[node name="AbyssTint" type="ColorRect" parent="AbyssOverlay"]
+offset_right = 1280.0
+offset_bottom = 720.0
+mouse_filter = 2
+color = Color(0.03, 0.22, 0.25, 0)
 
 [node name="TouchControls" type="CanvasLayer" parent="."]
 layer = 5

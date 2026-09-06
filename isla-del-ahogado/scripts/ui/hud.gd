@@ -12,6 +12,8 @@ var pause_button: Button
 var energy_label: Label
 var energy_bar: ProgressBar
 var clock_label: Label
+var doubloons_label: Label
+var favor_label: Label
 var inventory_panel: PanelContainer
 var inventory_grid: GridContainer
 var slot_buttons: Array[Button] = []
@@ -24,8 +26,12 @@ func _ready() -> void:
 	_build_ui()
 	InventorySystem.inventory_changed.connect(_refresh_inventory)
 	TimeManager.time_changed.connect(_on_time_changed)
+	EconomyManager.doubloons_changed.connect(_on_doubloons_changed)
+	FaithManager.faith_changed.connect(_on_faith_changed)
 	_refresh_inventory()
 	_on_time_changed(TimeManager.day, TimeManager.minute_of_day, TimeManager.get_daylight_factor())
+	_on_doubloons_changed(EconomyManager.doubloons)
+	_on_faith_changed(FaithManager.sea_favor)
 
 func _build_ui() -> void:
 	root_control = Control.new()
@@ -51,9 +57,12 @@ func _build_ui() -> void:
 	var spacer := Control.new()
 	spacer.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 	top_line.add_child(spacer)
-	var doubloons := Label.new()
-	doubloons.text = "Doblones: 0"
-	top_line.add_child(doubloons)
+	doubloons_label = Label.new()
+	doubloons_label.text = "Doblones: 0"
+	top_line.add_child(doubloons_label)
+	favor_label = Label.new()
+	favor_label.text = "Favor: 0"
+	stats_box.add_child(favor_label)
 	energy_label = Label.new()
 	energy_label.text = "Energía 100/100"
 	stats_box.add_child(energy_label)
@@ -225,6 +234,14 @@ func update_energy(current: int, maximum: int) -> void:
 func _on_time_changed(day: int, minute_of_day: int, _daylight: float) -> void:
 	if is_instance_valid(clock_label):
 		clock_label.text = "Día %d · %02d:%02d" % [day, int(minute_of_day / 60), minute_of_day % 60]
+
+func _on_doubloons_changed(amount: int) -> void:
+	if is_instance_valid(doubloons_label):
+		doubloons_label.text = "Doblones: %d" % amount
+
+func _on_faith_changed(amount: int) -> void:
+	if is_instance_valid(favor_label):
+		favor_label.text = "Favor del mar: %d" % amount
 
 func _unhandled_input(event: InputEvent) -> void:
 	if event.is_action_pressed("open_inventory"):

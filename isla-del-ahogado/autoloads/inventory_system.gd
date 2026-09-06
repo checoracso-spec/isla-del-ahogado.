@@ -61,3 +61,29 @@ func get_slot(index: int) -> Dictionary:
 	if index < 0 or index >= slots.size():
 		return {}
 	return slots[index]
+
+func count_item(item_id: String) -> int:
+	var total := 0
+	for slot in slots:
+		var item: Item = slot.get("item") as Item
+		if item != null and item.item_id == item_id:
+			total += int(slot.get("quantity", 0))
+	return total
+
+func remove_item(item_id: String, cantidad: int = 1) -> bool:
+	if cantidad <= 0 or count_item(item_id) < cantidad:
+		return false
+	var remaining := cantidad
+	for index in range(slots.size()):
+		var slot := slots[index]
+		var item: Item = slot.get("item") as Item
+		if item == null or item.item_id != item_id:
+			continue
+		var removed := mini(remaining, int(slot.get("quantity", 0)))
+		remaining -= removed
+		var left := int(slot.get("quantity", 0)) - removed
+		slots[index] = {} if left <= 0 else {"item": item, "quantity": left}
+		if remaining == 0:
+			inventory_changed.emit()
+			return true
+	return false

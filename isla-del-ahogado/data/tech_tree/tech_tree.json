@@ -1,0 +1,9 @@
+[
+  {"id":"navegacion_1","name":"Brújula rota","category":"Navegación","cost":1,"requires":[]},
+  {"id":"navegacion_2","name":"Cartas de mareas","category":"Navegación","cost":1,"requires":["navegacion_1"]},
+  {"id":"artesania_1","name":"Nudo marinero","category":"Artesanía","cost":1,"requires":[]},
+  {"id":"artesania_2","name":"Metal doblado","category":"Artesanía","cost":1,"requires":["artesania_1"]},
+  {"id":"artesania_3","name":"Alambique seguro","category":"Artesanía","cost":1,"requires":["artesania_1"]},
+  {"id":"ocultismo_1","name":"Escuchar al mar","category":"Ocultismo","cost":1,"requires":[]},
+  {"id":"ocultismo_2","name":"Ojo abisal","category":"Ocultismo","cost":1,"requires":["ocultismo_1"]}
+]

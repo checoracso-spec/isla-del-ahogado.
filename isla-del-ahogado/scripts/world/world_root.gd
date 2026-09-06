@@ -34,6 +34,10 @@ func _sleep() -> void:
 	TimeManager.advance_to_next_day()
 	player.restore_energy()
 	hud.show_toast("Has dormido. Comienza el día %d." % TimeManager.day)
+	var content := get_node_or_null("ContentSystem")
+	var companion := content.get_node_or_null("Parrot") if is_instance_valid(content) else null
+	if is_instance_valid(companion) and companion.has_method("comment"):
+		companion.comment("sleep")
 
 func _on_time_changed(_day: int, _minute_of_day: int, daylight: float) -> void:
 	if not is_instance_valid(day_night_tint):

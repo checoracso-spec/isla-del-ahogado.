@@ -7,9 +7,7 @@ mundo top-down y exportación Web.
 
 ## Estado de publicación
 
-GitHub Pages: pendiente de publicar desde el repositorio remoto. Cuando el
-repositorio tenga un nombre y usuario de GitHub, el enlace será:
-`https://<usuario>.github.io/<repositorio>/`
+GitHub Pages: https://checoracso-spec.github.io/isla-del-ahogado./
 
 El workflow de GitHub Actions exporta el preset `Web` y publica `build/web` en
 GitHub Pages en cada push a `main`. GitHub Pages sirve los artefactos Web con
@@ -41,7 +39,7 @@ inventario. Dormir restaura la energía y avanza al día siguiente.
 
 - [x] Prompt 1 — estructura y andamiaje completo.
 - [x] Prompt 2 — jugador, movimiento, interacción, energía, reloj e inventario.
-- [ ] Prompt 3 — estaciones, inventario y economía.
+- [x] Prompt 3 — los 14 sistemas superficiales de contenido.
 - [ ] Prompt 4 — diálogos, misiones y contenido narrativo.
 - [ ] Prompt 5 — cementerio, fe, tecnología y taberna.
 - [ ] Prompt 6 — El Abismo, pulido, pruebas y publicación final.
