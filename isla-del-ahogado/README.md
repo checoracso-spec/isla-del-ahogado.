@@ -7,7 +7,7 @@ mundo top-down y exportación Web.
 
 ## Estado de publicación
 
-GitHub Pages — Prompt 3: https://checoracso-spec.github.io/isla-del-ahogado./prompt-3/
+GitHub Pages: https://checoracso-spec.github.io/isla-del-ahogado./
 
 El workflow de GitHub Actions exporta el preset `Web` y publica `build/web` en
 GitHub Pages en cada push a `main`. GitHub Pages sirve los artefactos Web con
@@ -31,15 +31,15 @@ direcciones; el clic izquierdo mueve/interactúa en escritorio. El joystick y
 el botón táctil se muestran en Web o en dispositivos móviles; no se renderizan
 en escritorio nativo.
 
-La tecla `E` o el clic cercano interactúa, `I` abre el inventario, `Q` duerme y
-`Esc` pausa. Interactuar con la botella consume energía y la añade al
-inventario. Dormir restaura la energía y avanza al día siguiente.
+La tecla `E` o el clic cercano interactúa, `I` abre el inventario, `J` abre el
+diario de misiones, `Q` duerme y `Esc` pausa. Los NPC con `!` tienen una misión
+disponible; `?` indica una misión activa y `✓` una misión completada.
 
 ## Secuencia de 6 prompts
 
 - [x] Prompt 1 — estructura y andamiaje completo.
 - [x] Prompt 2 — jugador, movimiento, interacción, energía, reloj e inventario.
 - [x] Prompt 3 — los 14 sistemas superficiales de contenido.
-- [ ] Prompt 4 — diálogos, misiones y contenido narrativo.
+- [x] Prompt 4 — diálogos, misiones y contenido narrativo.
 - [ ] Prompt 5 — cementerio, fe, tecnología y taberna.
 - [ ] Prompt 6 — El Abismo, pulido, pruebas y publicación final.
