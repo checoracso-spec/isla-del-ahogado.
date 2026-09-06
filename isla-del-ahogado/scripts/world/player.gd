@@ -14,6 +14,7 @@ var click_target := Vector2.ZERO
 var has_click_target := false
 
 func _ready() -> void:
+	add_to_group("player")
 	energy = max_energy
 	queue_redraw()
 	energy_changed.emit(energy, max_energy)

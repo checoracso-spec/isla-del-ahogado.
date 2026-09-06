@@ -8,11 +8,14 @@ extends Node2D
 var player: Node2D
 var current_interactable: Node2D
 var generic_indicators: Dictionary = {}
+var last_interaction_msec := -1000
 
 func _ready() -> void:
-	player = get_node_or_null(player_path) as Node2D
+	_resolve_player()
 
 func _process(_delta: float) -> void:
+	if not is_instance_valid(player):
+		_resolve_player()
 	if not is_instance_valid(player):
 		return
 	var closest: Node2D
@@ -35,8 +38,23 @@ func _process(_delta: float) -> void:
 		_interact_with(current_interactable)
 
 func _unhandled_input(event: InputEvent) -> void:
-	if event is InputEventMouseButton and event.button_index == MOUSE_BUTTON_LEFT and event.pressed and is_instance_valid(current_interactable):
+	if event.is_action_pressed("interact") and is_instance_valid(current_interactable):
 		_interact_with(current_interactable)
+		get_viewport().set_input_as_handled()
+	elif event is InputEventMouseButton and event.button_index == MOUSE_BUTTON_LEFT and event.pressed and is_instance_valid(current_interactable):
+		_interact_with(current_interactable)
+
+func _resolve_player() -> void:
+	if player_path != NodePath():
+		player = get_node_or_null(player_path) as Node2D
+	if is_instance_valid(player):
+		return
+	player = get_tree().get_first_node_in_group("player") as Node2D
+	if is_instance_valid(player):
+		return
+	var scene := get_tree().current_scene
+	if scene != null:
+		player = scene.find_child("Player", true, false) as Node2D
 
 func _set_indicator(node: Node2D, available: bool) -> void:
 	if node.has_method("set_interaction_available"):
@@ -55,6 +73,10 @@ func _set_indicator(node: Node2D, available: bool) -> void:
 	indicator.visible = available
 
 func _interact_with(node: Node2D) -> void:
+	var now := Time.get_ticks_msec()
+	if now - last_interaction_msec < 120:
+		return
+	last_interaction_msec = now
 	var handles_energy := bool(node.get_meta("_handles_energy", false))
 	if not handles_energy:
 		var cost := int(node.get_meta("energy_cost", 0))
