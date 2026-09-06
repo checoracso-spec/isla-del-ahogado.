@@ -14,6 +14,7 @@ var house_state := 0
 var tavern_reputation := 0
 var modal: PanelContainer
 var content_panel: PanelContainer
+var content_toggle: Button
 var status_label: Label
 var panel_root: Control
 var portal: Node2D
@@ -128,12 +129,11 @@ func _build_content_ui() -> void:
 	panel_root.set_anchors_and_offsets_preset(Control.PRESET_FULL_RECT)
 	panel_root.mouse_filter = Control.MOUSE_FILTER_IGNORE
 	layer.add_child(panel_root)
-	var toggle := Button.new()
-	toggle.text = "Sistemas [F]"
-	toggle.position = Vector2(960, 72)
-	toggle.size = Vector2(170, 42)
-	toggle.pressed.connect(_toggle_content_panel)
-	panel_root.add_child(toggle)
+	content_toggle = Button.new()
+	content_toggle.position = Vector2(960, 72)
+	content_toggle.size = Vector2(170, 42)
+	content_toggle.pressed.connect(_toggle_content_panel)
+	panel_root.add_child(content_toggle)
 	content_panel = _make_panel(Vector2(930, 122), Vector2(330, 570))
 	panel_root.add_child(content_panel)
 	var margin := MarginContainer.new()
@@ -145,10 +145,19 @@ func _build_content_ui() -> void:
 	var box := VBoxContainer.new()
 	box.add_theme_constant_override("separation", 5)
 	margin.add_child(box)
+	var header := HBoxContainer.new()
+	box.add_child(header)
 	var title := Label.new()
 	title.text = "Sistemas de la isla"
+	title.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 	title.add_theme_font_size_override("font_size", 19)
-	box.add_child(title)
+	header.add_child(title)
+	var hide_button := Button.new()
+	hide_button.text = "Ocultar"
+	hide_button.custom_minimum_size = Vector2(72, 34)
+	hide_button.tooltip_text = "Esconder la pestaña de sistemas"
+	hide_button.pressed.connect(_toggle_content_panel)
+	header.add_child(hide_button)
 	status_label = Label.new()
 	status_label.text = "Listo"
 	status_label.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
@@ -168,6 +177,8 @@ func _build_content_ui() -> void:
 		button.custom_minimum_size = Vector2(0, 32)
 		button.pressed.connect(handle_action.bind(str(entry[1]), null))
 		box.add_child(button)
+	content_panel.visible = not DisplayServer.is_touchscreen_available()
+	_update_content_toggle()
 
 func _make_panel(position: Vector2, panel_size: Vector2) -> PanelContainer:
 	var panel := PanelContainer.new()
@@ -182,7 +193,15 @@ func _make_panel(position: Vector2, panel_size: Vector2) -> PanelContainer:
 	return panel
 
 func _toggle_content_panel() -> void:
+	if not is_instance_valid(content_panel):
+		return
 	content_panel.visible = not content_panel.visible
+	_update_content_toggle()
+
+func _update_content_toggle() -> void:
+	if not is_instance_valid(content_toggle) or not is_instance_valid(content_panel):
+		return
+	content_toggle.text = "Sistemas [ocultar]" if content_panel.visible else "Sistemas [abrir]"
 
 func _set_status(text: String) -> void:
 	if is_instance_valid(status_label):
