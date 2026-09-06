@@ -2,6 +2,9 @@ extends CanvasLayer
 
 ## HUD unificado del prompt 2: energía, reloj, doblones, inventario, dormir y pausa.
 
+const STYLE_TOKENS = preload("res://scripts/ui/style_tokens.gd")
+const SETTINGS_PANEL_SCRIPT = preload("res://scripts/ui/settings_panel.gd")
+
 signal sleep_requested
 
 var root_control: Control
@@ -20,6 +23,7 @@ var inventory_grid: GridContainer
 var slot_buttons: Array[Button] = []
 var pause_panel: PanelContainer
 var quest_panel: PanelContainer
+var settings_panel: PanelContainer
 var quest_list: VBoxContainer
 var toast_label: Label
 var toast_timer: Timer
@@ -42,6 +46,7 @@ func _build_ui() -> void:
 	root_control = Control.new()
 	root_control.set_anchors_and_offsets_preset(Control.PRESET_FULL_RECT)
 	root_control.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	root_control.add_theme_font_size_override("font_size", SettingsManager.get_scaled_font_size(16))
 	add_child(root_control)
 
 	stats_panel = _make_panel(Vector2(20.0, 20.0), Vector2(380.0, 108.0))
@@ -86,6 +91,11 @@ func _build_ui() -> void:
 	_build_inventory_panel()
 	_build_pause_panel()
 	_build_quest_panel()
+	settings_panel = SETTINGS_PANEL_SCRIPT.new()
+	settings_panel.visible = false
+	settings_panel.close_requested.connect(_close_settings)
+	root_control.add_child(settings_panel)
+	SettingsManager.text_scale_changed.connect(_on_text_scale_changed)
 	_layout_responsive()
 
 	toast_label = Label.new()
@@ -133,7 +143,7 @@ func _build_inventory_panel() -> void:
 		slot_buttons.append(slot)
 
 func _build_pause_panel() -> void:
-	pause_panel = _make_panel(Vector2(470.0, 220.0), Vector2(340.0, 220.0))
+	pause_panel = _make_panel(Vector2(470.0, 210.0), Vector2(340.0, 280.0))
 	pause_panel.visible = false
 	root_control.add_child(pause_panel)
 	var margin := MarginContainer.new()
@@ -155,6 +165,11 @@ func _build_pause_panel() -> void:
 	resume.custom_minimum_size = Vector2(0.0, 44.0)
 	resume.pressed.connect(_resume_game)
 	box.add_child(resume)
+	var settings := Button.new()
+	settings.text = "Ajustes"
+	settings.custom_minimum_size = Vector2(0.0, 44.0)
+	settings.pressed.connect(_toggle_settings)
+	box.add_child(settings)
 	var exit := Button.new()
 	exit.text = "Salir"
 	exit.custom_minimum_size = Vector2(0.0, 44.0)
@@ -241,8 +256,8 @@ func _make_panel(position: Vector2, panel_size: Vector2) -> PanelContainer:
 	panel.position = position
 	panel.size = panel_size
 	var style := StyleBoxFlat.new()
-	style.bg_color = Color(0.04, 0.07, 0.09, 0.94)
-	style.border_color = Color("#668984")
+	style.bg_color = STYLE_TOKENS.PANEL_BG
+	style.border_color = STYLE_TOKENS.PANEL_BORDER
 	style.set_border_width_all(2)
 	style.corner_radius_top_left = 8
 	style.corner_radius_top_right = 8
@@ -278,11 +293,14 @@ func _layout_responsive() -> void:
 		inventory_panel.position = Vector2(12.0, maxf(112.0, (viewport_height - 430.0) * 0.5))
 		inventory_panel.size = Vector2(maxf(240.0, viewport_width - 24.0), minf(430.0, maxf(260.0, viewport_height - 140.0)))
 	if is_instance_valid(pause_panel):
-		pause_panel.position = Vector2(maxf(12.0, (viewport_width - 340.0) * 0.5), maxf(130.0, (viewport_height - 220.0) * 0.5))
-		pause_panel.size = Vector2(minf(340.0, viewport_width - 24.0), minf(220.0, viewport_height - 150.0))
+		pause_panel.position = Vector2(maxf(12.0, (viewport_width - 340.0) * 0.5), maxf(110.0, (viewport_height - 280.0) * 0.5))
+		pause_panel.size = Vector2(minf(340.0, viewport_width - 24.0), minf(280.0, viewport_height - 120.0))
 	if is_instance_valid(quest_panel):
 		quest_panel.position = Vector2(maxf(12.0, (viewport_width - 680.0) * 0.5), maxf(104.0, (viewport_height - 500.0) * 0.5))
 		quest_panel.size = Vector2(minf(680.0, viewport_width - 24.0), minf(500.0, maxf(300.0, viewport_height - 120.0)))
+	if is_instance_valid(settings_panel):
+		settings_panel.position = Vector2(maxf(12.0, (viewport_width - 430.0) * 0.5), maxf(82.0, (viewport_height - 510.0) * 0.5))
+		settings_panel.size = Vector2(minf(430.0, viewport_width - 24.0), minf(510.0, maxf(430.0, viewport_height - 90.0)))
 	if is_instance_valid(toast_label):
 		toast_label.position = Vector2(16.0, maxf(120.0, viewport_height - 70.0))
 		toast_label.size = Vector2(maxf(0.0, viewport_width - 32.0), 40.0)
@@ -359,13 +377,29 @@ func _toggle_pause() -> void:
 	var should_pause := not get_tree().paused
 	get_tree().paused = should_pause
 	pause_panel.visible = should_pause
+	if not should_pause:
+		settings_panel.visible = false
 
 func _resume_game() -> void:
 	get_tree().paused = false
 	pause_panel.visible = false
+	settings_panel.visible = false
 
 func _exit_game() -> void:
-	get_tree().quit()
+	get_tree().paused = false
+	get_tree().change_scene_to_file("res://scenes/ui/main_menu.tscn")
+
+func _toggle_settings() -> void:
+	settings_panel.visible = not settings_panel.visible
+	if settings_panel.visible:
+		pause_panel.visible = true
+
+func _close_settings() -> void:
+	settings_panel.visible = false
+
+func _on_text_scale_changed(value: float) -> void:
+	if is_instance_valid(root_control):
+		root_control.add_theme_font_size_override("font_size", SettingsManager.get_scaled_font_size(16))
 
 func show_toast(message: String) -> void:
 	toast_label.text = message

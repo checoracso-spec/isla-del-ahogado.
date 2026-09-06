@@ -1,5 +1,7 @@
 extends Control
 
+const STYLE_TOKENS = preload("res://scripts/ui/style_tokens.gd")
+
 ## Controles táctiles mínimos: joystick virtual e interacción.
 ## Solo se muestran en Web o en dispositivos móviles; emiten acciones abstractas.
 
@@ -17,12 +19,12 @@ func _ready() -> void:
 func _draw() -> void:
 	var joystick_center := _joystick_center()
 	var button_center := _button_center()
-	draw_circle(joystick_center, JOYSTICK_RADIUS, Color(0.05, 0.08, 0.10, 0.72))
-	draw_arc(joystick_center, JOYSTICK_RADIUS, 0.0, TAU, 48, Color("#a7c6bf"), 3.0)
-	draw_circle(joystick_center + joystick_vector * 30.0, 28.0, Color(0.36, 0.62, 0.59, 0.9))
-	draw_circle(button_center, BUTTON_RADIUS, Color(0.25, 0.12, 0.14, 0.85))
-	draw_arc(button_center, BUTTON_RADIUS, 0.0, TAU, 48, Color("#e4a18f"), 3.0)
-	draw_string(ThemeDB.fallback_font, button_center - Vector2(24.0, -8.0), "E", HORIZONTAL_ALIGNMENT_LEFT, -1, 28, Color("#ffe4c7"))
+	draw_circle(joystick_center, JOYSTICK_RADIUS, Color(STYLE_TOKENS.INK, 0.72))
+	draw_arc(joystick_center, JOYSTICK_RADIUS, 0.0, TAU, 48, STYLE_TOKENS.TEXT, 3.0)
+	draw_circle(joystick_center + joystick_vector * 30.0, 28.0, Color(STYLE_TOKENS.WEATHERED_TEAL, 0.9))
+	draw_circle(button_center, BUTTON_RADIUS, Color(STYLE_TOKENS.OLD_WOOD, 0.85))
+	draw_arc(button_center, BUTTON_RADIUS, 0.0, TAU, 48, STYLE_TOKENS.DANGER, 3.0)
+	draw_string(ThemeDB.fallback_font, button_center - Vector2(24.0, -8.0), "E", HORIZONTAL_ALIGNMENT_LEFT, -1, 28, STYLE_TOKENS.TEXT)
 
 func _gui_input(event: InputEvent) -> void:
 	if event is InputEventScreenTouch:

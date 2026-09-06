@@ -7,11 +7,12 @@ config_version=5
 
 config/name="Isla del Ahogado"
 config/description="Andamiaje de un juego de gestión y aventura pirata con humor negro."
-run/main_scene="res://scenes/world/world.tscn"
+run/main_scene="res://scenes/ui/main_menu.tscn"
 config/features=PackedStringArray("4.7", "GL Compatibility")
 
 [autoload]
 
+SettingsManager="*res://autoloads/settings_manager.gd"
 GameManager="*res://autoloads/game_manager.gd"
 TimeManager="*res://autoloads/time_manager.gd"
 SaveManager="*res://autoloads/save_manager.gd"

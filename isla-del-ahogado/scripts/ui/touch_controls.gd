@@ -3,6 +3,8 @@ extends CanvasLayer
 ## Capa de controles táctiles. Se mantiene oculta en escritorio nativo.
 
 func _ready() -> void:
-	var is_touch_build := OS.has_feature("web") or OS.has_feature("mobile")
-	$Overlay.visible = is_touch_build
+	$Overlay.visible = SettingsManager.is_touch_controls_visible()
+	SettingsManager.touch_visibility_changed.connect(_on_touch_visibility_changed)
 
+func _on_touch_visibility_changed(visible: bool) -> void:
+	$Overlay.visible = visible

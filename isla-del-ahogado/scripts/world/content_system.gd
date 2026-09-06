@@ -5,6 +5,7 @@ extends Node2D
 
 const CONTENT_SCRIPT = preload("res://scripts/world/content_interactable.gd")
 const NPC_SCRIPT = preload("res://scripts/world/npc.gd")
+const STYLE_TOKENS = preload("res://scripts/ui/style_tokens.gd")
 
 var body_node: Node2D
 var body_loot_count := 0
@@ -34,7 +35,7 @@ func _build_content() -> void:
 	QuestManager.quest_completed.connect(_on_quest_completed)
 	_on_abyss_changed(AbyssManager.abyss_unlocked, AbyssManager.active)
 	if EconomyManager.doubloons == 0:
-		EconomyManager.add_doubloons(25)
+		EconomyManager.add_doubloons(30)
 	_set_status("Hay 14 sistemas de prueba listos. Usa E cerca de los objetos o los atajos.")
 
 func _build_world_nodes() -> void:
@@ -75,7 +76,7 @@ func _build_world_nodes() -> void:
 	add_child(parrot)
 
 	body_timer = Timer.new()
-	body_timer.wait_time = 90.0
+	body_timer.wait_time = 75.0
 	body_timer.one_shot = false
 	body_timer.timeout.connect(_spawn_body)
 	add_child(body_timer)
@@ -191,8 +192,8 @@ func _make_panel(position: Vector2, panel_size: Vector2) -> PanelContainer:
 	panel.position = position
 	panel.size = panel_size
 	var style := StyleBoxFlat.new()
-	style.bg_color = Color(0.04, 0.07, 0.09, 0.96)
-	style.border_color = Color("#668984")
+	style.bg_color = STYLE_TOKENS.PANEL_BG
+	style.border_color = STYLE_TOKENS.PANEL_BORDER
 	style.set_border_width_all(2)
 	style.set_corner_radius_all(8)
 	panel.add_theme_stylebox_override("panel", style)

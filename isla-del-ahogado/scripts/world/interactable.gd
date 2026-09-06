@@ -7,7 +7,7 @@ extends Area2D
 signal interacted(interactor: Node)
 
 @export var interaction_radius := 105.0
-@export var energy_cost := 5
+@export var energy_cost := 4
 @export var interaction_prompt := "E  Interactuar"
 var interaction_indicator: Label
 var nearby_interactor: Node2D

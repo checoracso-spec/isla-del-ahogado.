@@ -25,15 +25,21 @@ godot --editor --path isla-del-ahogado
 godot --headless --path isla-del-ahogado --quit
 ```
 
-La escena inicial muestra una cuadrícula de prueba top-down de 32x32 con un
-pirata jugable y una botella de ron recolectable. WASD mueve en ocho
-direcciones; el clic izquierdo mueve/interactúa en escritorio. El joystick y
+La escena de entrada muestra un menú principal. `Jugar` abre una cuadrícula de
+prueba top-down de 32x32 con un pirata jugable y una botella de ron
+recolectable. WASD mueve en ocho direcciones; el clic izquierdo
+mueve/interactúa en escritorio. El joystick y
 el botón táctil se muestran en Web o en dispositivos móviles; no se renderizan
 en escritorio nativo.
 
 La tecla `E` o el clic cercano interactúa, `I` abre el inventario, `J` abre el
-diario de misiones, `Q` duerme y `Esc` pausa. Los NPC con `!` tienen una misión
+diario de misiones, `Q` duerme y `Esc` pausa. Los ajustes permiten cambiar el
+volumen, el tamaño de texto y mostrar controles táctiles en escritorio; se
+guardan en la configuración del usuario. Los NPC con `!` tienen una misión
 disponible; `?` indica una misión activa y `✓` una misión completada.
+
+La dirección de arte y el balance están documentados en
+[`DESIGN_ART.md`](DESIGN_ART.md) y [`BALANCE.md`](BALANCE.md).
 
 ## Secuencia de 6 prompts
 
@@ -41,5 +47,5 @@ disponible; `?` indica una misión activa y `✓` una misión completada.
 - [x] Prompt 2 — jugador, movimiento, interacción, energía, reloj e inventario.
 - [x] Prompt 3 — los 14 sistemas superficiales de contenido.
 - [x] Prompt 4 — diálogos, misiones y contenido narrativo.
-- [ ] Prompt 5 — cementerio, fe, tecnología y taberna.
+- [x] Prompt 5 — diseño visual, UI/UX, accesibilidad y balance.
 - [ ] Prompt 6 — El Abismo, pulido, pruebas y publicación final.

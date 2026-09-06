@@ -6,9 +6,10 @@ extends Node2D
 const TILE_SIZE := Vector2(32.0, 32.0)
 const GRID_SIZE := Vector2i(32, 20)
 const WORLD_CENTER := Vector2(576.0, 384.0)
-const FLOOR_COLOR := Color("#263d46")
-const FLOOR_ALT_COLOR := Color("#2d4850")
-const EDGE_COLOR := Color("#527176")
+const STYLE_TOKENS = preload("res://scripts/ui/style_tokens.gd")
+const FLOOR_COLOR := STYLE_TOKENS.SEA_SLATE
+const FLOOR_ALT_COLOR := STYLE_TOKENS.SEA_SLATE_ALT
+const EDGE_COLOR := STYLE_TOKENS.WEATHERED_TEAL
 
 @onready var player := $CharactersAndObjects/Player
 @onready var hud := $HUD
