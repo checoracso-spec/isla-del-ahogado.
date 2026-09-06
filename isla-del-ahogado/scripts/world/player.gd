@@ -41,6 +41,25 @@ func _physics_process(_delta: float) -> void:
 	move_and_slide()
 	global_position.x = clampf(global_position.x, map_bounds.position.x, map_bounds.end.x)
 	global_position.y = clampf(global_position.y, map_bounds.position.y, map_bounds.end.y)
+	_update_nearby_interaction()
+
+func _update_nearby_interaction() -> void:
+	var closest: Node2D
+	var closest_distance := INF
+	for candidate in get_tree().get_nodes_in_group("interactable"):
+		if not is_instance_valid(candidate) or not candidate is Node2D:
+			continue
+		var node := candidate as Node2D
+		var radius := float(node.get_meta("interaction_radius", 105.0))
+		var distance := global_position.distance_to(node.global_position)
+		var available := distance <= radius
+		if node.has_method("set_interaction_available"):
+			node.set_interaction_available(available)
+		if available and distance < closest_distance:
+			closest = node
+			closest_distance = distance
+	if Input.is_action_just_pressed("interact") and is_instance_valid(closest) and closest.has_method("interact"):
+		closest.call("interact", self)
 
 func _unhandled_input(event: InputEvent) -> void:
 	if event is InputEventMouseButton and event.button_index == MOUSE_BUTTON_LEFT and event.pressed:
