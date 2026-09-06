@@ -7,7 +7,7 @@ mundo top-down y exportación Web.
 
 ## Estado de publicación
 
-GitHub Pages: https://checoracso-spec.github.io/isla-del-ahogado./
+GitHub Pages — Prompt 3: https://checoracso-spec.github.io/isla-del-ahogado./prompt-3/
 
 El workflow de GitHub Actions exporta el preset `Web` y publica `build/web` en
 GitHub Pages en cada push a `main`. GitHub Pages sirve los artefactos Web con

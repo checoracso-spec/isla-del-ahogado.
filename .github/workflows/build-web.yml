@@ -50,6 +50,10 @@ jobs:
           mkdir -p "$PROJECT_DIR/build/web"
           Godot_v${GODOT_VERSION}-stable_linux.x86_64 --headless --path "$PROJECT_DIR" --editor --quit
           Godot_v${GODOT_VERSION}-stable_linux.x86_64 --headless --path "$PROJECT_DIR" --export-release Web "build/web/index.html"
+          # Publish this milestone under a fresh path so browsers with an old
+          # Godot service worker can still fetch the new export.
+          mkdir -p "$PROJECT_DIR/build/web/prompt-3"
+          find "$PROJECT_DIR/build/web" -maxdepth 1 -type f -exec cp {} "$PROJECT_DIR/build/web/prompt-3/" \;
 
       - name: Configure Pages
         uses: actions/configure-pages@v5
