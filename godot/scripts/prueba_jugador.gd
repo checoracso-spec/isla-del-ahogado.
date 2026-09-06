@@ -704,8 +704,8 @@ func _p14_herreria() -> void:
 		for x in range(1, 9):
 			if jugador.transitable.puede_pisar(Vector2i(x, y)):
 				transitables += 1
-	_comprobar("hay exactamente 35 casillas interiores transitables",
-		transitables == 35, str(transitables))
+	_comprobar("hay exactamente 33 casillas interiores transitables",
+		transitables == 33, str(transitables))
 	var problemas: PackedStringArray = ValidadorInteriorScript.validar(
 		Interiores.activo.definicion)
 	_comprobar("el plano supera el validador genérico", problemas.is_empty(),
@@ -715,18 +715,18 @@ func _p14_herreria() -> void:
 	_comprobar("ventanas y panoplia están realmente en la pared",
 		arte != null
 		and arte.get_node_or_null("DecoracionPared/Mueble_ventana_3_0") != null
-		and arte.get_node_or_null("DecoracionPared/Mueble_panoplia_0_4") != null)
+		and arte.get_node_or_null("DecoracionPared/Mueble_panoplia_0_3") != null)
 	_comprobar("ninguna ventana quedó dentro de Actores",
 		Interiores.activo.actores.get_node_or_null("Mueble_ventana_3_0") == null
 		and Interiores.activo.actores.get_node_or_null("Mueble_ventana_0_2") == null)
 	_comprobar("fragua, yunque y banco sí respetan el orden por Y",
-		Interiores.activo.actores.get_node_or_null("Mueble_fragua_1_1") != null
-		and Interiores.activo.actores.get_node_or_null("Mueble_yunque_4_2") != null
-		and Interiores.activo.actores.get_node_or_null("Mueble_banco_trabajo_6_1") != null)
+		Interiores.activo.actores.get_node_or_null("Mueble_fragua_2_1") != null
+		and Interiores.activo.actores.get_node_or_null("Mueble_yunque_4_3") != null
+		and Interiores.activo.actores.get_node_or_null("Mueble_banco_trabajo_6_4") != null)
 	_comprobar("las huellas anchas bloquean sus dos casillas",
-		not jugador.transitable.puede_pisar(Vector2i(2, 1))
-		and not jugador.transitable.puede_pisar(Vector2i(7, 1))
-		and not jugador.transitable.puede_pisar(Vector2i(4, 4)))
+		not jugador.transitable.puede_pisar(Vector2i(3, 1))
+		and not jugador.transitable.puede_pisar(Vector2i(7, 4))
+		and not jugador.transitable.puede_pisar(Vector2i(3, 5)))
 	_comprobar("el cofre contiene herramientas y carbón",
 		Interiores.activo.cofres.size() == 1
 		and Interiores.activo.cofres[0].inventario().cantidad("herramienta") == 1

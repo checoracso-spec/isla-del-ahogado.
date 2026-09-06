@@ -318,6 +318,22 @@ luchas con los cañones que embarcaste.
 
 ## Las pruebas
 
+### Pipeline de assets con Pillow
+
+El proyecto incluye `tools/asset_pipeline.py` para validar y preparar PNGs sin
+modificar los assets originales. Requiere Python y Pillow instalados.
+
+```powershell
+python tools/asset_pipeline.py validate
+python tools/asset_pipeline.py sheet
+python tools/asset_pipeline.py normalize --remove-magenta --output docs/assets_pipeline/normalized
+```
+
+`validate` comprueba dimensiones del manifiesto, canal alfa, magenta visible,
+negro opaco, relación lógico/físico y formato de pivotes. `sheet` genera una
+hoja de contacto. `normalize` solo crea copias y nunca reemplaza el PNG fuente.
+La documentación completa está en `docs/assets_pipeline/README.md`.
+
 37 comprobaciones automáticas de las reglas de arriba. Para ejecutarlas sin abrir
 el editor, desde esta carpeta:
 

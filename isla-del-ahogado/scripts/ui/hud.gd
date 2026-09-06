@@ -1,0 +1,257 @@
+extends CanvasLayer
+
+## HUD unificado del prompt 2: energía, reloj, doblones, inventario, dormir y pausa.
+
+signal sleep_requested
+
+var root_control: Control
+var stats_panel: PanelContainer
+var inventory_button: Button
+var sleep_button: Button
+var pause_button: Button
+var energy_label: Label
+var energy_bar: ProgressBar
+var clock_label: Label
+var inventory_panel: PanelContainer
+var inventory_grid: GridContainer
+var slot_buttons: Array[Button] = []
+var pause_panel: PanelContainer
+var toast_label: Label
+var toast_timer: Timer
+
+func _ready() -> void:
+	process_mode = Node.PROCESS_MODE_ALWAYS
+	_build_ui()
+	InventorySystem.inventory_changed.connect(_refresh_inventory)
+	TimeManager.time_changed.connect(_on_time_changed)
+	_refresh_inventory()
+	_on_time_changed(TimeManager.day, TimeManager.minute_of_day, TimeManager.get_daylight_factor())
+
+func _build_ui() -> void:
+	root_control = Control.new()
+	root_control.set_anchors_and_offsets_preset(Control.PRESET_FULL_RECT)
+	root_control.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	add_child(root_control)
+
+	stats_panel = _make_panel(Vector2(20.0, 20.0), Vector2(380.0, 108.0))
+	root_control.add_child(stats_panel)
+	var stats_margin := MarginContainer.new()
+	stats_margin.add_theme_constant_override("margin_left", 14)
+	stats_margin.add_theme_constant_override("margin_top", 10)
+	stats_margin.add_theme_constant_override("margin_right", 14)
+	stats_margin.add_theme_constant_override("margin_bottom", 10)
+	stats_panel.add_child(stats_margin)
+	var stats_box := VBoxContainer.new()
+	stats_margin.add_child(stats_box)
+	var top_line := HBoxContainer.new()
+	stats_box.add_child(top_line)
+	clock_label = Label.new()
+	clock_label.text = "Día 1 · 08:00"
+	top_line.add_child(clock_label)
+	var spacer := Control.new()
+	spacer.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	top_line.add_child(spacer)
+	var doubloons := Label.new()
+	doubloons.text = "Doblones: 0"
+	top_line.add_child(doubloons)
+	energy_label = Label.new()
+	energy_label.text = "Energía 100/100"
+	stats_box.add_child(energy_label)
+	energy_bar = ProgressBar.new()
+	energy_bar.max_value = 100
+	energy_bar.value = 100
+	energy_bar.show_percentage = false
+	energy_bar.custom_minimum_size = Vector2(0.0, 18.0)
+	stats_box.add_child(energy_bar)
+
+	inventory_button = _create_button("Inventario [I]", Vector2(20.0, 142.0), Vector2(160.0, 44.0), _toggle_inventory)
+	sleep_button = _create_button("Dormir [Q]", Vector2(190.0, 142.0), Vector2(140.0, 44.0), _request_sleep)
+	pause_button = _create_button("Pausa [Esc]", Vector2(1140.0, 20.0), Vector2(120.0, 44.0), _toggle_pause, true)
+
+	_build_inventory_panel()
+	_build_pause_panel()
+	_layout_responsive()
+
+	toast_label = Label.new()
+	toast_label.position = Vector2(390.0, 650.0)
+	toast_label.size = Vector2(500.0, 40.0)
+	toast_label.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+	toast_label.add_theme_color_override("font_color", Color("#ffe3a6"))
+	toast_label.add_theme_color_override("font_shadow_color", Color(0.0, 0.0, 0.0, 0.9))
+	toast_label.add_theme_constant_override("shadow_offset_x", 2)
+	toast_label.add_theme_constant_override("shadow_offset_y", 2)
+	root_control.add_child(toast_label)
+	toast_timer = Timer.new()
+	toast_timer.one_shot = true
+	toast_timer.wait_time = 2.4
+	toast_timer.timeout.connect(func() -> void: toast_label.text = "")
+	add_child(toast_timer)
+	_layout_responsive()
+
+func _build_inventory_panel() -> void:
+	inventory_panel = _make_panel(Vector2(360.0, 120.0), Vector2(560.0, 430.0))
+	inventory_panel.visible = false
+	root_control.add_child(inventory_panel)
+	var margin := MarginContainer.new()
+	margin.add_theme_constant_override("margin_left", 18)
+	margin.add_theme_constant_override("margin_top", 14)
+	margin.add_theme_constant_override("margin_right", 18)
+	margin.add_theme_constant_override("margin_bottom", 18)
+	inventory_panel.add_child(margin)
+	var box := VBoxContainer.new()
+	margin.add_child(box)
+	var title := Label.new()
+	title.text = "Inventario · 20 espacios"
+	title.add_theme_font_size_override("font_size", 22)
+	box.add_child(title)
+	inventory_grid = GridContainer.new()
+	inventory_grid.columns = 5
+	inventory_grid.size_flags_vertical = Control.SIZE_EXPAND_FILL
+	box.add_child(inventory_grid)
+	for index in range(InventorySystem.SLOT_COUNT):
+		var slot := Button.new()
+		slot.custom_minimum_size = Vector2(58.0, 70.0)
+		slot.text = "%02d\nVacío" % (index + 1)
+		slot.disabled = true
+		inventory_grid.add_child(slot)
+		slot_buttons.append(slot)
+
+func _build_pause_panel() -> void:
+	pause_panel = _make_panel(Vector2(470.0, 220.0), Vector2(340.0, 220.0))
+	pause_panel.visible = false
+	root_control.add_child(pause_panel)
+	var margin := MarginContainer.new()
+	margin.add_theme_constant_override("margin_left", 24)
+	margin.add_theme_constant_override("margin_top", 20)
+	margin.add_theme_constant_override("margin_right", 24)
+	margin.add_theme_constant_override("margin_bottom", 20)
+	pause_panel.add_child(margin)
+	var box := VBoxContainer.new()
+	box.add_theme_constant_override("separation", 12)
+	margin.add_child(box)
+	var title := Label.new()
+	title.text = "Pausa"
+	title.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+	title.add_theme_font_size_override("font_size", 24)
+	box.add_child(title)
+	var resume := Button.new()
+	resume.text = "Reanudar"
+	resume.custom_minimum_size = Vector2(0.0, 44.0)
+	resume.pressed.connect(_resume_game)
+	box.add_child(resume)
+	var exit := Button.new()
+	exit.text = "Salir"
+	exit.custom_minimum_size = Vector2(0.0, 44.0)
+	exit.pressed.connect(_exit_game)
+	box.add_child(exit)
+
+func _make_panel(position: Vector2, panel_size: Vector2) -> PanelContainer:
+	var panel := PanelContainer.new()
+	panel.position = position
+	panel.size = panel_size
+	var style := StyleBoxFlat.new()
+	style.bg_color = Color(0.04, 0.07, 0.09, 0.94)
+	style.border_color = Color("#668984")
+	style.set_border_width_all(2)
+	style.corner_radius_top_left = 8
+	style.corner_radius_top_right = 8
+	style.corner_radius_bottom_left = 8
+	style.corner_radius_bottom_right = 8
+	panel.add_theme_stylebox_override("panel", style)
+	return panel
+
+func _notification(what: int) -> void:
+	if what == Control.NOTIFICATION_RESIZED and is_instance_valid(root_control):
+		_layout_responsive()
+
+func _layout_responsive() -> void:
+	var viewport_size := get_viewport().get_visible_rect().size
+	var viewport_width := viewport_size.x
+	var viewport_height := viewport_size.y
+	if is_instance_valid(stats_panel):
+		stats_panel.position = Vector2(16.0, 16.0)
+		stats_panel.size = Vector2(minf(380.0, maxf(280.0, viewport_width - 32.0)), 108.0)
+	if is_instance_valid(inventory_button):
+		inventory_button.position = Vector2(16.0, 136.0)
+		inventory_button.size = Vector2(minf(160.0, maxf(120.0, (viewport_width - 48.0) * 0.5)), 44.0)
+	if is_instance_valid(sleep_button):
+		sleep_button.position = Vector2(inventory_button.position.x + inventory_button.size.x + 12.0, 136.0)
+		sleep_button.size = Vector2(minf(140.0, maxf(112.0, viewport_width - sleep_button.position.x - 16.0)), 44.0)
+	if is_instance_valid(pause_button):
+		pause_button.position = Vector2(maxf(16.0, viewport_width - 136.0), 16.0)
+		pause_button.size = Vector2(minf(120.0, viewport_width - 32.0), 44.0)
+	if is_instance_valid(inventory_panel):
+		inventory_panel.position = Vector2(12.0, maxf(112.0, (viewport_height - 430.0) * 0.5))
+		inventory_panel.size = Vector2(maxf(240.0, viewport_width - 24.0), minf(430.0, maxf(260.0, viewport_height - 140.0)))
+	if is_instance_valid(pause_panel):
+		pause_panel.position = Vector2(maxf(12.0, (viewport_width - 340.0) * 0.5), maxf(130.0, (viewport_height - 220.0) * 0.5))
+		pause_panel.size = Vector2(minf(340.0, viewport_width - 24.0), minf(220.0, viewport_height - 150.0))
+	if is_instance_valid(toast_label):
+		toast_label.position = Vector2(16.0, maxf(120.0, viewport_height - 70.0))
+		toast_label.size = Vector2(maxf(0.0, viewport_width - 32.0), 40.0)
+
+func _create_button(text: String, position: Vector2, button_size: Vector2, callback: Callable, right_anchored := false) -> Button:
+	var button := Button.new()
+	button.text = text
+	button.position = position
+	button.size = button_size
+	if right_anchored:
+		button.position = Vector2(1140.0, 20.0)
+	button.pressed.connect(callback)
+	root_control.add_child(button)
+	return button
+
+func _refresh_inventory() -> void:
+	if slot_buttons.is_empty():
+		return
+	for index in range(slot_buttons.size()):
+		var slot := InventorySystem.get_slot(index)
+		var item: Item = slot.get("item") as Item
+		if item == null:
+			slot_buttons[index].text = "%02d\nVacío" % (index + 1)
+			slot_buttons[index].tooltip_text = "Espacio vacío"
+		else:
+			var quantity := int(slot.get("quantity", 0))
+			slot_buttons[index].text = "%s\nx%d" % [item.item_name, quantity]
+			slot_buttons[index].tooltip_text = item.item_id
+
+func update_energy(current: int, maximum: int) -> void:
+	if not is_instance_valid(energy_bar):
+		return
+	energy_bar.max_value = maximum
+	energy_bar.value = current
+	energy_label.text = "Energía %d/%d" % [current, maximum]
+
+func _on_time_changed(day: int, minute_of_day: int, _daylight: float) -> void:
+	if is_instance_valid(clock_label):
+		clock_label.text = "Día %d · %02d:%02d" % [day, int(minute_of_day / 60), minute_of_day % 60]
+
+func _unhandled_input(event: InputEvent) -> void:
+	if event.is_action_pressed("open_inventory"):
+		_toggle_inventory()
+		get_viewport().set_input_as_handled()
+	elif event.is_action_pressed("pause"):
+		_toggle_pause()
+		get_viewport().set_input_as_handled()
+
+func _toggle_inventory() -> void:
+	inventory_panel.visible = not inventory_panel.visible
+
+func _request_sleep() -> void:
+	sleep_requested.emit()
+
+func _toggle_pause() -> void:
+	var should_pause := not get_tree().paused
+	get_tree().paused = should_pause
+	pause_panel.visible = should_pause
+
+func _resume_game() -> void:
+	get_tree().paused = false
+	pause_panel.visible = false
+
+func _exit_game() -> void:
+	get_tree().quit()
+
+func show_toast(message: String) -> void:
+	toast_label.text = message
+	toast_timer.start()

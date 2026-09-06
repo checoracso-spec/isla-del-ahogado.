@@ -188,25 +188,25 @@
 
 		"interior.herreria_v1.suelo_piedra": {
 			"tipo": "atlas_tile",
-			"archivo": "interiores/arte/herreria/herreria_v1_suelo_piedra.png",
-			"tam_fisico": [256, 64], "tam_logico": [128, 32],
+			"archivo": "interiores/arte/herreria_batch_04_v2_neutro/herreria_batch04_v2_suelo_piedra_base.png",
+			"tam_fisico": [128, 64], "tam_logico": [64, 32],
 			"celda_fisica": [128, 64], "celda_logica": [64, 32],
 			"escala_pixel": 2, "filtro": "nearest", "capa": "terreno",
-			"celdas": { "piedra": 0, "tinta": 1 }
+			"celdas": { "piedra": 0 }
 		},
 
 		"interior.herreria_v1.muro_norte": {
 			"tipo": "sprite",
-			"archivo": "interiores/arte/herreria/herreria_v1_muro_norte.png",
-			"tam_fisico": [128, 112], "tam_logico": [64, 56], "escala_pixel": 2,
-			"pivote": [64, 96], "filtro": "nearest", "capa": "mundo"
+			"archivo": "interiores/arte/herreria_batch_04_v2_neutro/herreria_batch04_v2_muro_norte.png",
+			"tam_fisico": [128, 144], "tam_logico": [64, 72], "escala_pixel": 2,
+			"pivote": [64, 128], "filtro": "nearest", "capa": "mundo"
 		},
 
 		"interior.herreria_v1.muro_oeste": {
 			"tipo": "sprite",
-			"archivo": "interiores/arte/herreria/herreria_v1_muro_oeste.png",
-			"tam_fisico": [128, 112], "tam_logico": [64, 56], "escala_pixel": 2,
-			"pivote": [64, 96], "filtro": "nearest", "capa": "mundo"
+			"archivo": "interiores/arte/herreria_batch_04_v2_neutro/herreria_batch04_v2_muro_oeste.png",
+			"tam_fisico": [128, 144], "tam_logico": [64, 72], "escala_pixel": 2,
+			"pivote": [64, 128], "filtro": "nearest", "capa": "mundo"
 		},
 
 		"interior.herreria_v1.ventana_norte": {
@@ -221,6 +221,41 @@
 			"archivo": "interiores/arte/herreria/herreria_v1_ventana_oeste.png",
 			"tam_fisico": [128, 112], "tam_logico": [64, 56], "escala_pixel": 2,
 			"pivote": [64, 96], "filtro": "nearest", "capa": "mundo"
+		},
+
+		"interior.herreria_v1.muro_esquina": {
+			"tipo": "sprite",
+			"archivo": "interiores/arte/herreria_batch_04_v2_neutro/herreria_batch04_v2_muro_esquina.png",
+			"tam_fisico": [128, 144], "tam_logico": [64, 72], "escala_pixel": 2,
+			"pivote": [64, 128], "filtro": "nearest", "capa": "mundo"
+		},
+
+		"interior.herreria_v1.muro_borde_pilar": {
+			"tipo": "sprite",
+			"archivo": "interiores/arte/herreria_batch_04_v2_neutro/herreria_batch04_v2_muro_borde_pilar.png",
+			"tam_fisico": [128, 144], "tam_logico": [64, 72], "escala_pixel": 2,
+			"pivote": [64, 128], "filtro": "nearest", "capa": "mundo"
+		},
+
+		"mueble.herreria.cartel_yunque": {
+			"tipo": "sprite",
+			"archivo": "interiores/arte/herreria/cartel_yunque.png",
+			"tam_fisico": [128, 128], "tam_logico": [64, 64], "escala_pixel": 2,
+			"pivote": [64, 112], "filtro": "nearest", "capa": "mundo"
+		},
+
+		"mueble.herreria.farol": {
+			"tipo": "sprite",
+			"archivo": "interiores/arte/herreria/farol.png",
+			"tam_fisico": [128, 128], "tam_logico": [64, 64], "escala_pixel": 2,
+			"pivote": [64, 112], "filtro": "nearest", "capa": "mundo"
+		},
+
+		"mueble.herreria.saco_carbon": {
+			"tipo": "sprite",
+			"archivo": "interiores/arte/herreria/saco_carbon.png",
+			"tam_fisico": [128, 128], "tam_logico": [64, 64], "escala_pixel": 2,
+			"pivote": [64, 112], "filtro": "nearest", "capa": "mundo"
 		},
 
 		"mueble.herreria.herramientas_colgadas": {

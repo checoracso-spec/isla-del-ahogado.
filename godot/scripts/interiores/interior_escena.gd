@@ -112,18 +112,41 @@ func _montar_arte_base(def: InteriorDefinicion) -> void:
 	])
 	var tonos_respaldo: Array = COLOR_SUELO.get(def.suelo, COLOR_SUELO["piedra"])
 	arte_base.configurar_respaldo(respaldo_polygon, tonos_respaldo[1].lightened(0.02))
+	if def.asset_borde_pilar != "" and Assets.existe(def.asset_borde_pilar):
+		arte_base.configurar_borde(respaldo_polygon, 18.0)
 	# El suelo visual incluye también las casillas perimetrales bajo los muros.
 	# La transitabilidad continúa bloqueándolas; dibujarlas sólo evita que las
 	# paredes parezcan flotar separadas del cuarto.
+	# El número de celdas se deriva del ancho real del atlas, no de un valor
+	# fijo: así un atlas de 2 celdas (checkerboard) y uno de 4 o más variantes
+	# funcionan con la misma fórmula sin tocar este archivo otra vez.
+	var num_celdas := 1
+	if celda.x > 0.0 and tex_suelo != null:
+		num_celdas = maxi(1, int(tex_suelo.get_width() / celda.x))
+	# A partir de la cuarta celda tratamos las siguientes como acentos
+	# manuales (p. ej. un inserto de bronce): el reparto automático nunca las
+	# usa, así no aparecen como marcador repetido cada pocas casillas. Sólo
+	# se colocarían si algún día un dato explícito por casilla las pide.
+	# La Herrería usa la celda 0 del atlas en todas las casillas para mantener
+	# un suelo de piedra uniforme. Las demás celdas quedan disponibles para
+	# variantes explícitas futuras, no para un patrón automático.
+	var celdas_automaticas := 1
 	for y in def.alto:
 		for x in def.ancho:
 			var atlas := AtlasTexture.new()
-			atlas.atlas = tex_suelo
-			atlas.region = Rect2(((x + y) % 2) * celda.x, 0, celda.x, celda.y)
+			var indice := _indice_variante_suelo(x, y, celdas_automaticas)
+			var tamano_celda := Vector2i(int(celda.x), int(celda.y))
+			atlas.atlas = Assets.textura_celda(def.asset_suelo, indice, tamano_celda)
+			atlas.region = Rect2(0, 0, celda.x, celda.y)
 			var s := Sprite2D.new()
 			s.texture = atlas
 			s.position = Iso.centro(x, y)
 			s.texture_filter = CanvasItem.TEXTURE_FILTER_NEAREST
+			s.set_meta("layout_id", "floor_%02d_%02d" % [x, y])
+			s.set_meta("layout_role", "suelo")
+			s.set_meta("layout_asset", def.asset_suelo)
+			s.set_meta("layout_casilla", Vector2i(x, y))
+			s.set_meta("layout_base_position", s.position)
 			_arte_base.add_child(s)
 
 	# Las capas de decoración viven dentro del arte base para quedar siempre
@@ -133,21 +156,56 @@ func _montar_arte_base(def: InteriorDefinicion) -> void:
 	_decoracion_suelo.name = "DecoracionSuelo"
 	_arte_base.add_child(_decoracion_suelo)
 
+	# La esquina (0,0) es mitrada si el interior declara asset_muro_esquina;
+	# si no, sigue usando el muro norte tal cual, igual que siempre — así un
+	# interior sin esquina declarada (p. ej. Capitanía hoy) no cambia.
+	var esquina_disponible := def.asset_muro_esquina != "" and Assets.existe(def.asset_muro_esquina)
 	for x in def.ancho:
-		_montar_muro_asset(def.asset_muro_norte, Vector2i(x, 0))
+		if x == 0 and esquina_disponible:
+			_montar_muro_asset(def.asset_muro_esquina, Vector2i(0, 0), "wall_corner")
+		else:
+			_montar_muro_asset(def.asset_muro_oeste, Vector2i(x, 0), "wall_north_%02d" % x)
 	for y in range(1, def.alto):
-		_montar_muro_asset(def.asset_muro_oeste, Vector2i(0, y))
+		_montar_muro_asset(def.asset_muro_norte, Vector2i(0, y), "wall_west_%02d" % y)
+	if def.asset_borde_pilar != "" and Assets.existe(def.asset_borde_pilar):
+		_montar_pilar_borde(def.asset_borde_pilar, Vector2i(def.ancho - 1, def.alto - 1), "edge_post_southeast")
+		_montar_pilar_borde(def.asset_borde_pilar, Vector2i(2, def.alto - 1), "edge_post_south_02")
+		_montar_pilar_borde(def.asset_borde_pilar, Vector2i(def.ancho - 1, 2), "edge_post_east_02")
 
 	_decoracion_pared = Node2D.new()
 	_decoracion_pared.name = "DecoracionPared"
 	_arte_base.add_child(_decoracion_pared)
 
-func _montar_muro_asset(clave: String, casilla: Vector2i) -> void:
+## Reparte las variantes "automáticas" del atlas de suelo (todas menos la
+## reservada como acento manual, ver _montar_arte_base). Con 1 celda siempre
+## la misma; con 2, el checkerboard original; con 3 o más, la primera y la
+## última dominan y las intermedias quedan como acento ocasional en vez de
+## repetirse cada pocas casillas.
+func _indice_variante_suelo(x: int, y: int, celdas_automaticas: int) -> int:
+	return 0
+
+func _montar_muro_asset(clave: String, casilla: Vector2i, layout_id: String = "") -> void:
 	var s := Assets.sprite(clave)
 	_arte_base.add_child(s)
 	s.position = Iso.centro_v(casilla)
+	s.set_meta("layout_id", layout_id if layout_id != "" else "wall_%d_%d" % [casilla.x, casilla.y])
+	s.set_meta("layout_role", "muro")
+	s.set_meta("layout_asset", clave)
+	s.set_meta("layout_casilla", casilla)
+	s.set_meta("layout_base_position", s.position)
+
+func _montar_pilar_borde(clave: String, casilla: Vector2i, layout_id: String) -> void:
+	var s := Assets.sprite(clave)
+	_arte_base.add_child(s)
+	s.position = Iso.centro_v(casilla)
+	s.set_meta("layout_id", layout_id)
+	s.set_meta("layout_role", "borde")
+	s.set_meta("layout_asset", clave)
+	s.set_meta("layout_casilla", casilla)
+	s.set_meta("layout_base_position", s.position)
 
 func _montar_muebles_visual(def: InteriorDefinicion) -> void:
+	var numeros_por_tipo: Dictionary = {}
 	for m in def.muebles:
 		var mueble: Dictionary = m
 		if str(mueble.get("tipo", "")) == "cofre":
@@ -181,6 +239,17 @@ func _montar_muebles_visual(def: InteriorDefinicion) -> void:
 		soporte.name = "Mueble_%s_%d_%d" % [str(mueble.get("tipo", "mueble")),
 			_casilla_de(mueble).x, _casilla_de(mueble).y]
 		soporte.position = _punto_anclaje(_casilla_de(mueble), _huella_de(mueble))
+		var tipo_mueble := str(mueble.get("tipo", "mueble"))
+		var numero := int(numeros_por_tipo.get(tipo_mueble, 0))
+		numeros_por_tipo[tipo_mueble] = numero + 1
+		soporte.set_meta("layout_id", "%s_%02d" % [tipo_mueble, numero])
+		soporte.set_meta("layout_role", "mueble")
+		soporte.set_meta("layout_asset", clave)
+		soporte.set_meta("layout_casilla", _casilla_de(mueble))
+		soporte.set_meta("layout_huella", _huella_de(mueble))
+		soporte.set_meta("layout_solido", bool(mueble.get("solido", true)))
+		soporte.set_meta("layout_base_position", soporte.position)
+		soporte.set_meta("layout_base_rotation", soporte.rotation)
 		_contenedor_para_capa(str(mueble.get("capa_visual", "mundo"))).add_child(soporte)
 		if clave != "" and Assets.existe(clave):
 			if Assets.es_placeholder(clave):
@@ -231,12 +300,43 @@ func _montar_transiciones(def: InteriorDefinicion) -> void:
 		t.entrada_destino = entrada if entrada is Vector2i else Vector2i(1, 1)
 		t.accion = str(mueble.get("accion", "Usar"))
 		t.position = _punto_anclaje(casilla, _huella_de(mueble))
-		t.usar_asset(str(mueble.get("asset", "")))
+		var clave_asset := str(mueble.get("asset", ""))
+		t.usar_asset(clave_asset)
+		# Metadatos compartidos con el modo desarrollador. La transición sigue
+		# siendo funcional; esto solo permite seleccionarla y editar su visual.
+		t.set_meta("layout_id", "%s_%02d_%02d" % [str(mueble.get("tipo", "transicion")), casilla.x, casilla.y])
+		t.set_meta("layout_role", "transicion")
+		t.set_meta("layout_transition_type", "zona")
+		t.set_meta("layout_destino_zona", destino)
+		t.set_meta("layout_entrada_destino", t.entrada_destino)
+		t.set_meta("layout_accion", t.accion)
+		t.set_meta("layout_asset", clave_asset)
+		t.set_meta("layout_casilla", casilla)
+		t.set_meta("layout_huella", _huella_de(mueble))
+		t.set_meta("layout_solido", bool(mueble.get("solido", true)))
+		t.set_meta("layout_base_position", t.position)
+		t.set_meta("layout_base_rotation", t.rotation)
 		t.establecer_casillas_interaccion(_casillas_de_acceso(casilla, _huella_de(mueble)))
 		actores.add_child(t)
 		t.atravesada.connect(func(transicion: Interactuable, quien: Node):
 			transicion_solicitada.emit(transicion, quien))
 		transiciones.append(t)
+
+## Registra una transición creada desde el Modo Desarrollador. La escena sigue
+## siendo la dueña de la señal y de la lista de transiciones; el editor no
+## duplica esa autoridad.
+func registrar_transicion_editor(t: TransicionZona) -> void:
+	if t == null or transiciones.has(t):
+		return
+	if t.get_parent() != actores:
+		if t.get_parent() != null:
+			t.reparent(actores, false)
+		else:
+			actores.add_child(t)
+	t.atravesada.connect(func(transicion: Interactuable, quien: Node):
+		transicion_solicitada.emit(transicion, quien))
+	t.establecer_casillas_interaccion(_casillas_de_acceso(t.casilla_propia, Vector2i.ONE))
+	transiciones.append(t)
 
 ## Los muebles de tipo "cofre" dejan de ser decoración y pasan a ser objetos
 ## con identidad propia. Su contenido NO vive aquí: lo lleva `Contenedores`,
@@ -244,6 +344,7 @@ func _montar_transiciones(def: InteriorDefinicion) -> void:
 func _montar_cofres(def: InteriorDefinicion) -> void:
 	if identidad == null:
 		return
+	var numero_cofre := 0
 	for m in def.muebles:
 		var mueble: Dictionary = m
 		if str(mueble.get("tipo", "")) != "cofre":
@@ -260,11 +361,20 @@ func _montar_cofres(def: InteriorDefinicion) -> void:
 		c.zona_id = identidad.instancia
 		c.casilla_interior = casilla
 		c.position = _punto_anclaje(casilla, _huella_de(mueble))
+		c.set_meta("layout_id", "cofre_%02d" % numero_cofre)
+		c.set_meta("layout_role", "mueble")
+		c.set_meta("layout_asset", c.asset_cerrado)
+		c.set_meta("layout_casilla", casilla)
+		c.set_meta("layout_huella", _huella_de(mueble))
+		c.set_meta("layout_solido", bool(mueble.get("solido", true)))
+		c.set_meta("layout_base_position", c.position)
+		c.set_meta("layout_base_rotation", c.rotation)
 		c.establecer_casillas_interaccion(_casillas_de_acceso(casilla, _huella_de(mueble)))
 		actores.add_child(c)
 		Entidades.vincular(c.identidad, c)
 		c.abierto.connect(func(quien: Cofre): cofre_abierto.emit(quien))
 		cofres.append(c)
+		numero_cofre += 1
 
 func entrada() -> Vector2:
 	return Vector2(definicion.entrada_valida()) + Vector2(0.5, 0.5)
@@ -319,6 +429,20 @@ func _montar_puerta_salida(def: InteriorDefinicion, casilla_exterior: Vector2i,
 	puerta_salida.casilla_exterior = casilla_exterior
 	puerta_salida.casilla_propia = def.entrada_valida()
 	puerta_salida.position = Iso.centro_v(puerta_salida.casilla_propia)
+	# Metadatos compartidos con el editor visual. La puerta sigue siendo la
+	# autoridad de transición; esto solo permite moverla y guardarla allí.
+	puerta_salida.set_meta("layout_id", "puerta_salida")
+	puerta_salida.set_meta("layout_role", "transicion")
+	puerta_salida.set_meta("layout_transition_type", "salida")
+	puerta_salida.set_meta("layout_asset", "")
+	puerta_salida.set_meta("layout_casilla", puerta_salida.casilla_propia)
+	puerta_salida.set_meta("layout_huella", Vector2i.ONE)
+	puerta_salida.set_meta("layout_solido", false)
+	puerta_salida.set_meta("layout_destino_zona", "EXTERIOR")
+	puerta_salida.set_meta("layout_entrada_destino", def.entrada_valida())
+	puerta_salida.set_meta("layout_accion", "Salir")
+	puerta_salida.set_meta("layout_base_position", puerta_salida.position)
+	puerta_salida.set_meta("layout_base_rotation", puerta_salida.rotation)
 	if _decoracion_suelo != null:
 		_decoracion_suelo.add_child(puerta_salida)
 	else:

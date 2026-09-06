@@ -1,0 +1,29 @@
+[gd_scene load_steps=2 format=3]
+
+[ext_resource type="Script" path="res://scripts/world/player.gd" id="1_player"]
+
+[node name="Player" type="CharacterBody2D"]
+z_index = 10
+script = ExtResource("1_player")
+
+[node name="NameLabel" type="Label" parent="."]
+offset_left = -34.0
+offset_top = -42.0
+offset_right = 34.0
+offset_bottom = -22.0
+text = "Pirata"
+horizontal_alignment = 1
+mouse_filter = 2
+theme_override_colors/font_color = Color(1, 0.89, 0.65, 1)
+theme_override_colors/font_shadow_color = Color(0, 0, 0, 0.8)
+theme_override_constants/shadow_offset_x = 2
+theme_override_constants/shadow_offset_y = 2
+
+[node name="Camera2D" type="Camera2D" parent="."]
+position_smoothing_enabled = true
+position_smoothing_speed = 5.0
+limit_left = 0
+limit_top = 0
+limit_right = 1152
+limit_bottom = 768
+limit_smoothed = true

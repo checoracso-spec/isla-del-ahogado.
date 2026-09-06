@@ -1,0 +1,54 @@
+[gd_scene load_steps=8 format=3]
+
+[ext_resource type="Script" path="res://scripts/world/world_root.gd" id="1_world"]
+[ext_resource type="Script" path="res://scripts/ui/touch_controls.gd" id="2_touch_layer"]
+[ext_resource type="Script" path="res://scripts/ui/touch_overlay.gd" id="3_touch_overlay"]
+[ext_resource type="PackedScene" path="res://scenes/characters/player.tscn" id="4_player"]
+[ext_resource type="PackedScene" path="res://scenes/world/collectible.tscn" id="5_collectible"]
+[ext_resource type="Script" path="res://scripts/world/interaction_system.gd" id="6_interaction"]
+[ext_resource type="PackedScene" path="res://scenes/ui/hud.tscn" id="7_hud"]
+
+[node name="World" type="Node2D"]
+script = ExtResource("1_world")
+
+[node name="GroundLayer" type="Node2D" parent="."]
+y_sort_enabled = true
+
+[node name="CharactersAndObjects" type="Node2D" parent="."]
+y_sort_enabled = true
+
+[node name="Player" parent="CharactersAndObjects" instance=ExtResource("4_player")]
+position = Vector2(576, 384)
+
+[node name="Collectible" parent="." instance=ExtResource("5_collectible")]
+position = Vector2(750, 384)
+
+[node name="InteractionSystem" type="Node2D" parent="."]
+script = ExtResource("6_interaction")
+player_path = NodePath("CharactersAndObjects/Player")
+
+[node name="DayNightOverlay" type="CanvasLayer" parent="."]
+layer = 8
+
+[node name="Tint" type="ColorRect" parent="DayNightOverlay"]
+offset_right = 1280.0
+offset_bottom = 720.0
+mouse_filter = 2
+color = Color(0.08, 0.13, 0.32, 0)
+
+[node name="TouchControls" type="CanvasLayer" parent="."]
+layer = 5
+script = ExtResource("2_touch_layer")
+
+[node name="Overlay" type="Control" parent="TouchControls"]
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 0
+script = ExtResource("3_touch_overlay")
+
+[node name="HUD" parent="." instance=ExtResource("7_hud")]
+layer = 10

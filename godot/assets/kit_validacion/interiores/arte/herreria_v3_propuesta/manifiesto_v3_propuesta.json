@@ -1,0 +1,32 @@
+{
+  "id": "herreria_v3_propuesta",
+  "estado": "propuesta_no_integrada",
+  "referencia_maestra": "res://assets/kit_validacion/interiores/propuestas/herreria_v3/README.md",
+  "iso": {
+    "tile_visual": [128, 64],
+    "subdivision_editor": [64, 32]
+  },
+  "assets": {
+    "interior.herreria_v3.suelo_piedra_base": {
+      "ruta": "res://assets/kit_validacion/interiores/arte/herreria_v3_propuesta/suelo_piedra_base.png",
+      "tamano": [128, 64],
+      "pivote": [64, 32]
+    },
+    "interior.herreria_v3.muro_piedra_norte": {
+      "ruta": "res://assets/kit_validacion/interiores/arte/herreria_v3_propuesta/muro_piedra_norte.png",
+      "tamano": [128, 144],
+      "pivote": [64, 128]
+    },
+    "interior.herreria_v3.muro_piedra_oeste": {
+      "ruta": "res://assets/kit_validacion/interiores/arte/herreria_v3_propuesta/muro_piedra_oeste.png",
+      "tamano": [128, 144],
+      "pivote": [64, 128]
+    }
+  },
+  "pendiente": [
+    "muro_piedra_esquina_interior",
+    "muro_piedra_pilar",
+    "suelo_borde_frontal",
+    "prueba_aislada_en_comparador_herreria"
+  ]
+}

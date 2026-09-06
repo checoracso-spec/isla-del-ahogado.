@@ -22,6 +22,12 @@ extends Resource
 @export var asset_suelo: String = ""
 @export var asset_muro_norte: String = ""
 @export var asset_muro_oeste: String = ""
+## Opcional: pieza mitrada para la esquina donde se juntan norte y oeste.
+## Si falta, esa casilla usa asset_muro_norte igual que antes (junta recta,
+## no mitrada) — así un interior sin esquina declarada no cambia de aspecto.
+@export var asset_muro_esquina: String = ""
+## Pieza baja opcional para rematar el borde abierto del suelo.
+@export var asset_borde_pilar: String = ""
 ## Sólo la planta conectada con la calle monta la puerta de salida exterior.
 ## Las demás plantas regresan mediante TransicionZona.
 @export var salida_exterior: bool = true
@@ -37,6 +43,8 @@ static func desde_dic(d: Dictionary) -> InteriorDefinicion:
 	i.asset_suelo = str(d.get("asset_suelo", ""))
 	i.asset_muro_norte = str(d.get("asset_muro_norte", ""))
 	i.asset_muro_oeste = str(d.get("asset_muro_oeste", ""))
+	i.asset_muro_esquina = str(d.get("asset_muro_esquina", ""))
+	i.asset_borde_pilar = str(d.get("asset_borde_pilar", ""))
 	i.salida_exterior = bool(d.get("salida_exterior", true))
 	var e: Variant = d.get("entrada", Vector2i(1, 1))
 	i.entrada = e if e is Vector2i else Vector2i(1, 1)

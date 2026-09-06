@@ -1,0 +1,1036 @@
+{
+  "version": 1,
+  "input": "C:\\Users\\checo\\.claude\\medieval-pirates-game\\godot\\assets\\kit_validacion",
+  "manifest": "C:\\Users\\checo\\.claude\\medieval-pirates-game\\godot\\assets\\kit_validacion\\manifiesto.json",
+  "summary": {
+    "files": 77,
+    "errors": 8,
+    "warnings": 44,
+    "manifest_missing_files": 0
+  },
+  "assets": [
+    {
+      "file": "edificios/arte/capitania_v1_cuerpo.png",
+      "width": 384,
+      "height": 448,
+      "mode": "RGBA",
+      "alpha": true,
+      "opaque_pixels": 81920,
+      "magenta_pixels": 0,
+      "black_pixels": 4,
+      "warnings": [
+        "contiene 4 píxeles negros opacos; revisar si son contorno intencional"
+      ],
+      "errors": []
+    },
+    {
+      "file": "edificios/arte/capitania_v1_puerta.png",
+      "width": 128,
+      "height": 96,
+      "mode": "RGBA",
+      "alpha": true,
+      "opaque_pixels": 4784,
+      "magenta_pixels": 0,
+      "black_pixels": 0,
+      "warnings": [],
+      "errors": []
+    },
+    {
+      "file": "edificios/arte/capitania_v1_tejado.png",
+      "width": 384,
+      "height": 448,
+      "mode": "RGBA",
+      "alpha": true,
+      "opaque_pixels": 49272,
+      "magenta_pixels": 0,
+      "black_pixels": 20,
+      "warnings": [
+        "contiene 20 píxeles negros opacos; revisar si son contorno intencional"
+      ],
+      "errors": []
+    },
+    {
+      "file": "edificios/kit_casa_cuerpo.png",
+      "width": 384,
+      "height": 448,
+      "mode": "RGBA",
+      "alpha": true,
+      "opaque_pixels": 46380,
+      "magenta_pixels": 0,
+      "black_pixels": 0,
+      "warnings": [],
+      "errors": []
+    },
+    {
+      "file": "edificios/kit_casa_puerta.png",
+      "width": 128,
+      "height": 96,
+      "mode": "RGBA",
+      "alpha": true,
+      "opaque_pixels": 5276,
+      "magenta_pixels": 0,
+      "black_pixels": 0,
+      "warnings": [],
+      "errors": []
+    },
+    {
+      "file": "edificios/kit_casa_tejado.png",
+      "width": 384,
+      "height": 448,
+      "mode": "RGBA",
+      "alpha": true,
+      "opaque_pixels": 25048,
+      "magenta_pixels": 0,
+      "black_pixels": 0,
+      "warnings": [],
+      "errors": []
+    },
+    {
+      "file": "interiores/arte/capitania_v1_muro_norte.png",
+      "width": 128,
+      "height": 112,
+      "mode": "RGBA",
+      "alpha": true,
+      "opaque_pixels": 3592,
+      "magenta_pixels": 0,
+      "black_pixels": 12,
+      "warnings": [
+        "contiene 12 píxeles negros opacos; revisar si son contorno intencional"
+      ],
+      "errors": []
+    },
+    {
+      "file": "interiores/arte/capitania_v1_muro_oeste.png",
+      "width": 128,
+      "height": 112,
+      "mode": "RGBA",
+      "alpha": true,
+      "opaque_pixels": 3588,
+      "magenta_pixels": 0,
+      "black_pixels": 0,
+      "warnings": [],
+      "errors": []
+    },
+    {
+      "file": "interiores/arte/capitania_v1_suelo_madera.png",
+      "width": 256,
+      "height": 64,
+      "mode": "RGBA",
+      "alpha": true,
+      "opaque_pixels": 8144,
+      "magenta_pixels": 0,
+      "black_pixels": 0,
+      "warnings": [],
+      "errors": []
+    },
+    {
+      "file": "interiores/arte/herreria/banco_trabajo.png",
+      "width": 192,
+      "height": 160,
+      "mode": "RGBA",
+      "alpha": true,
+      "opaque_pixels": 14784,
+      "magenta_pixels": 0,
+      "black_pixels": 600,
+      "warnings": [
+        "contiene 600 píxeles negros opacos; revisar si son contorno intencional"
+      ],
+      "errors": []
+    },
+    {
+      "file": "interiores/arte/herreria/cartel_yunque.png",
+      "width": 128,
+      "height": 128,
+      "mode": "RGBA",
+      "alpha": true,
+      "opaque_pixels": 10168,
+      "magenta_pixels": 0,
+      "black_pixels": 496,
+      "warnings": [
+        "contiene 496 píxeles negros opacos; revisar si son contorno intencional"
+      ],
+      "errors": []
+    },
+    {
+      "file": "interiores/arte/herreria/deposito_carbon.png",
+      "width": 128,
+      "height": 112,
+      "mode": "RGBA",
+      "alpha": true,
+      "opaque_pixels": 4768,
+      "magenta_pixels": 0,
+      "black_pixels": 288,
+      "warnings": [
+        "contiene 288 píxeles negros opacos; revisar si son contorno intencional"
+      ],
+      "errors": []
+    },
+    {
+      "file": "interiores/arte/herreria/estanteria_herramientas.png",
+      "width": 128,
+      "height": 192,
+      "mode": "RGBA",
+      "alpha": true,
+      "opaque_pixels": 9880,
+      "magenta_pixels": 0,
+      "black_pixels": 512,
+      "warnings": [
+        "contiene 512 píxeles negros opacos; revisar si son contorno intencional"
+      ],
+      "errors": []
+    },
+    {
+      "file": "interiores/arte/herreria/farol.png",
+      "width": 128,
+      "height": 128,
+      "mode": "RGBA",
+      "alpha": true,
+      "opaque_pixels": 10770,
+      "magenta_pixels": 0,
+      "black_pixels": 458,
+      "warnings": [
+        "contiene 458 píxeles negros opacos; revisar si son contorno intencional"
+      ],
+      "errors": []
+    },
+    {
+      "file": "interiores/arte/herreria/fragua.png",
+      "width": 192,
+      "height": 256,
+      "mode": "RGBA",
+      "alpha": true,
+      "opaque_pixels": 24040,
+      "magenta_pixels": 0,
+      "black_pixels": 824,
+      "warnings": [
+        "contiene 824 píxeles negros opacos; revisar si son contorno intencional"
+      ],
+      "errors": []
+    },
+    {
+      "file": "interiores/arte/herreria/herramientas_colgadas.png",
+      "width": 128,
+      "height": 128,
+      "mode": "RGBA",
+      "alpha": true,
+      "opaque_pixels": 11431,
+      "magenta_pixels": 0,
+      "black_pixels": 391,
+      "warnings": [
+        "contiene 391 píxeles negros opacos; revisar si son contorno intencional"
+      ],
+      "errors": []
+    },
+    {
+      "file": "interiores/arte/herreria/herreria_v1_muro_borde_pilar.png",
+      "width": 128,
+      "height": 128,
+      "mode": "RGBA",
+      "alpha": true,
+      "opaque_pixels": 8304,
+      "magenta_pixels": 0,
+      "black_pixels": 2,
+      "warnings": [
+        "contiene 2 píxeles negros opacos; revisar si son contorno intencional"
+      ],
+      "errors": []
+    },
+    {
+      "file": "interiores/arte/herreria/herreria_v1_muro_esquina.png",
+      "width": 128,
+      "height": 112,
+      "mode": "RGBA",
+      "alpha": true,
+      "opaque_pixels": 9853,
+      "magenta_pixels": 0,
+      "black_pixels": 64,
+      "warnings": [
+        "contiene 64 píxeles negros opacos; revisar si son contorno intencional"
+      ],
+      "errors": []
+    },
+    {
+      "file": "interiores/arte/herreria/herreria_v1_muro_norte.png",
+      "width": 128,
+      "height": 112,
+      "mode": "RGBA",
+      "alpha": true,
+      "opaque_pixels": 7032,
+      "magenta_pixels": 0,
+      "black_pixels": 46,
+      "warnings": [
+        "contiene 46 píxeles negros opacos; revisar si son contorno intencional"
+      ],
+      "errors": []
+    },
+    {
+      "file": "interiores/arte/herreria/herreria_v1_muro_oeste.png",
+      "width": 128,
+      "height": 112,
+      "mode": "RGBA",
+      "alpha": true,
+      "opaque_pixels": 7084,
+      "magenta_pixels": 0,
+      "black_pixels": 43,
+      "warnings": [
+        "contiene 43 píxeles negros opacos; revisar si son contorno intencional"
+      ],
+      "errors": []
+    },
+    {
+      "file": "interiores/arte/herreria/herreria_v1_suelo_piedra.png",
+      "width": 512,
+      "height": 64,
+      "mode": "RGBA",
+      "alpha": true,
+      "opaque_pixels": 20992,
+      "magenta_pixels": 0,
+      "black_pixels": 96,
+      "warnings": [
+        "contiene 96 píxeles negros opacos; revisar si son contorno intencional"
+      ],
+      "errors": []
+    },
+    {
+      "file": "interiores/arte/herreria/herreria_v1_ventana_norte.png",
+      "width": 128,
+      "height": 112,
+      "mode": "RGBA",
+      "alpha": true,
+      "opaque_pixels": 10246,
+      "magenta_pixels": 0,
+      "black_pixels": 327,
+      "warnings": [
+        "contiene 327 píxeles negros opacos; revisar si son contorno intencional"
+      ],
+      "errors": []
+    },
+    {
+      "file": "interiores/arte/herreria/herreria_v1_ventana_oeste.png",
+      "width": 128,
+      "height": 112,
+      "mode": "RGBA",
+      "alpha": true,
+      "opaque_pixels": 10276,
+      "magenta_pixels": 0,
+      "black_pixels": 351,
+      "warnings": [
+        "contiene 351 píxeles negros opacos; revisar si son contorno intencional"
+      ],
+      "errors": []
+    },
+    {
+      "file": "interiores/arte/herreria/horno.png",
+      "width": 160,
+      "height": 256,
+      "mode": "RGBA",
+      "alpha": true,
+      "opaque_pixels": 20396,
+      "magenta_pixels": 0,
+      "black_pixels": 868,
+      "warnings": [
+        "contiene 868 píxeles negros opacos; revisar si son contorno intencional"
+      ],
+      "errors": []
+    },
+    {
+      "file": "interiores/arte/herreria/mesa_trabajo.png",
+      "width": 192,
+      "height": 128,
+      "mode": "RGBA",
+      "alpha": true,
+      "opaque_pixels": 9016,
+      "magenta_pixels": 0,
+      "black_pixels": 548,
+      "warnings": [
+        "contiene 548 píxeles negros opacos; revisar si son contorno intencional"
+      ],
+      "errors": []
+    },
+    {
+      "file": "interiores/arte/herreria/panoplia_armas.png",
+      "width": 128,
+      "height": 144,
+      "mode": "RGBA",
+      "alpha": true,
+      "opaque_pixels": 8240,
+      "magenta_pixels": 0,
+      "black_pixels": 472,
+      "warnings": [
+        "contiene 472 píxeles negros opacos; revisar si son contorno intencional"
+      ],
+      "errors": []
+    },
+    {
+      "file": "interiores/arte/herreria/saco_carbon.png",
+      "width": 128,
+      "height": 128,
+      "mode": "RGBA",
+      "alpha": true,
+      "opaque_pixels": 11831,
+      "magenta_pixels": 0,
+      "black_pixels": 534,
+      "warnings": [
+        "contiene 534 píxeles negros opacos; revisar si son contorno intencional"
+      ],
+      "errors": []
+    },
+    {
+      "file": "interiores/arte/herreria/yunque.png",
+      "width": 128,
+      "height": 112,
+      "mode": "RGBA",
+      "alpha": true,
+      "opaque_pixels": 5860,
+      "magenta_pixels": 0,
+      "black_pixels": 424,
+      "warnings": [
+        "contiene 424 píxeles negros opacos; revisar si son contorno intencional"
+      ],
+      "errors": []
+    },
+    {
+      "file": "interiores/arte/herreria_v3/herreria_v3_muro_borde_pilar.png",
+      "width": 128,
+      "height": 144,
+      "mode": "RGBA",
+      "alpha": true,
+      "opaque_pixels": 8304,
+      "magenta_pixels": 0,
+      "black_pixels": 0,
+      "warnings": [],
+      "errors": []
+    },
+    {
+      "file": "interiores/arte/herreria_v3/herreria_v3_muro_esquina.png",
+      "width": 128,
+      "height": 144,
+      "mode": "RGBA",
+      "alpha": true,
+      "opaque_pixels": 11261,
+      "magenta_pixels": 0,
+      "black_pixels": 0,
+      "warnings": [],
+      "errors": []
+    },
+    {
+      "file": "interiores/arte/herreria_v3/herreria_v3_muro_norte.png",
+      "width": 128,
+      "height": 144,
+      "mode": "RGBA",
+      "alpha": true,
+      "opaque_pixels": 8040,
+      "magenta_pixels": 0,
+      "black_pixels": 0,
+      "warnings": [],
+      "errors": []
+    },
+    {
+      "file": "interiores/arte/herreria_v3/herreria_v3_muro_oeste.png",
+      "width": 128,
+      "height": 144,
+      "mode": "RGBA",
+      "alpha": true,
+      "opaque_pixels": 8098,
+      "magenta_pixels": 0,
+      "black_pixels": 0,
+      "warnings": [],
+      "errors": []
+    },
+    {
+      "file": "interiores/arte/herreria_v3/herreria_v3_suelo_piedra.png",
+      "width": 128,
+      "height": 64,
+      "mode": "RGBA",
+      "alpha": true,
+      "opaque_pixels": 4289,
+      "magenta_pixels": 0,
+      "black_pixels": 0,
+      "warnings": [],
+      "errors": []
+    },
+    {
+      "file": "interiores/arte/herreria_v3_propuesta/muro_piedra_norte.png",
+      "width": 128,
+      "height": 144,
+      "mode": "RGBA",
+      "alpha": true,
+      "opaque_pixels": 7967,
+      "magenta_pixels": 0,
+      "black_pixels": 91,
+      "warnings": [
+        "contiene 91 píxeles negros opacos; revisar si son contorno intencional"
+      ],
+      "errors": []
+    },
+    {
+      "file": "interiores/arte/herreria_v3_propuesta/muro_piedra_oeste.png",
+      "width": 128,
+      "height": 144,
+      "mode": "RGBA",
+      "alpha": true,
+      "opaque_pixels": 7967,
+      "magenta_pixels": 0,
+      "black_pixels": 91,
+      "warnings": [
+        "contiene 91 píxeles negros opacos; revisar si son contorno intencional"
+      ],
+      "errors": []
+    },
+    {
+      "file": "interiores/arte/herreria_v3_propuesta/suelo_piedra_base.png",
+      "width": 128,
+      "height": 64,
+      "mode": "RGBA",
+      "alpha": true,
+      "opaque_pixels": 4289,
+      "magenta_pixels": 0,
+      "black_pixels": 51,
+      "warnings": [
+        "contiene 51 píxeles negros opacos; revisar si son contorno intencional"
+      ],
+      "errors": []
+    },
+    {
+      "file": "interiores/arte/muebles/banco_madera.png",
+      "width": 160,
+      "height": 96,
+      "mode": "RGBA",
+      "alpha": true,
+      "opaque_pixels": 3396,
+      "magenta_pixels": 0,
+      "black_pixels": 0,
+      "warnings": [],
+      "errors": []
+    },
+    {
+      "file": "interiores/arte/muebles/chimenea_piedra.png",
+      "width": 160,
+      "height": 224,
+      "mode": "RGBA",
+      "alpha": true,
+      "opaque_pixels": 13936,
+      "magenta_pixels": 0,
+      "black_pixels": 0,
+      "warnings": [],
+      "errors": []
+    },
+    {
+      "file": "interiores/arte/muebles/cofre_abierto.png",
+      "width": 128,
+      "height": 144,
+      "mode": "RGBA",
+      "alpha": true,
+      "opaque_pixels": 8604,
+      "magenta_pixels": 0,
+      "black_pixels": 8,
+      "warnings": [
+        "contiene 8 píxeles negros opacos; revisar si son contorno intencional"
+      ],
+      "errors": []
+    },
+    {
+      "file": "interiores/arte/muebles/cofre_cerrado.png",
+      "width": 128,
+      "height": 144,
+      "mode": "RGBA",
+      "alpha": true,
+      "opaque_pixels": 10352,
+      "magenta_pixels": 0,
+      "black_pixels": 308,
+      "warnings": [
+        "contiene 308 píxeles negros opacos; revisar si son contorno intencional"
+      ],
+      "errors": []
+    },
+    {
+      "file": "interiores/arte/muebles/escalera_madera.png",
+      "width": 160,
+      "height": 224,
+      "mode": "RGBA",
+      "alpha": true,
+      "opaque_pixels": 16276,
+      "magenta_pixels": 0,
+      "black_pixels": 432,
+      "warnings": [
+        "contiene 432 píxeles negros opacos; revisar si son contorno intencional"
+      ],
+      "errors": []
+    },
+    {
+      "file": "interiores/arte/muebles/escalera_madera_bajada.png",
+      "width": 160,
+      "height": 224,
+      "mode": "RGBA",
+      "alpha": true,
+      "opaque_pixels": 11136,
+      "magenta_pixels": 0,
+      "black_pixels": 24,
+      "warnings": [
+        "contiene 24 píxeles negros opacos; revisar si son contorno intencional"
+      ],
+      "errors": []
+    },
+    {
+      "file": "interiores/arte/muebles/escritorio_capitania.png",
+      "width": 192,
+      "height": 128,
+      "mode": "RGBA",
+      "alpha": true,
+      "opaque_pixels": 10168,
+      "magenta_pixels": 0,
+      "black_pixels": 0,
+      "warnings": [],
+      "errors": []
+    },
+    {
+      "file": "interiores/arte/muebles/estanteria_nautica.png",
+      "width": 128,
+      "height": 192,
+      "mode": "RGBA",
+      "alpha": true,
+      "opaque_pixels": 10884,
+      "magenta_pixels": 0,
+      "black_pixels": 4,
+      "warnings": [
+        "contiene 4 píxeles negros opacos; revisar si son contorno intencional"
+      ],
+      "errors": []
+    },
+    {
+      "file": "interiores/int_muro_norte.png",
+      "width": 128,
+      "height": 112,
+      "mode": "RGBA",
+      "alpha": true,
+      "opaque_pixels": 5900,
+      "magenta_pixels": 0,
+      "black_pixels": 0,
+      "warnings": [],
+      "errors": []
+    },
+    {
+      "file": "interiores/int_muro_oeste.png",
+      "width": 128,
+      "height": 112,
+      "mode": "RGBA",
+      "alpha": true,
+      "opaque_pixels": 5900,
+      "magenta_pixels": 0,
+      "black_pixels": 0,
+      "warnings": [],
+      "errors": []
+    },
+    {
+      "file": "interiores/int_suelo_madera.png",
+      "width": 256,
+      "height": 64,
+      "mode": "RGBA",
+      "alpha": true,
+      "opaque_pixels": 7944,
+      "magenta_pixels": 0,
+      "black_pixels": 0,
+      "warnings": [],
+      "errors": []
+    },
+    {
+      "file": "interiores/propuestas/herreria_v3/fuente_esquina_piedra_v3.png",
+      "width": 1327,
+      "height": 1185,
+      "mode": "RGB",
+      "alpha": false,
+      "opaque_pixels": 1572495,
+      "magenta_pixels": 0,
+      "black_pixels": 0,
+      "warnings": [
+        "no tiene canal alfa"
+      ],
+      "errors": []
+    },
+    {
+      "file": "interiores/propuestas/herreria_v3/fuente_muro_piedra_v3.png",
+      "width": 1182,
+      "height": 1330,
+      "mode": "RGBA",
+      "alpha": true,
+      "opaque_pixels": 772216,
+      "magenta_pixels": 9,
+      "black_pixels": 9526,
+      "warnings": [
+        "contiene 9526 píxeles negros opacos; revisar si son contorno intencional"
+      ],
+      "errors": [
+        "contiene 9 píxeles magenta #ff00ff visibles",
+        "hay bordes semitransparentes contaminados de magenta"
+      ]
+    },
+    {
+      "file": "interiores/propuestas/herreria_v3/fuente_pilar_piedra_v3.png",
+      "width": 1182,
+      "height": 1330,
+      "mode": "RGB",
+      "alpha": false,
+      "opaque_pixels": 1572060,
+      "magenta_pixels": 0,
+      "black_pixels": 3,
+      "warnings": [
+        "contiene 3 píxeles negros opacos; revisar si son contorno intencional",
+        "no tiene canal alfa"
+      ],
+      "errors": []
+    },
+    {
+      "file": "interiores/propuestas/herreria_v3/fuente_suelo_piedra_v3.png",
+      "width": 1774,
+      "height": 887,
+      "mode": "RGBA",
+      "alpha": true,
+      "opaque_pixels": 823452,
+      "magenta_pixels": 7,
+      "black_pixels": 9688,
+      "warnings": [
+        "contiene 9688 píxeles negros opacos; revisar si son contorno intencional"
+      ],
+      "errors": [
+        "contiene 7 píxeles magenta #ff00ff visibles",
+        "hay bordes semitransparentes contaminados de magenta"
+      ]
+    },
+    {
+      "file": "interiores/propuestas/herreria_v3/lamina_muros_pisos_v3.png",
+      "width": 1536,
+      "height": 1024,
+      "mode": "RGB",
+      "alpha": false,
+      "opaque_pixels": 1572864,
+      "magenta_pixels": 0,
+      "black_pixels": 0,
+      "warnings": [
+        "no tiene canal alfa"
+      ],
+      "errors": []
+    },
+    {
+      "file": "interiores/propuestas/herreria_v3/limpia_esquina_piedra_v3.png",
+      "width": 1327,
+      "height": 1185,
+      "mode": "RGBA",
+      "alpha": true,
+      "opaque_pixels": 890465,
+      "magenta_pixels": 0,
+      "black_pixels": 0,
+      "warnings": [],
+      "errors": []
+    },
+    {
+      "file": "interiores/propuestas/herreria_v3/limpia_pilar_piedra_v3.png",
+      "width": 1182,
+      "height": 1330,
+      "mode": "RGBA",
+      "alpha": true,
+      "opaque_pixels": 547507,
+      "magenta_pixels": 0,
+      "black_pixels": 3,
+      "warnings": [
+        "contiene 3 píxeles negros opacos; revisar si son contorno intencional"
+      ],
+      "errors": []
+    },
+    {
+      "file": "interiores/propuestas/herreria_v3/prototipo_muro_esquina_v3.png",
+      "width": 128,
+      "height": 144,
+      "mode": "RGBA",
+      "alpha": true,
+      "opaque_pixels": 13224,
+      "magenta_pixels": 0,
+      "black_pixels": 0,
+      "warnings": [],
+      "errors": []
+    },
+    {
+      "file": "interiores/propuestas/herreria_v3/prototipo_muro_norte_v3.png",
+      "width": 128,
+      "height": 144,
+      "mode": "RGBA",
+      "alpha": true,
+      "opaque_pixels": 7967,
+      "magenta_pixels": 0,
+      "black_pixels": 91,
+      "warnings": [
+        "contiene 91 píxeles negros opacos; revisar si son contorno intencional"
+      ],
+      "errors": []
+    },
+    {
+      "file": "interiores/propuestas/herreria_v3/prototipo_muro_oeste_v3.png",
+      "width": 128,
+      "height": 144,
+      "mode": "RGBA",
+      "alpha": true,
+      "opaque_pixels": 7967,
+      "magenta_pixels": 0,
+      "black_pixels": 91,
+      "warnings": [
+        "contiene 91 píxeles negros opacos; revisar si son contorno intencional"
+      ],
+      "errors": []
+    },
+    {
+      "file": "interiores/propuestas/herreria_v3/prototipo_muro_pilar_v3.png",
+      "width": 128,
+      "height": 144,
+      "mode": "RGBA",
+      "alpha": true,
+      "opaque_pixels": 6453,
+      "magenta_pixels": 0,
+      "black_pixels": 0,
+      "warnings": [],
+      "errors": []
+    },
+    {
+      "file": "interiores/propuestas/herreria_v3/prototipo_suelo_piedra_v3.png",
+      "width": 128,
+      "height": 64,
+      "mode": "RGBA",
+      "alpha": true,
+      "opaque_pixels": 4289,
+      "magenta_pixels": 0,
+      "black_pixels": 51,
+      "warnings": [
+        "contiene 51 píxeles negros opacos; revisar si son contorno intencional"
+      ],
+      "errors": []
+    },
+    {
+      "file": "interiores/propuestas/herreria_v3/referencia_maestra_muro.png",
+      "width": 1182,
+      "height": 1330,
+      "mode": "RGBA",
+      "alpha": true,
+      "opaque_pixels": 772216,
+      "magenta_pixels": 9,
+      "black_pixels": 9526,
+      "warnings": [
+        "contiene 9526 píxeles negros opacos; revisar si son contorno intencional"
+      ],
+      "errors": [
+        "contiene 9 píxeles magenta #ff00ff visibles",
+        "hay bordes semitransparentes contaminados de magenta"
+      ]
+    },
+    {
+      "file": "interiores/propuestas/herreria_v3/referencia_maestra_suelo.png",
+      "width": 1774,
+      "height": 887,
+      "mode": "RGBA",
+      "alpha": true,
+      "opaque_pixels": 823452,
+      "magenta_pixels": 7,
+      "black_pixels": 9688,
+      "warnings": [
+        "contiene 9688 píxeles negros opacos; revisar si son contorno intencional"
+      ],
+      "errors": [
+        "contiene 7 píxeles magenta #ff00ff visibles",
+        "hay bordes semitransparentes contaminados de magenta"
+      ]
+    },
+    {
+      "file": "interiores/propuestas/herreria_v3/referencia_muro_v3_basada_en_aprobada.png",
+      "width": 1182,
+      "height": 1330,
+      "mode": "RGB",
+      "alpha": false,
+      "opaque_pixels": 1572060,
+      "magenta_pixels": 0,
+      "black_pixels": 1408,
+      "warnings": [
+        "contiene 1408 píxeles negros opacos; revisar si son contorno intencional",
+        "no tiene canal alfa"
+      ],
+      "errors": []
+    },
+    {
+      "file": "objetos/barril.png",
+      "width": 80,
+      "height": 96,
+      "mode": "RGBA",
+      "alpha": true,
+      "opaque_pixels": 4324,
+      "magenta_pixels": 0,
+      "black_pixels": 0,
+      "warnings": [],
+      "errors": []
+    },
+    {
+      "file": "objetos/caja.png",
+      "width": 80,
+      "height": 80,
+      "mode": "RGBA",
+      "alpha": true,
+      "opaque_pixels": 3868,
+      "magenta_pixels": 0,
+      "black_pixels": 0,
+      "warnings": [],
+      "errors": []
+    },
+    {
+      "file": "objetos/cofre_abierto.png",
+      "width": 96,
+      "height": 96,
+      "mode": "RGBA",
+      "alpha": true,
+      "opaque_pixels": 4676,
+      "magenta_pixels": 0,
+      "black_pixels": 0,
+      "warnings": [],
+      "errors": []
+    },
+    {
+      "file": "objetos/cofre_cerrado.png",
+      "width": 96,
+      "height": 96,
+      "mode": "RGBA",
+      "alpha": true,
+      "opaque_pixels": 4676,
+      "magenta_pixels": 0,
+      "black_pixels": 0,
+      "warnings": [],
+      "errors": []
+    },
+    {
+      "file": "objetos/farol.png",
+      "width": 64,
+      "height": 112,
+      "mode": "RGBA",
+      "alpha": true,
+      "opaque_pixels": 4388,
+      "magenta_pixels": 0,
+      "black_pixels": 0,
+      "warnings": [],
+      "errors": []
+    },
+    {
+      "file": "personajes/corsario_idle.png",
+      "width": 256,
+      "height": 384,
+      "mode": "RGBA",
+      "alpha": true,
+      "opaque_pixels": 24576,
+      "magenta_pixels": 0,
+      "black_pixels": 0,
+      "warnings": [],
+      "errors": []
+    },
+    {
+      "file": "personajes/corsario_walk.png",
+      "width": 512,
+      "height": 384,
+      "mode": "RGBA",
+      "alpha": true,
+      "opaque_pixels": 49392,
+      "magenta_pixels": 0,
+      "black_pixels": 0,
+      "warnings": [],
+      "errors": []
+    },
+    {
+      "file": "terreno/terreno_base.png",
+      "width": 512,
+      "height": 64,
+      "mode": "RGBA",
+      "alpha": true,
+      "opaque_pixels": 15888,
+      "magenta_pixels": 0,
+      "black_pixels": 0,
+      "warnings": [],
+      "errors": []
+    },
+    {
+      "file": "terreno/trans_hierba_arena.png",
+      "width": 2048,
+      "height": 64,
+      "mode": "RGBA",
+      "alpha": true,
+      "opaque_pixels": 63552,
+      "magenta_pixels": 0,
+      "black_pixels": 0,
+      "warnings": [],
+      "errors": []
+    },
+    {
+      "file": "ui/barra_energia.png",
+      "width": 64,
+      "height": 16,
+      "mode": "RGBA",
+      "alpha": true,
+      "opaque_pixels": 1024,
+      "magenta_pixels": 0,
+      "black_pixels": 0,
+      "warnings": [],
+      "errors": []
+    },
+    {
+      "file": "ui/barra_fondo.png",
+      "width": 64,
+      "height": 16,
+      "mode": "RGBA",
+      "alpha": true,
+      "opaque_pixels": 1024,
+      "magenta_pixels": 0,
+      "black_pixels": 0,
+      "warnings": [],
+      "errors": []
+    },
+    {
+      "file": "ui/barra_salud.png",
+      "width": 64,
+      "height": 16,
+      "mode": "RGBA",
+      "alpha": true,
+      "opaque_pixels": 1024,
+      "magenta_pixels": 0,
+      "black_pixels": 0,
+      "warnings": [],
+      "errors": []
+    },
+    {
+      "file": "ui/panel.png",
+      "width": 48,
+      "height": 48,
+      "mode": "RGBA",
+      "alpha": true,
+      "opaque_pixels": 2304,
+      "magenta_pixels": 0,
+      "black_pixels": 0,
+      "warnings": [],
+      "errors": []
+    },
+    {
+      "file": "ui/ranura.png",
+      "width": 40,
+      "height": 40,
+      "mode": "RGBA",
+      "alpha": true,
+      "opaque_pixels": 124,
+      "magenta_pixels": 0,
+      "black_pixels": 0,
+      "warnings": [],
+      "errors": []
+    },
+    {
+      "file": "ui/ranura_activa.png",
+      "width": 40,
+      "height": 40,
+      "mode": "RGBA",
+      "alpha": true,
+      "opaque_pixels": 124,
+      "magenta_pixels": 0,
+      "black_pixels": 0,
+      "warnings": [],
+      "errors": []
+    }
+  ],
+  "manifest_missing_files": []
+}

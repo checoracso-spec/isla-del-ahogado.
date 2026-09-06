@@ -1,0 +1,3885 @@
+{
+	"elementos": [
+		{
+			"accion": "Usar",
+			"altura_muro": 1,
+			"asset": "interior.herreria_v1.muro_norte",
+			"calibracion": {},
+			"casilla": [
+				1,
+				3
+			],
+			"destino_zona": "",
+			"entrada_destino": [
+				1,
+				1
+			],
+			"espejo_x": false,
+			"espejo_y": false,
+			"huella": [
+				1,
+				1
+			],
+			"id": "asset_editor_001",
+			"offset_px": [
+				-177.0,
+				35.0
+			],
+			"rol": "muro",
+			"rotacion": 0.0,
+			"solido": false,
+			"transicion_tipo": "",
+			"visible": false
+		},
+		{
+			"accion": "Usar",
+			"altura_muro": 1,
+			"asset": "interior.herreria_v1.muro_norte",
+			"calibracion": {},
+			"casilla": [
+				2,
+				3
+			],
+			"destino_zona": "",
+			"entrada_destino": [
+				1,
+				1
+			],
+			"espejo_x": false,
+			"espejo_y": false,
+			"huella": [
+				1,
+				1
+			],
+			"id": "asset_editor_002",
+			"offset_px": [
+				0.0,
+				0.0
+			],
+			"rol": "muro",
+			"rotacion": 0.0,
+			"solido": false,
+			"transicion_tipo": "",
+			"visible": false
+		},
+		{
+			"accion": "Usar",
+			"altura_muro": 1,
+			"asset": "mueble.herreria.banco_trabajo",
+			"calibracion": {},
+			"casilla": [
+				6,
+				4
+			],
+			"destino_zona": "",
+			"entrada_destino": [
+				1,
+				1
+			],
+			"espejo_x": false,
+			"espejo_y": false,
+			"huella": [
+				2,
+				1
+			],
+			"id": "banco_trabajo_00",
+			"offset_px": [
+				0.0,
+				0.0
+			],
+			"rol": "mueble",
+			"rotacion": 0.0,
+			"solido": true,
+			"transicion_tipo": "",
+			"visible": false
+		},
+		{
+			"accion": "Usar",
+			"altura_muro": 1,
+			"asset": "objeto.barril",
+			"calibracion": {},
+			"casilla": [
+				7,
+				5
+			],
+			"destino_zona": "",
+			"entrada_destino": [
+				1,
+				1
+			],
+			"espejo_x": false,
+			"espejo_y": false,
+			"huella": [
+				1,
+				1
+			],
+			"id": "barril_00",
+			"offset_px": [
+				0.0,
+				0.0
+			],
+			"rol": "mueble",
+			"rotacion": 0.0,
+			"solido": true,
+			"transicion_tipo": "",
+			"visible": false
+		},
+		{
+			"accion": "Usar",
+			"altura_muro": 1,
+			"asset": "objeto.barril",
+			"calibracion": {},
+			"casilla": [
+				8,
+				5
+			],
+			"destino_zona": "",
+			"entrada_destino": [
+				1,
+				1
+			],
+			"espejo_x": false,
+			"espejo_y": false,
+			"huella": [
+				1,
+				1
+			],
+			"id": "barril_01",
+			"offset_px": [
+				0.0,
+				0.0
+			],
+			"rol": "mueble",
+			"rotacion": 0.0,
+			"solido": true,
+			"transicion_tipo": "",
+			"visible": false
+		},
+		{
+			"accion": "Usar",
+			"altura_muro": 1,
+			"asset": "interior.herreria_v1.muro_oeste",
+			"calibracion": {},
+			"casilla": [
+				1,
+				4
+			],
+			"destino_zona": "",
+			"entrada_destino": [
+				1,
+				1
+			],
+			"espejo_x": false,
+			"espejo_y": false,
+			"huella": [
+				1,
+				1
+			],
+			"id": "base_editor_muro_01_04",
+			"offset_px": [
+				0.0,
+				0.0
+			],
+			"rol": "muro",
+			"rotacion": 0.0,
+			"solido": true,
+			"transicion_tipo": "",
+			"visible": false
+		},
+		{
+			"accion": "Usar",
+			"altura_muro": 1,
+			"asset": "interior.herreria_v1.muro_norte",
+			"calibracion": {},
+			"casilla": [
+				1,
+				5
+			],
+			"destino_zona": "",
+			"entrada_destino": [
+				1,
+				1
+			],
+			"espejo_x": true,
+			"espejo_y": false,
+			"huella": [
+				1,
+				1
+			],
+			"id": "base_editor_muro_01_05",
+			"offset_px": [
+				0.0,
+				0.0
+			],
+			"rol": "muro",
+			"rotacion": 0.0,
+			"solido": true,
+			"transicion_tipo": "",
+			"visible": false
+		},
+		{
+			"accion": "Usar",
+			"altura_muro": 1,
+			"asset": "interior.herreria_v1.muro_oeste",
+			"calibracion": {},
+			"casilla": [
+				1,
+				6
+			],
+			"destino_zona": "",
+			"entrada_destino": [
+				1,
+				1
+			],
+			"espejo_x": true,
+			"espejo_y": false,
+			"huella": [
+				1,
+				1
+			],
+			"id": "base_editor_muro_01_06",
+			"offset_px": [
+				0.0,
+				0.0
+			],
+			"rol": "muro",
+			"rotacion": 0.0,
+			"solido": true,
+			"transicion_tipo": "",
+			"visible": false
+		},
+		{
+			"accion": "Usar",
+			"altura_muro": 1,
+			"asset": "mueble.herreria.deposito_carbon",
+			"calibracion": {},
+			"casilla": [
+				7,
+				1
+			],
+			"destino_zona": "",
+			"entrada_destino": [
+				1,
+				1
+			],
+			"espejo_x": false,
+			"espejo_y": false,
+			"huella": [
+				1,
+				1
+			],
+			"id": "carbon_00",
+			"offset_px": [
+				0.0,
+				0.0
+			],
+			"rol": "mueble",
+			"rotacion": 0.0,
+			"solido": true,
+			"transicion_tipo": "",
+			"visible": false
+		},
+		{
+			"accion": "Usar",
+			"altura_muro": 1,
+			"asset": "mueble.herreria.cartel_yunque",
+			"calibracion": {},
+			"casilla": [
+				0,
+				5
+			],
+			"destino_zona": "",
+			"entrada_destino": [
+				1,
+				1
+			],
+			"espejo_x": false,
+			"espejo_y": false,
+			"huella": [
+				1,
+				1
+			],
+			"id": "cartel_00",
+			"offset_px": [
+				0.0,
+				0.0
+			],
+			"rol": "mueble",
+			"rotacion": 0.0,
+			"solido": false,
+			"transicion_tipo": "",
+			"visible": false
+		},
+		{
+			"accion": "Usar",
+			"altura_muro": 1,
+			"asset": "mueble.comun.cofre_hierro.cerrado",
+			"calibracion": {},
+			"casilla": [
+				1,
+				3
+			],
+			"destino_zona": "",
+			"entrada_destino": [
+				1,
+				1
+			],
+			"espejo_x": false,
+			"espejo_y": false,
+			"huella": [
+				1,
+				1
+			],
+			"id": "cofre_00",
+			"offset_px": [
+				0.0,
+				0.0
+			],
+			"rol": "mueble",
+			"rotacion": 0.0,
+			"solido": true,
+			"transicion_tipo": "",
+			"visible": false
+		},
+		{
+			"accion": "Usar",
+			"altura_muro": 1,
+			"asset": "interior.herreria_v1.muro_borde_pilar",
+			"calibracion": {},
+			"casilla": [
+				9,
+				2
+			],
+			"destino_zona": "",
+			"entrada_destino": [
+				1,
+				1
+			],
+			"espejo_x": false,
+			"espejo_y": false,
+			"huella": [
+				1,
+				1
+			],
+			"id": "edge_post_east_02",
+			"offset_px": [
+				0.0,
+				0.0
+			],
+			"rol": "borde",
+			"rotacion": 0.0,
+			"solido": false,
+			"transicion_tipo": "",
+			"visible": false
+		},
+		{
+			"accion": "Usar",
+			"altura_muro": 1,
+			"asset": "interior.herreria_v1.muro_borde_pilar",
+			"calibracion": {},
+			"casilla": [
+				2,
+				7
+			],
+			"destino_zona": "",
+			"entrada_destino": [
+				1,
+				1
+			],
+			"espejo_x": false,
+			"espejo_y": false,
+			"huella": [
+				1,
+				1
+			],
+			"id": "edge_post_south_02",
+			"offset_px": [
+				0.0,
+				0.0
+			],
+			"rol": "borde",
+			"rotacion": 0.0,
+			"solido": false,
+			"transicion_tipo": "",
+			"visible": false
+		},
+		{
+			"accion": "Usar",
+			"altura_muro": 1,
+			"asset": "interior.herreria_v1.muro_borde_pilar",
+			"calibracion": {},
+			"casilla": [
+				9,
+				7
+			],
+			"destino_zona": "",
+			"entrada_destino": [
+				1,
+				1
+			],
+			"espejo_x": false,
+			"espejo_y": false,
+			"huella": [
+				1,
+				1
+			],
+			"id": "edge_post_southeast",
+			"offset_px": [
+				0.0,
+				0.0
+			],
+			"rol": "borde",
+			"rotacion": 0.0,
+			"solido": false,
+			"transicion_tipo": "",
+			"visible": false
+		},
+		{
+			"accion": "Usar",
+			"altura_muro": 1,
+			"asset": "mueble.comun.escalera_madera",
+			"calibracion": {},
+			"casilla": [
+				8,
+				1
+			],
+			"destino_zona": "",
+			"entrada_destino": [
+				1,
+				1
+			],
+			"espejo_x": false,
+			"espejo_y": false,
+			"huella": [
+				1,
+				2
+			],
+			"id": "escalera_00",
+			"offset_px": [
+				0.0,
+				0.0
+			],
+			"rol": "mueble",
+			"rotacion": 0.0,
+			"solido": true,
+			"transicion_tipo": "",
+			"visible": false
+		},
+		{
+			"accion": "Usar",
+			"altura_muro": 1,
+			"asset": "mueble.herreria.estanteria_herramientas",
+			"calibracion": {},
+			"casilla": [
+				6,
+				1
+			],
+			"destino_zona": "",
+			"entrada_destino": [
+				1,
+				1
+			],
+			"espejo_x": false,
+			"espejo_y": false,
+			"huella": [
+				1,
+				1
+			],
+			"id": "estanteria_00",
+			"offset_px": [
+				0.0,
+				0.0
+			],
+			"rol": "mueble",
+			"rotacion": 0.0,
+			"solido": true,
+			"transicion_tipo": "",
+			"visible": false
+		},
+		{
+			"accion": "Usar",
+			"altura_muro": 1,
+			"asset": "mueble.herreria.farol",
+			"calibracion": {},
+			"casilla": [
+				2,
+				0
+			],
+			"destino_zona": "",
+			"entrada_destino": [
+				1,
+				1
+			],
+			"espejo_x": false,
+			"espejo_y": false,
+			"huella": [
+				1,
+				1
+			],
+			"id": "farol_00",
+			"offset_px": [
+				0.0,
+				0.0
+			],
+			"rol": "mueble",
+			"rotacion": 0.0,
+			"solido": false,
+			"transicion_tipo": "",
+			"visible": false
+		},
+		{
+			"accion": "Usar",
+			"altura_muro": 1,
+			"asset": "interior.herreria_v1.suelo_piedra",
+			"calibracion": {},
+			"casilla": [
+				0,
+				0
+			],
+			"destino_zona": "",
+			"entrada_destino": [
+				1,
+				1
+			],
+			"espejo_x": false,
+			"espejo_y": false,
+			"huella": [
+				1,
+				1
+			],
+			"id": "floor_00_00",
+			"offset_px": [
+				0.0,
+				0.0
+			],
+			"rol": "suelo",
+			"rotacion": 0.0,
+			"solido": false,
+			"transicion_tipo": "",
+			"visible": false
+		},
+		{
+			"accion": "Usar",
+			"altura_muro": 1,
+			"asset": "interior.herreria_v1.suelo_piedra",
+			"calibracion": {},
+			"casilla": [
+				0,
+				1
+			],
+			"destino_zona": "",
+			"entrada_destino": [
+				1,
+				1
+			],
+			"espejo_x": false,
+			"espejo_y": false,
+			"huella": [
+				1,
+				1
+			],
+			"id": "floor_00_01",
+			"offset_px": [
+				0.0,
+				0.0
+			],
+			"rol": "suelo",
+			"rotacion": 0.0,
+			"solido": false,
+			"transicion_tipo": "",
+			"visible": false
+		},
+		{
+			"accion": "Usar",
+			"altura_muro": 1,
+			"asset": "interior.herreria_v1.suelo_piedra",
+			"calibracion": {},
+			"casilla": [
+				0,
+				2
+			],
+			"destino_zona": "",
+			"entrada_destino": [
+				1,
+				1
+			],
+			"espejo_x": false,
+			"espejo_y": false,
+			"huella": [
+				1,
+				1
+			],
+			"id": "floor_00_02",
+			"offset_px": [
+				0.0,
+				0.0
+			],
+			"rol": "suelo",
+			"rotacion": 0.0,
+			"solido": false,
+			"transicion_tipo": "",
+			"visible": false
+		},
+		{
+			"accion": "Usar",
+			"altura_muro": 1,
+			"asset": "interior.herreria_v1.suelo_piedra",
+			"calibracion": {},
+			"casilla": [
+				0,
+				3
+			],
+			"destino_zona": "",
+			"entrada_destino": [
+				1,
+				1
+			],
+			"espejo_x": false,
+			"espejo_y": false,
+			"huella": [
+				1,
+				1
+			],
+			"id": "floor_00_03",
+			"offset_px": [
+				0.0,
+				0.0
+			],
+			"rol": "suelo",
+			"rotacion": 0.0,
+			"solido": false,
+			"transicion_tipo": "",
+			"visible": false
+		},
+		{
+			"accion": "Usar",
+			"altura_muro": 1,
+			"asset": "interior.herreria_v1.suelo_piedra",
+			"calibracion": {},
+			"casilla": [
+				0,
+				4
+			],
+			"destino_zona": "",
+			"entrada_destino": [
+				1,
+				1
+			],
+			"espejo_x": false,
+			"espejo_y": false,
+			"huella": [
+				1,
+				1
+			],
+			"id": "floor_00_04",
+			"offset_px": [
+				0.0,
+				0.0
+			],
+			"rol": "suelo",
+			"rotacion": 0.0,
+			"solido": false,
+			"transicion_tipo": "",
+			"visible": false
+		},
+		{
+			"accion": "Usar",
+			"altura_muro": 1,
+			"asset": "interior.herreria_v1.suelo_piedra",
+			"calibracion": {},
+			"casilla": [
+				0,
+				5
+			],
+			"destino_zona": "",
+			"entrada_destino": [
+				1,
+				1
+			],
+			"espejo_x": false,
+			"espejo_y": false,
+			"huella": [
+				1,
+				1
+			],
+			"id": "floor_00_05",
+			"offset_px": [
+				0.0,
+				0.0
+			],
+			"rol": "suelo",
+			"rotacion": 0.0,
+			"solido": false,
+			"transicion_tipo": "",
+			"visible": false
+		},
+		{
+			"accion": "Usar",
+			"altura_muro": 1,
+			"asset": "interior.herreria_v1.suelo_piedra",
+			"calibracion": {},
+			"casilla": [
+				0,
+				6
+			],
+			"destino_zona": "",
+			"entrada_destino": [
+				1,
+				1
+			],
+			"espejo_x": false,
+			"espejo_y": false,
+			"huella": [
+				1,
+				1
+			],
+			"id": "floor_00_06",
+			"offset_px": [
+				0.0,
+				0.0
+			],
+			"rol": "suelo",
+			"rotacion": 0.0,
+			"solido": false,
+			"transicion_tipo": "",
+			"visible": false
+		},
+		{
+			"accion": "Usar",
+			"altura_muro": 1,
+			"asset": "interior.herreria_v1.suelo_piedra",
+			"calibracion": {},
+			"casilla": [
+				0,
+				7
+			],
+			"destino_zona": "",
+			"entrada_destino": [
+				1,
+				1
+			],
+			"espejo_x": false,
+			"espejo_y": false,
+			"huella": [
+				1,
+				1
+			],
+			"id": "floor_00_07",
+			"offset_px": [
+				0.0,
+				0.0
+			],
+			"rol": "suelo",
+			"rotacion": 0.0,
+			"solido": false,
+			"transicion_tipo": "",
+			"visible": false
+		},
+		{
+			"accion": "Usar",
+			"altura_muro": 1,
+			"asset": "interior.herreria_v1.suelo_piedra",
+			"calibracion": {},
+			"casilla": [
+				1,
+				0
+			],
+			"destino_zona": "",
+			"entrada_destino": [
+				1,
+				1
+			],
+			"espejo_x": false,
+			"espejo_y": false,
+			"huella": [
+				1,
+				1
+			],
+			"id": "floor_01_00",
+			"offset_px": [
+				0.0,
+				0.0
+			],
+			"rol": "suelo",
+			"rotacion": 0.0,
+			"solido": false,
+			"transicion_tipo": "",
+			"visible": false
+		},
+		{
+			"accion": "Usar",
+			"altura_muro": 1,
+			"asset": "interior.herreria_v1.suelo_piedra",
+			"calibracion": {},
+			"casilla": [
+				1,
+				1
+			],
+			"destino_zona": "",
+			"entrada_destino": [
+				1,
+				1
+			],
+			"espejo_x": false,
+			"espejo_y": false,
+			"huella": [
+				1,
+				1
+			],
+			"id": "floor_01_01",
+			"offset_px": [
+				0.0,
+				0.0
+			],
+			"rol": "suelo",
+			"rotacion": 0.0,
+			"solido": false,
+			"transicion_tipo": "",
+			"visible": false
+		},
+		{
+			"accion": "Usar",
+			"altura_muro": 1,
+			"asset": "interior.herreria_v1.suelo_piedra",
+			"calibracion": {},
+			"casilla": [
+				1,
+				2
+			],
+			"destino_zona": "",
+			"entrada_destino": [
+				1,
+				1
+			],
+			"espejo_x": false,
+			"espejo_y": false,
+			"huella": [
+				1,
+				1
+			],
+			"id": "floor_01_02",
+			"offset_px": [
+				0.0,
+				0.0
+			],
+			"rol": "suelo",
+			"rotacion": 0.0,
+			"solido": false,
+			"transicion_tipo": "",
+			"visible": false
+		},
+		{
+			"accion": "Usar",
+			"altura_muro": 1,
+			"asset": "interior.herreria_v1.suelo_piedra",
+			"calibracion": {},
+			"casilla": [
+				1,
+				3
+			],
+			"destino_zona": "",
+			"entrada_destino": [
+				1,
+				1
+			],
+			"espejo_x": false,
+			"espejo_y": false,
+			"huella": [
+				1,
+				1
+			],
+			"id": "floor_01_03",
+			"offset_px": [
+				0.0,
+				0.0
+			],
+			"rol": "suelo",
+			"rotacion": 0.0,
+			"solido": false,
+			"transicion_tipo": "",
+			"visible": false
+		},
+		{
+			"accion": "Usar",
+			"altura_muro": 1,
+			"asset": "interior.herreria_v1.suelo_piedra",
+			"calibracion": {},
+			"casilla": [
+				1,
+				4
+			],
+			"destino_zona": "",
+			"entrada_destino": [
+				1,
+				1
+			],
+			"espejo_x": false,
+			"espejo_y": false,
+			"huella": [
+				1,
+				1
+			],
+			"id": "floor_01_04",
+			"offset_px": [
+				0.0,
+				0.0
+			],
+			"rol": "suelo",
+			"rotacion": 0.0,
+			"solido": false,
+			"transicion_tipo": "",
+			"visible": false
+		},
+		{
+			"accion": "Usar",
+			"altura_muro": 1,
+			"asset": "interior.herreria_v1.suelo_piedra",
+			"calibracion": {},
+			"casilla": [
+				1,
+				5
+			],
+			"destino_zona": "",
+			"entrada_destino": [
+				1,
+				1
+			],
+			"espejo_x": false,
+			"espejo_y": false,
+			"huella": [
+				1,
+				1
+			],
+			"id": "floor_01_05",
+			"offset_px": [
+				0.0,
+				0.0
+			],
+			"rol": "suelo",
+			"rotacion": 0.0,
+			"solido": false,
+			"transicion_tipo": "",
+			"visible": false
+		},
+		{
+			"accion": "Usar",
+			"altura_muro": 1,
+			"asset": "interior.herreria_v1.suelo_piedra",
+			"calibracion": {},
+			"casilla": [
+				1,
+				6
+			],
+			"destino_zona": "",
+			"entrada_destino": [
+				1,
+				1
+			],
+			"espejo_x": false,
+			"espejo_y": false,
+			"huella": [
+				1,
+				1
+			],
+			"id": "floor_01_06",
+			"offset_px": [
+				0.0,
+				0.0
+			],
+			"rol": "suelo",
+			"rotacion": 0.0,
+			"solido": false,
+			"transicion_tipo": "",
+			"visible": false
+		},
+		{
+			"accion": "Usar",
+			"altura_muro": 1,
+			"asset": "interior.herreria_v1.suelo_piedra",
+			"calibracion": {},
+			"casilla": [
+				1,
+				7
+			],
+			"destino_zona": "",
+			"entrada_destino": [
+				1,
+				1
+			],
+			"espejo_x": false,
+			"espejo_y": false,
+			"huella": [
+				1,
+				1
+			],
+			"id": "floor_01_07",
+			"offset_px": [
+				0.0,
+				0.0
+			],
+			"rol": "suelo",
+			"rotacion": 0.0,
+			"solido": false,
+			"transicion_tipo": "",
+			"visible": false
+		},
+		{
+			"accion": "Usar",
+			"altura_muro": 1,
+			"asset": "interior.herreria_v1.suelo_piedra",
+			"calibracion": {},
+			"casilla": [
+				2,
+				0
+			],
+			"destino_zona": "",
+			"entrada_destino": [
+				1,
+				1
+			],
+			"espejo_x": false,
+			"espejo_y": false,
+			"huella": [
+				1,
+				1
+			],
+			"id": "floor_02_00",
+			"offset_px": [
+				0.0,
+				0.0
+			],
+			"rol": "suelo",
+			"rotacion": 0.0,
+			"solido": false,
+			"transicion_tipo": "",
+			"visible": false
+		},
+		{
+			"accion": "Usar",
+			"altura_muro": 1,
+			"asset": "interior.herreria_v1.suelo_piedra",
+			"calibracion": {},
+			"casilla": [
+				2,
+				1
+			],
+			"destino_zona": "",
+			"entrada_destino": [
+				1,
+				1
+			],
+			"espejo_x": false,
+			"espejo_y": false,
+			"huella": [
+				1,
+				1
+			],
+			"id": "floor_02_01",
+			"offset_px": [
+				0.0,
+				0.0
+			],
+			"rol": "suelo",
+			"rotacion": 0.0,
+			"solido": false,
+			"transicion_tipo": "",
+			"visible": false
+		},
+		{
+			"accion": "Usar",
+			"altura_muro": 1,
+			"asset": "interior.herreria_v1.suelo_piedra",
+			"calibracion": {},
+			"casilla": [
+				2,
+				2
+			],
+			"destino_zona": "",
+			"entrada_destino": [
+				1,
+				1
+			],
+			"espejo_x": false,
+			"espejo_y": false,
+			"huella": [
+				1,
+				1
+			],
+			"id": "floor_02_02",
+			"offset_px": [
+				0.0,
+				0.0
+			],
+			"rol": "suelo",
+			"rotacion": 0.0,
+			"solido": false,
+			"transicion_tipo": "",
+			"visible": false
+		},
+		{
+			"accion": "Usar",
+			"altura_muro": 1,
+			"asset": "interior.herreria_v1.suelo_piedra",
+			"calibracion": {},
+			"casilla": [
+				2,
+				3
+			],
+			"destino_zona": "",
+			"entrada_destino": [
+				1,
+				1
+			],
+			"espejo_x": false,
+			"espejo_y": false,
+			"huella": [
+				1,
+				1
+			],
+			"id": "floor_02_03",
+			"offset_px": [
+				0.0,
+				0.0
+			],
+			"rol": "suelo",
+			"rotacion": 0.0,
+			"solido": false,
+			"transicion_tipo": "",
+			"visible": false
+		},
+		{
+			"accion": "Usar",
+			"altura_muro": 1,
+			"asset": "interior.herreria_v1.suelo_piedra",
+			"calibracion": {},
+			"casilla": [
+				2,
+				4
+			],
+			"destino_zona": "",
+			"entrada_destino": [
+				1,
+				1
+			],
+			"espejo_x": false,
+			"espejo_y": false,
+			"huella": [
+				1,
+				1
+			],
+			"id": "floor_02_04",
+			"offset_px": [
+				0.0,
+				0.0
+			],
+			"rol": "suelo",
+			"rotacion": 0.0,
+			"solido": false,
+			"transicion_tipo": "",
+			"visible": false
+		},
+		{
+			"accion": "Usar",
+			"altura_muro": 1,
+			"asset": "interior.herreria_v1.suelo_piedra",
+			"calibracion": {},
+			"casilla": [
+				2,
+				5
+			],
+			"destino_zona": "",
+			"entrada_destino": [
+				1,
+				1
+			],
+			"espejo_x": false,
+			"espejo_y": false,
+			"huella": [
+				1,
+				1
+			],
+			"id": "floor_02_05",
+			"offset_px": [
+				0.0,
+				0.0
+			],
+			"rol": "suelo",
+			"rotacion": 0.0,
+			"solido": false,
+			"transicion_tipo": "",
+			"visible": false
+		},
+		{
+			"accion": "Usar",
+			"altura_muro": 1,
+			"asset": "interior.herreria_v1.suelo_piedra",
+			"calibracion": {},
+			"casilla": [
+				2,
+				6
+			],
+			"destino_zona": "",
+			"entrada_destino": [
+				1,
+				1
+			],
+			"espejo_x": false,
+			"espejo_y": false,
+			"huella": [
+				1,
+				1
+			],
+			"id": "floor_02_06",
+			"offset_px": [
+				0.0,
+				0.0
+			],
+			"rol": "suelo",
+			"rotacion": 0.0,
+			"solido": false,
+			"transicion_tipo": "",
+			"visible": false
+		},
+		{
+			"accion": "Usar",
+			"altura_muro": 1,
+			"asset": "interior.herreria_v1.suelo_piedra",
+			"calibracion": {},
+			"casilla": [
+				2,
+				7
+			],
+			"destino_zona": "",
+			"entrada_destino": [
+				1,
+				1
+			],
+			"espejo_x": false,
+			"espejo_y": false,
+			"huella": [
+				1,
+				1
+			],
+			"id": "floor_02_07",
+			"offset_px": [
+				0.0,
+				0.0
+			],
+			"rol": "suelo",
+			"rotacion": 0.0,
+			"solido": false,
+			"transicion_tipo": "",
+			"visible": false
+		},
+		{
+			"accion": "Usar",
+			"altura_muro": 1,
+			"asset": "interior.herreria_v1.suelo_piedra",
+			"calibracion": {},
+			"casilla": [
+				3,
+				0
+			],
+			"destino_zona": "",
+			"entrada_destino": [
+				1,
+				1
+			],
+			"espejo_x": false,
+			"espejo_y": false,
+			"huella": [
+				1,
+				1
+			],
+			"id": "floor_03_00",
+			"offset_px": [
+				0.0,
+				0.0
+			],
+			"rol": "suelo",
+			"rotacion": 0.0,
+			"solido": false,
+			"transicion_tipo": "",
+			"visible": false
+		},
+		{
+			"accion": "Usar",
+			"altura_muro": 1,
+			"asset": "interior.herreria_v1.suelo_piedra",
+			"calibracion": {},
+			"casilla": [
+				3,
+				1
+			],
+			"destino_zona": "",
+			"entrada_destino": [
+				1,
+				1
+			],
+			"espejo_x": false,
+			"espejo_y": false,
+			"huella": [
+				1,
+				1
+			],
+			"id": "floor_03_01",
+			"offset_px": [
+				0.0,
+				0.0
+			],
+			"rol": "suelo",
+			"rotacion": 0.0,
+			"solido": false,
+			"transicion_tipo": "",
+			"visible": false
+		},
+		{
+			"accion": "Usar",
+			"altura_muro": 1,
+			"asset": "interior.herreria_v1.suelo_piedra",
+			"calibracion": {},
+			"casilla": [
+				3,
+				2
+			],
+			"destino_zona": "",
+			"entrada_destino": [
+				1,
+				1
+			],
+			"espejo_x": false,
+			"espejo_y": false,
+			"huella": [
+				1,
+				1
+			],
+			"id": "floor_03_02",
+			"offset_px": [
+				0.0,
+				0.0
+			],
+			"rol": "suelo",
+			"rotacion": 0.0,
+			"solido": false,
+			"transicion_tipo": "",
+			"visible": false
+		},
+		{
+			"accion": "Usar",
+			"altura_muro": 1,
+			"asset": "interior.herreria_v1.suelo_piedra",
+			"calibracion": {},
+			"casilla": [
+				3,
+				3
+			],
+			"destino_zona": "",
+			"entrada_destino": [
+				1,
+				1
+			],
+			"espejo_x": false,
+			"espejo_y": false,
+			"huella": [
+				1,
+				1
+			],
+			"id": "floor_03_03",
+			"offset_px": [
+				0.0,
+				0.0
+			],
+			"rol": "suelo",
+			"rotacion": 0.0,
+			"solido": false,
+			"transicion_tipo": "",
+			"visible": false
+		},
+		{
+			"accion": "Usar",
+			"altura_muro": 1,
+			"asset": "interior.herreria_v1.suelo_piedra",
+			"calibracion": {},
+			"casilla": [
+				3,
+				4
+			],
+			"destino_zona": "",
+			"entrada_destino": [
+				1,
+				1
+			],
+			"espejo_x": false,
+			"espejo_y": false,
+			"huella": [
+				1,
+				1
+			],
+			"id": "floor_03_04",
+			"offset_px": [
+				0.0,
+				0.0
+			],
+			"rol": "suelo",
+			"rotacion": 0.0,
+			"solido": false,
+			"transicion_tipo": "",
+			"visible": false
+		},
+		{
+			"accion": "Usar",
+			"altura_muro": 1,
+			"asset": "interior.herreria_v1.suelo_piedra",
+			"calibracion": {},
+			"casilla": [
+				3,
+				5
+			],
+			"destino_zona": "",
+			"entrada_destino": [
+				1,
+				1
+			],
+			"espejo_x": false,
+			"espejo_y": false,
+			"huella": [
+				1,
+				1
+			],
+			"id": "floor_03_05",
+			"offset_px": [
+				0.0,
+				0.0
+			],
+			"rol": "suelo",
+			"rotacion": 0.0,
+			"solido": false,
+			"transicion_tipo": "",
+			"visible": false
+		},
+		{
+			"accion": "Usar",
+			"altura_muro": 1,
+			"asset": "interior.herreria_v1.suelo_piedra",
+			"calibracion": {},
+			"casilla": [
+				3,
+				6
+			],
+			"destino_zona": "",
+			"entrada_destino": [
+				1,
+				1
+			],
+			"espejo_x": false,
+			"espejo_y": false,
+			"huella": [
+				1,
+				1
+			],
+			"id": "floor_03_06",
+			"offset_px": [
+				0.0,
+				0.0
+			],
+			"rol": "suelo",
+			"rotacion": 0.0,
+			"solido": false,
+			"transicion_tipo": "",
+			"visible": false
+		},
+		{
+			"accion": "Usar",
+			"altura_muro": 1,
+			"asset": "interior.herreria_v1.suelo_piedra",
+			"calibracion": {},
+			"casilla": [
+				3,
+				7
+			],
+			"destino_zona": "",
+			"entrada_destino": [
+				1,
+				1
+			],
+			"espejo_x": false,
+			"espejo_y": false,
+			"huella": [
+				1,
+				1
+			],
+			"id": "floor_03_07",
+			"offset_px": [
+				0.0,
+				0.0
+			],
+			"rol": "suelo",
+			"rotacion": 0.0,
+			"solido": false,
+			"transicion_tipo": "",
+			"visible": false
+		},
+		{
+			"accion": "Usar",
+			"altura_muro": 1,
+			"asset": "interior.herreria_v1.suelo_piedra",
+			"calibracion": {},
+			"casilla": [
+				4,
+				0
+			],
+			"destino_zona": "",
+			"entrada_destino": [
+				1,
+				1
+			],
+			"espejo_x": false,
+			"espejo_y": false,
+			"huella": [
+				1,
+				1
+			],
+			"id": "floor_04_00",
+			"offset_px": [
+				0.0,
+				0.0
+			],
+			"rol": "suelo",
+			"rotacion": 0.0,
+			"solido": false,
+			"transicion_tipo": "",
+			"visible": false
+		},
+		{
+			"accion": "Usar",
+			"altura_muro": 1,
+			"asset": "interior.herreria_v1.suelo_piedra",
+			"calibracion": {},
+			"casilla": [
+				4,
+				1
+			],
+			"destino_zona": "",
+			"entrada_destino": [
+				1,
+				1
+			],
+			"espejo_x": false,
+			"espejo_y": false,
+			"huella": [
+				1,
+				1
+			],
+			"id": "floor_04_01",
+			"offset_px": [
+				0.0,
+				0.0
+			],
+			"rol": "suelo",
+			"rotacion": 0.0,
+			"solido": false,
+			"transicion_tipo": "",
+			"visible": false
+		},
+		{
+			"accion": "Usar",
+			"altura_muro": 1,
+			"asset": "interior.herreria_v1.suelo_piedra",
+			"calibracion": {},
+			"casilla": [
+				4,
+				2
+			],
+			"destino_zona": "",
+			"entrada_destino": [
+				1,
+				1
+			],
+			"espejo_x": false,
+			"espejo_y": false,
+			"huella": [
+				1,
+				1
+			],
+			"id": "floor_04_02",
+			"offset_px": [
+				0.0,
+				0.0
+			],
+			"rol": "suelo",
+			"rotacion": 0.0,
+			"solido": false,
+			"transicion_tipo": "",
+			"visible": false
+		},
+		{
+			"accion": "Usar",
+			"altura_muro": 1,
+			"asset": "interior.herreria_v1.suelo_piedra",
+			"calibracion": {},
+			"casilla": [
+				4,
+				3
+			],
+			"destino_zona": "",
+			"entrada_destino": [
+				1,
+				1
+			],
+			"espejo_x": false,
+			"espejo_y": false,
+			"huella": [
+				1,
+				1
+			],
+			"id": "floor_04_03",
+			"offset_px": [
+				0.0,
+				0.0
+			],
+			"rol": "suelo",
+			"rotacion": 0.0,
+			"solido": false,
+			"transicion_tipo": "",
+			"visible": false
+		},
+		{
+			"accion": "Usar",
+			"altura_muro": 1,
+			"asset": "interior.herreria_v1.suelo_piedra",
+			"calibracion": {},
+			"casilla": [
+				4,
+				4
+			],
+			"destino_zona": "",
+			"entrada_destino": [
+				1,
+				1
+			],
+			"espejo_x": false,
+			"espejo_y": false,
+			"huella": [
+				1,
+				1
+			],
+			"id": "floor_04_04",
+			"offset_px": [
+				0.0,
+				0.0
+			],
+			"rol": "suelo",
+			"rotacion": 0.0,
+			"solido": false,
+			"transicion_tipo": "",
+			"visible": false
+		},
+		{
+			"accion": "Usar",
+			"altura_muro": 1,
+			"asset": "interior.herreria_v1.suelo_piedra",
+			"calibracion": {},
+			"casilla": [
+				4,
+				5
+			],
+			"destino_zona": "",
+			"entrada_destino": [
+				1,
+				1
+			],
+			"espejo_x": false,
+			"espejo_y": false,
+			"huella": [
+				1,
+				1
+			],
+			"id": "floor_04_05",
+			"offset_px": [
+				0.0,
+				0.0
+			],
+			"rol": "suelo",
+			"rotacion": 0.0,
+			"solido": false,
+			"transicion_tipo": "",
+			"visible": false
+		},
+		{
+			"accion": "Usar",
+			"altura_muro": 1,
+			"asset": "interior.herreria_v1.suelo_piedra",
+			"calibracion": {},
+			"casilla": [
+				4,
+				6
+			],
+			"destino_zona": "",
+			"entrada_destino": [
+				1,
+				1
+			],
+			"espejo_x": false,
+			"espejo_y": false,
+			"huella": [
+				1,
+				1
+			],
+			"id": "floor_04_06",
+			"offset_px": [
+				0.0,
+				0.0
+			],
+			"rol": "suelo",
+			"rotacion": 0.0,
+			"solido": false,
+			"transicion_tipo": "",
+			"visible": false
+		},
+		{
+			"accion": "Usar",
+			"altura_muro": 1,
+			"asset": "interior.herreria_v1.suelo_piedra",
+			"calibracion": {},
+			"casilla": [
+				4,
+				7
+			],
+			"destino_zona": "",
+			"entrada_destino": [
+				1,
+				1
+			],
+			"espejo_x": false,
+			"espejo_y": false,
+			"huella": [
+				1,
+				1
+			],
+			"id": "floor_04_07",
+			"offset_px": [
+				0.0,
+				0.0
+			],
+			"rol": "suelo",
+			"rotacion": 0.0,
+			"solido": false,
+			"transicion_tipo": "",
+			"visible": false
+		},
+		{
+			"accion": "Usar",
+			"altura_muro": 1,
+			"asset": "interior.herreria_v1.suelo_piedra",
+			"calibracion": {},
+			"casilla": [
+				5,
+				0
+			],
+			"destino_zona": "",
+			"entrada_destino": [
+				1,
+				1
+			],
+			"espejo_x": false,
+			"espejo_y": false,
+			"huella": [
+				1,
+				1
+			],
+			"id": "floor_05_00",
+			"offset_px": [
+				0.0,
+				0.0
+			],
+			"rol": "suelo",
+			"rotacion": 0.0,
+			"solido": false,
+			"transicion_tipo": "",
+			"visible": false
+		},
+		{
+			"accion": "Usar",
+			"altura_muro": 1,
+			"asset": "interior.herreria_v1.suelo_piedra",
+			"calibracion": {},
+			"casilla": [
+				5,
+				1
+			],
+			"destino_zona": "",
+			"entrada_destino": [
+				1,
+				1
+			],
+			"espejo_x": false,
+			"espejo_y": false,
+			"huella": [
+				1,
+				1
+			],
+			"id": "floor_05_01",
+			"offset_px": [
+				0.0,
+				0.0
+			],
+			"rol": "suelo",
+			"rotacion": 0.0,
+			"solido": false,
+			"transicion_tipo": "",
+			"visible": false
+		},
+		{
+			"accion": "Usar",
+			"altura_muro": 1,
+			"asset": "interior.herreria_v1.suelo_piedra",
+			"calibracion": {},
+			"casilla": [
+				5,
+				2
+			],
+			"destino_zona": "",
+			"entrada_destino": [
+				1,
+				1
+			],
+			"espejo_x": false,
+			"espejo_y": false,
+			"huella": [
+				1,
+				1
+			],
+			"id": "floor_05_02",
+			"offset_px": [
+				0.0,
+				0.0
+			],
+			"rol": "suelo",
+			"rotacion": 0.0,
+			"solido": false,
+			"transicion_tipo": "",
+			"visible": false
+		},
+		{
+			"accion": "Usar",
+			"altura_muro": 1,
+			"asset": "interior.herreria_v1.suelo_piedra",
+			"calibracion": {},
+			"casilla": [
+				5,
+				3
+			],
+			"destino_zona": "",
+			"entrada_destino": [
+				1,
+				1
+			],
+			"espejo_x": false,
+			"espejo_y": false,
+			"huella": [
+				1,
+				1
+			],
+			"id": "floor_05_03",
+			"offset_px": [
+				0.0,
+				0.0
+			],
+			"rol": "suelo",
+			"rotacion": 0.0,
+			"solido": false,
+			"transicion_tipo": "",
+			"visible": false
+		},
+		{
+			"accion": "Usar",
+			"altura_muro": 1,
+			"asset": "interior.herreria_v1.suelo_piedra",
+			"calibracion": {},
+			"casilla": [
+				5,
+				4
+			],
+			"destino_zona": "",
+			"entrada_destino": [
+				1,
+				1
+			],
+			"espejo_x": false,
+			"espejo_y": false,
+			"huella": [
+				1,
+				1
+			],
+			"id": "floor_05_04",
+			"offset_px": [
+				0.0,
+				0.0
+			],
+			"rol": "suelo",
+			"rotacion": 0.0,
+			"solido": false,
+			"transicion_tipo": "",
+			"visible": false
+		},
+		{
+			"accion": "Usar",
+			"altura_muro": 1,
+			"asset": "interior.herreria_v1.suelo_piedra",
+			"calibracion": {},
+			"casilla": [
+				5,
+				5
+			],
+			"destino_zona": "",
+			"entrada_destino": [
+				1,
+				1
+			],
+			"espejo_x": false,
+			"espejo_y": false,
+			"huella": [
+				1,
+				1
+			],
+			"id": "floor_05_05",
+			"offset_px": [
+				0.0,
+				0.0
+			],
+			"rol": "suelo",
+			"rotacion": 0.0,
+			"solido": false,
+			"transicion_tipo": "",
+			"visible": false
+		},
+		{
+			"accion": "Usar",
+			"altura_muro": 1,
+			"asset": "interior.herreria_v1.suelo_piedra",
+			"calibracion": {},
+			"casilla": [
+				5,
+				6
+			],
+			"destino_zona": "",
+			"entrada_destino": [
+				1,
+				1
+			],
+			"espejo_x": false,
+			"espejo_y": false,
+			"huella": [
+				1,
+				1
+			],
+			"id": "floor_05_06",
+			"offset_px": [
+				0.0,
+				0.0
+			],
+			"rol": "suelo",
+			"rotacion": 0.0,
+			"solido": false,
+			"transicion_tipo": "",
+			"visible": false
+		},
+		{
+			"accion": "Usar",
+			"altura_muro": 1,
+			"asset": "interior.herreria_v1.suelo_piedra",
+			"calibracion": {},
+			"casilla": [
+				5,
+				7
+			],
+			"destino_zona": "",
+			"entrada_destino": [
+				1,
+				1
+			],
+			"espejo_x": false,
+			"espejo_y": false,
+			"huella": [
+				1,
+				1
+			],
+			"id": "floor_05_07",
+			"offset_px": [
+				0.0,
+				0.0
+			],
+			"rol": "suelo",
+			"rotacion": 0.0,
+			"solido": false,
+			"transicion_tipo": "",
+			"visible": false
+		},
+		{
+			"accion": "Usar",
+			"altura_muro": 1,
+			"asset": "interior.herreria_v1.suelo_piedra",
+			"calibracion": {},
+			"casilla": [
+				6,
+				0
+			],
+			"destino_zona": "",
+			"entrada_destino": [
+				1,
+				1
+			],
+			"espejo_x": false,
+			"espejo_y": false,
+			"huella": [
+				1,
+				1
+			],
+			"id": "floor_06_00",
+			"offset_px": [
+				0.0,
+				0.0
+			],
+			"rol": "suelo",
+			"rotacion": 0.0,
+			"solido": false,
+			"transicion_tipo": "",
+			"visible": false
+		},
+		{
+			"accion": "Usar",
+			"altura_muro": 1,
+			"asset": "interior.herreria_v1.suelo_piedra",
+			"calibracion": {},
+			"casilla": [
+				6,
+				1
+			],
+			"destino_zona": "",
+			"entrada_destino": [
+				1,
+				1
+			],
+			"espejo_x": false,
+			"espejo_y": false,
+			"huella": [
+				1,
+				1
+			],
+			"id": "floor_06_01",
+			"offset_px": [
+				0.0,
+				0.0
+			],
+			"rol": "suelo",
+			"rotacion": 0.0,
+			"solido": false,
+			"transicion_tipo": "",
+			"visible": false
+		},
+		{
+			"accion": "Usar",
+			"altura_muro": 1,
+			"asset": "interior.herreria_v1.suelo_piedra",
+			"calibracion": {},
+			"casilla": [
+				6,
+				2
+			],
+			"destino_zona": "",
+			"entrada_destino": [
+				1,
+				1
+			],
+			"espejo_x": false,
+			"espejo_y": false,
+			"huella": [
+				1,
+				1
+			],
+			"id": "floor_06_02",
+			"offset_px": [
+				0.0,
+				0.0
+			],
+			"rol": "suelo",
+			"rotacion": 0.0,
+			"solido": false,
+			"transicion_tipo": "",
+			"visible": false
+		},
+		{
+			"accion": "Usar",
+			"altura_muro": 1,
+			"asset": "interior.herreria_v1.suelo_piedra",
+			"calibracion": {},
+			"casilla": [
+				6,
+				3
+			],
+			"destino_zona": "",
+			"entrada_destino": [
+				1,
+				1
+			],
+			"espejo_x": false,
+			"espejo_y": false,
+			"huella": [
+				1,
+				1
+			],
+			"id": "floor_06_03",
+			"offset_px": [
+				0.0,
+				0.0
+			],
+			"rol": "suelo",
+			"rotacion": 0.0,
+			"solido": false,
+			"transicion_tipo": "",
+			"visible": false
+		},
+		{
+			"accion": "Usar",
+			"altura_muro": 1,
+			"asset": "interior.herreria_v1.suelo_piedra",
+			"calibracion": {},
+			"casilla": [
+				6,
+				4
+			],
+			"destino_zona": "",
+			"entrada_destino": [
+				1,
+				1
+			],
+			"espejo_x": false,
+			"espejo_y": false,
+			"huella": [
+				1,
+				1
+			],
+			"id": "floor_06_04",
+			"offset_px": [
+				0.0,
+				0.0
+			],
+			"rol": "suelo",
+			"rotacion": 0.0,
+			"solido": false,
+			"transicion_tipo": "",
+			"visible": false
+		},
+		{
+			"accion": "Usar",
+			"altura_muro": 1,
+			"asset": "interior.herreria_v1.suelo_piedra",
+			"calibracion": {},
+			"casilla": [
+				6,
+				5
+			],
+			"destino_zona": "",
+			"entrada_destino": [
+				1,
+				1
+			],
+			"espejo_x": false,
+			"espejo_y": false,
+			"huella": [
+				1,
+				1
+			],
+			"id": "floor_06_05",
+			"offset_px": [
+				0.0,
+				0.0
+			],
+			"rol": "suelo",
+			"rotacion": 0.0,
+			"solido": false,
+			"transicion_tipo": "",
+			"visible": false
+		},
+		{
+			"accion": "Usar",
+			"altura_muro": 1,
+			"asset": "interior.herreria_v1.suelo_piedra",
+			"calibracion": {},
+			"casilla": [
+				6,
+				6
+			],
+			"destino_zona": "",
+			"entrada_destino": [
+				1,
+				1
+			],
+			"espejo_x": false,
+			"espejo_y": false,
+			"huella": [
+				1,
+				1
+			],
+			"id": "floor_06_06",
+			"offset_px": [
+				0.0,
+				0.0
+			],
+			"rol": "suelo",
+			"rotacion": 0.0,
+			"solido": false,
+			"transicion_tipo": "",
+			"visible": false
+		},
+		{
+			"accion": "Usar",
+			"altura_muro": 1,
+			"asset": "interior.herreria_v1.suelo_piedra",
+			"calibracion": {},
+			"casilla": [
+				6,
+				7
+			],
+			"destino_zona": "",
+			"entrada_destino": [
+				1,
+				1
+			],
+			"espejo_x": false,
+			"espejo_y": false,
+			"huella": [
+				1,
+				1
+			],
+			"id": "floor_06_07",
+			"offset_px": [
+				0.0,
+				0.0
+			],
+			"rol": "suelo",
+			"rotacion": 0.0,
+			"solido": false,
+			"transicion_tipo": "",
+			"visible": false
+		},
+		{
+			"accion": "Usar",
+			"altura_muro": 1,
+			"asset": "interior.herreria_v1.suelo_piedra",
+			"calibracion": {},
+			"casilla": [
+				7,
+				0
+			],
+			"destino_zona": "",
+			"entrada_destino": [
+				1,
+				1
+			],
+			"espejo_x": false,
+			"espejo_y": false,
+			"huella": [
+				1,
+				1
+			],
+			"id": "floor_07_00",
+			"offset_px": [
+				0.0,
+				0.0
+			],
+			"rol": "suelo",
+			"rotacion": 0.0,
+			"solido": false,
+			"transicion_tipo": "",
+			"visible": false
+		},
+		{
+			"accion": "Usar",
+			"altura_muro": 1,
+			"asset": "interior.herreria_v1.suelo_piedra",
+			"calibracion": {},
+			"casilla": [
+				7,
+				1
+			],
+			"destino_zona": "",
+			"entrada_destino": [
+				1,
+				1
+			],
+			"espejo_x": false,
+			"espejo_y": false,
+			"huella": [
+				1,
+				1
+			],
+			"id": "floor_07_01",
+			"offset_px": [
+				0.0,
+				0.0
+			],
+			"rol": "suelo",
+			"rotacion": 0.0,
+			"solido": false,
+			"transicion_tipo": "",
+			"visible": false
+		},
+		{
+			"accion": "Usar",
+			"altura_muro": 1,
+			"asset": "interior.herreria_v1.suelo_piedra",
+			"calibracion": {},
+			"casilla": [
+				7,
+				2
+			],
+			"destino_zona": "",
+			"entrada_destino": [
+				1,
+				1
+			],
+			"espejo_x": false,
+			"espejo_y": false,
+			"huella": [
+				1,
+				1
+			],
+			"id": "floor_07_02",
+			"offset_px": [
+				0.0,
+				0.0
+			],
+			"rol": "suelo",
+			"rotacion": 0.0,
+			"solido": false,
+			"transicion_tipo": "",
+			"visible": false
+		},
+		{
+			"accion": "Usar",
+			"altura_muro": 1,
+			"asset": "interior.herreria_v1.suelo_piedra",
+			"calibracion": {},
+			"casilla": [
+				7,
+				3
+			],
+			"destino_zona": "",
+			"entrada_destino": [
+				1,
+				1
+			],
+			"espejo_x": false,
+			"espejo_y": false,
+			"huella": [
+				1,
+				1
+			],
+			"id": "floor_07_03",
+			"offset_px": [
+				0.0,
+				0.0
+			],
+			"rol": "suelo",
+			"rotacion": 0.0,
+			"solido": false,
+			"transicion_tipo": "",
+			"visible": false
+		},
+		{
+			"accion": "Usar",
+			"altura_muro": 1,
+			"asset": "interior.herreria_v1.suelo_piedra",
+			"calibracion": {},
+			"casilla": [
+				7,
+				4
+			],
+			"destino_zona": "",
+			"entrada_destino": [
+				1,
+				1
+			],
+			"espejo_x": false,
+			"espejo_y": false,
+			"huella": [
+				1,
+				1
+			],
+			"id": "floor_07_04",
+			"offset_px": [
+				0.0,
+				0.0
+			],
+			"rol": "suelo",
+			"rotacion": 0.0,
+			"solido": false,
+			"transicion_tipo": "",
+			"visible": false
+		},
+		{
+			"accion": "Usar",
+			"altura_muro": 1,
+			"asset": "interior.herreria_v1.suelo_piedra",
+			"calibracion": {},
+			"casilla": [
+				7,
+				5
+			],
+			"destino_zona": "",
+			"entrada_destino": [
+				1,
+				1
+			],
+			"espejo_x": false,
+			"espejo_y": false,
+			"huella": [
+				1,
+				1
+			],
+			"id": "floor_07_05",
+			"offset_px": [
+				0.0,
+				0.0
+			],
+			"rol": "suelo",
+			"rotacion": 0.0,
+			"solido": false,
+			"transicion_tipo": "",
+			"visible": false
+		},
+		{
+			"accion": "Usar",
+			"altura_muro": 1,
+			"asset": "interior.herreria_v1.suelo_piedra",
+			"calibracion": {},
+			"casilla": [
+				7,
+				6
+			],
+			"destino_zona": "",
+			"entrada_destino": [
+				1,
+				1
+			],
+			"espejo_x": false,
+			"espejo_y": false,
+			"huella": [
+				1,
+				1
+			],
+			"id": "floor_07_06",
+			"offset_px": [
+				0.0,
+				0.0
+			],
+			"rol": "suelo",
+			"rotacion": 0.0,
+			"solido": false,
+			"transicion_tipo": "",
+			"visible": false
+		},
+		{
+			"accion": "Usar",
+			"altura_muro": 1,
+			"asset": "interior.herreria_v1.suelo_piedra",
+			"calibracion": {},
+			"casilla": [
+				7,
+				7
+			],
+			"destino_zona": "",
+			"entrada_destino": [
+				1,
+				1
+			],
+			"espejo_x": false,
+			"espejo_y": false,
+			"huella": [
+				1,
+				1
+			],
+			"id": "floor_07_07",
+			"offset_px": [
+				0.0,
+				0.0
+			],
+			"rol": "suelo",
+			"rotacion": 0.0,
+			"solido": false,
+			"transicion_tipo": "",
+			"visible": false
+		},
+		{
+			"accion": "Usar",
+			"altura_muro": 1,
+			"asset": "interior.herreria_v1.suelo_piedra",
+			"calibracion": {},
+			"casilla": [
+				8,
+				0
+			],
+			"destino_zona": "",
+			"entrada_destino": [
+				1,
+				1
+			],
+			"espejo_x": false,
+			"espejo_y": false,
+			"huella": [
+				1,
+				1
+			],
+			"id": "floor_08_00",
+			"offset_px": [
+				0.0,
+				0.0
+			],
+			"rol": "suelo",
+			"rotacion": 0.0,
+			"solido": false,
+			"transicion_tipo": "",
+			"visible": false
+		},
+		{
+			"accion": "Usar",
+			"altura_muro": 1,
+			"asset": "interior.herreria_v1.suelo_piedra",
+			"calibracion": {},
+			"casilla": [
+				8,
+				1
+			],
+			"destino_zona": "",
+			"entrada_destino": [
+				1,
+				1
+			],
+			"espejo_x": false,
+			"espejo_y": false,
+			"huella": [
+				1,
+				1
+			],
+			"id": "floor_08_01",
+			"offset_px": [
+				0.0,
+				0.0
+			],
+			"rol": "suelo",
+			"rotacion": 0.0,
+			"solido": false,
+			"transicion_tipo": "",
+			"visible": false
+		},
+		{
+			"accion": "Usar",
+			"altura_muro": 1,
+			"asset": "interior.herreria_v1.suelo_piedra",
+			"calibracion": {},
+			"casilla": [
+				8,
+				2
+			],
+			"destino_zona": "",
+			"entrada_destino": [
+				1,
+				1
+			],
+			"espejo_x": false,
+			"espejo_y": false,
+			"huella": [
+				1,
+				1
+			],
+			"id": "floor_08_02",
+			"offset_px": [
+				0.0,
+				0.0
+			],
+			"rol": "suelo",
+			"rotacion": 0.0,
+			"solido": false,
+			"transicion_tipo": "",
+			"visible": false
+		},
+		{
+			"accion": "Usar",
+			"altura_muro": 1,
+			"asset": "interior.herreria_v1.suelo_piedra",
+			"calibracion": {},
+			"casilla": [
+				8,
+				3
+			],
+			"destino_zona": "",
+			"entrada_destino": [
+				1,
+				1
+			],
+			"espejo_x": false,
+			"espejo_y": false,
+			"huella": [
+				1,
+				1
+			],
+			"id": "floor_08_03",
+			"offset_px": [
+				0.0,
+				0.0
+			],
+			"rol": "suelo",
+			"rotacion": 0.0,
+			"solido": false,
+			"transicion_tipo": "",
+			"visible": false
+		},
+		{
+			"accion": "Usar",
+			"altura_muro": 1,
+			"asset": "interior.herreria_v1.suelo_piedra",
+			"calibracion": {},
+			"casilla": [
+				8,
+				4
+			],
+			"destino_zona": "",
+			"entrada_destino": [
+				1,
+				1
+			],
+			"espejo_x": false,
+			"espejo_y": false,
+			"huella": [
+				1,
+				1
+			],
+			"id": "floor_08_04",
+			"offset_px": [
+				0.0,
+				0.0
+			],
+			"rol": "suelo",
+			"rotacion": 0.0,
+			"solido": false,
+			"transicion_tipo": "",
+			"visible": false
+		},
+		{
+			"accion": "Usar",
+			"altura_muro": 1,
+			"asset": "interior.herreria_v1.suelo_piedra",
+			"calibracion": {},
+			"casilla": [
+				8,
+				5
+			],
+			"destino_zona": "",
+			"entrada_destino": [
+				1,
+				1
+			],
+			"espejo_x": false,
+			"espejo_y": false,
+			"huella": [
+				1,
+				1
+			],
+			"id": "floor_08_05",
+			"offset_px": [
+				0.0,
+				0.0
+			],
+			"rol": "suelo",
+			"rotacion": 0.0,
+			"solido": false,
+			"transicion_tipo": "",
+			"visible": false
+		},
+		{
+			"accion": "Usar",
+			"altura_muro": 1,
+			"asset": "interior.herreria_v1.suelo_piedra",
+			"calibracion": {},
+			"casilla": [
+				8,
+				6
+			],
+			"destino_zona": "",
+			"entrada_destino": [
+				1,
+				1
+			],
+			"espejo_x": false,
+			"espejo_y": false,
+			"huella": [
+				1,
+				1
+			],
+			"id": "floor_08_06",
+			"offset_px": [
+				0.0,
+				0.0
+			],
+			"rol": "suelo",
+			"rotacion": 0.0,
+			"solido": false,
+			"transicion_tipo": "",
+			"visible": false
+		},
+		{
+			"accion": "Usar",
+			"altura_muro": 1,
+			"asset": "interior.herreria_v1.suelo_piedra",
+			"calibracion": {},
+			"casilla": [
+				8,
+				7
+			],
+			"destino_zona": "",
+			"entrada_destino": [
+				1,
+				1
+			],
+			"espejo_x": false,
+			"espejo_y": false,
+			"huella": [
+				1,
+				1
+			],
+			"id": "floor_08_07",
+			"offset_px": [
+				0.0,
+				0.0
+			],
+			"rol": "suelo",
+			"rotacion": 0.0,
+			"solido": false,
+			"transicion_tipo": "",
+			"visible": false
+		},
+		{
+			"accion": "Usar",
+			"altura_muro": 1,
+			"asset": "interior.herreria_v1.suelo_piedra",
+			"calibracion": {},
+			"casilla": [
+				9,
+				0
+			],
+			"destino_zona": "",
+			"entrada_destino": [
+				1,
+				1
+			],
+			"espejo_x": false,
+			"espejo_y": false,
+			"huella": [
+				1,
+				1
+			],
+			"id": "floor_09_00",
+			"offset_px": [
+				0.0,
+				0.0
+			],
+			"rol": "suelo",
+			"rotacion": 0.0,
+			"solido": false,
+			"transicion_tipo": "",
+			"visible": false
+		},
+		{
+			"accion": "Usar",
+			"altura_muro": 1,
+			"asset": "interior.herreria_v1.suelo_piedra",
+			"calibracion": {},
+			"casilla": [
+				9,
+				1
+			],
+			"destino_zona": "",
+			"entrada_destino": [
+				1,
+				1
+			],
+			"espejo_x": false,
+			"espejo_y": false,
+			"huella": [
+				1,
+				1
+			],
+			"id": "floor_09_01",
+			"offset_px": [
+				0.0,
+				0.0
+			],
+			"rol": "suelo",
+			"rotacion": 0.0,
+			"solido": false,
+			"transicion_tipo": "",
+			"visible": false
+		},
+		{
+			"accion": "Usar",
+			"altura_muro": 1,
+			"asset": "interior.herreria_v1.suelo_piedra",
+			"calibracion": {},
+			"casilla": [
+				9,
+				2
+			],
+			"destino_zona": "",
+			"entrada_destino": [
+				1,
+				1
+			],
+			"espejo_x": false,
+			"espejo_y": false,
+			"huella": [
+				1,
+				1
+			],
+			"id": "floor_09_02",
+			"offset_px": [
+				0.0,
+				0.0
+			],
+			"rol": "suelo",
+			"rotacion": 0.0,
+			"solido": false,
+			"transicion_tipo": "",
+			"visible": false
+		},
+		{
+			"accion": "Usar",
+			"altura_muro": 1,
+			"asset": "interior.herreria_v1.suelo_piedra",
+			"calibracion": {},
+			"casilla": [
+				9,
+				3
+			],
+			"destino_zona": "",
+			"entrada_destino": [
+				1,
+				1
+			],
+			"espejo_x": false,
+			"espejo_y": false,
+			"huella": [
+				1,
+				1
+			],
+			"id": "floor_09_03",
+			"offset_px": [
+				0.0,
+				0.0
+			],
+			"rol": "suelo",
+			"rotacion": 0.0,
+			"solido": false,
+			"transicion_tipo": "",
+			"visible": false
+		},
+		{
+			"accion": "Usar",
+			"altura_muro": 1,
+			"asset": "interior.herreria_v1.suelo_piedra",
+			"calibracion": {},
+			"casilla": [
+				9,
+				4
+			],
+			"destino_zona": "",
+			"entrada_destino": [
+				1,
+				1
+			],
+			"espejo_x": false,
+			"espejo_y": false,
+			"huella": [
+				1,
+				1
+			],
+			"id": "floor_09_04",
+			"offset_px": [
+				0.0,
+				0.0
+			],
+			"rol": "suelo",
+			"rotacion": 0.0,
+			"solido": false,
+			"transicion_tipo": "",
+			"visible": false
+		},
+		{
+			"accion": "Usar",
+			"altura_muro": 1,
+			"asset": "interior.herreria_v1.suelo_piedra",
+			"calibracion": {},
+			"casilla": [
+				9,
+				5
+			],
+			"destino_zona": "",
+			"entrada_destino": [
+				1,
+				1
+			],
+			"espejo_x": false,
+			"espejo_y": false,
+			"huella": [
+				1,
+				1
+			],
+			"id": "floor_09_05",
+			"offset_px": [
+				0.0,
+				0.0
+			],
+			"rol": "suelo",
+			"rotacion": 0.0,
+			"solido": false,
+			"transicion_tipo": "",
+			"visible": false
+		},
+		{
+			"accion": "Usar",
+			"altura_muro": 1,
+			"asset": "interior.herreria_v1.suelo_piedra",
+			"calibracion": {},
+			"casilla": [
+				9,
+				6
+			],
+			"destino_zona": "",
+			"entrada_destino": [
+				1,
+				1
+			],
+			"espejo_x": false,
+			"espejo_y": false,
+			"huella": [
+				1,
+				1
+			],
+			"id": "floor_09_06",
+			"offset_px": [
+				0.0,
+				0.0
+			],
+			"rol": "suelo",
+			"rotacion": 0.0,
+			"solido": false,
+			"transicion_tipo": "",
+			"visible": false
+		},
+		{
+			"accion": "Usar",
+			"altura_muro": 1,
+			"asset": "interior.herreria_v1.suelo_piedra",
+			"calibracion": {},
+			"casilla": [
+				9,
+				7
+			],
+			"destino_zona": "",
+			"entrada_destino": [
+				1,
+				1
+			],
+			"espejo_x": false,
+			"espejo_y": false,
+			"huella": [
+				1,
+				1
+			],
+			"id": "floor_09_07",
+			"offset_px": [
+				0.0,
+				0.0
+			],
+			"rol": "suelo",
+			"rotacion": 0.0,
+			"solido": false,
+			"transicion_tipo": "",
+			"visible": false
+		},
+		{
+			"accion": "Usar",
+			"altura_muro": 1,
+			"asset": "mueble.herreria.fragua",
+			"calibracion": {},
+			"casilla": [
+				2,
+				1
+			],
+			"destino_zona": "",
+			"entrada_destino": [
+				1,
+				1
+			],
+			"espejo_x": false,
+			"espejo_y": false,
+			"huella": [
+				2,
+				1
+			],
+			"id": "fragua_00",
+			"offset_px": [
+				0.0,
+				0.0
+			],
+			"rol": "mueble",
+			"rotacion": 0.0,
+			"solido": true,
+			"transicion_tipo": "",
+			"visible": false
+		},
+		{
+			"accion": "Usar",
+			"altura_muro": 1,
+			"asset": "mueble.herreria.herramientas_colgadas",
+			"calibracion": {},
+			"casilla": [
+				8,
+				0
+			],
+			"destino_zona": "",
+			"entrada_destino": [
+				1,
+				1
+			],
+			"espejo_x": false,
+			"espejo_y": false,
+			"huella": [
+				1,
+				1
+			],
+			"id": "herramientas_00",
+			"offset_px": [
+				0.0,
+				0.0
+			],
+			"rol": "mueble",
+			"rotacion": 0.0,
+			"solido": false,
+			"transicion_tipo": "",
+			"visible": false
+		},
+		{
+			"accion": "Usar",
+			"altura_muro": 1,
+			"asset": "mueble.herreria.horno",
+			"calibracion": {},
+			"casilla": [
+				4,
+				1
+			],
+			"destino_zona": "",
+			"entrada_destino": [
+				1,
+				1
+			],
+			"espejo_x": false,
+			"espejo_y": false,
+			"huella": [
+				1,
+				1
+			],
+			"id": "horno_00",
+			"offset_px": [
+				0.0,
+				0.0
+			],
+			"rol": "mueble",
+			"rotacion": 0.0,
+			"solido": true,
+			"transicion_tipo": "",
+			"visible": false
+		},
+		{
+			"accion": "Usar",
+			"altura_muro": 1,
+			"asset": "mueble.herreria.mesa_trabajo",
+			"calibracion": {},
+			"casilla": [
+				2,
+				5
+			],
+			"destino_zona": "",
+			"entrada_destino": [
+				1,
+				1
+			],
+			"espejo_x": false,
+			"espejo_y": false,
+			"huella": [
+				2,
+				1
+			],
+			"id": "mesa_00",
+			"offset_px": [
+				0.0,
+				0.0
+			],
+			"rol": "mueble",
+			"rotacion": 0.0,
+			"solido": true,
+			"transicion_tipo": "",
+			"visible": false
+		},
+		{
+			"accion": "Usar",
+			"altura_muro": 1,
+			"asset": "mueble.herreria.panoplia_armas",
+			"calibracion": {},
+			"casilla": [
+				0,
+				3
+			],
+			"destino_zona": "",
+			"entrada_destino": [
+				1,
+				1
+			],
+			"espejo_x": false,
+			"espejo_y": false,
+			"huella": [
+				1,
+				1
+			],
+			"id": "panoplia_00",
+			"offset_px": [
+				0.0,
+				0.0
+			],
+			"rol": "mueble",
+			"rotacion": 0.0,
+			"solido": false,
+			"transicion_tipo": "",
+			"visible": false
+		},
+		{
+			"accion": "Salir",
+			"altura_muro": 1,
+			"asset": "",
+			"calibracion": {},
+			"casilla": [
+				4,
+				6
+			],
+			"destino_zona": "EXTERIOR",
+			"entrada_destino": [
+				4,
+				6
+			],
+			"espejo_x": false,
+			"espejo_y": false,
+			"huella": [
+				1,
+				1
+			],
+			"id": "puerta_salida",
+			"offset_px": [
+				0.0,
+				0.0
+			],
+			"rol": "transicion",
+			"rotacion": 0.0,
+			"solido": false,
+			"transicion_tipo": "salida",
+			"visible": false
+		},
+		{
+			"accion": "Usar",
+			"altura_muro": 1,
+			"asset": "mueble.herreria.saco_carbon",
+			"calibracion": {},
+			"casilla": [
+				7,
+				2
+			],
+			"destino_zona": "",
+			"entrada_destino": [
+				1,
+				1
+			],
+			"espejo_x": false,
+			"espejo_y": false,
+			"huella": [
+				1,
+				1
+			],
+			"id": "saco_00",
+			"offset_px": [
+				0.0,
+				0.0
+			],
+			"rol": "mueble",
+			"rotacion": 0.0,
+			"solido": false,
+			"transicion_tipo": "",
+			"visible": false
+		},
+		{
+			"accion": "Usar",
+			"altura_muro": 1,
+			"asset": "interior.herreria_v1.ventana_norte",
+			"calibracion": {},
+			"casilla": [
+				3,
+				0
+			],
+			"destino_zona": "",
+			"entrada_destino": [
+				1,
+				1
+			],
+			"espejo_x": false,
+			"espejo_y": false,
+			"huella": [
+				1,
+				1
+			],
+			"id": "ventana_00",
+			"offset_px": [
+				0.0,
+				0.0
+			],
+			"rol": "mueble",
+			"rotacion": 0.0,
+			"solido": false,
+			"transicion_tipo": "",
+			"visible": false
+		},
+		{
+			"accion": "Usar",
+			"altura_muro": 1,
+			"asset": "interior.herreria_v1.ventana_norte",
+			"calibracion": {},
+			"casilla": [
+				6,
+				0
+			],
+			"destino_zona": "",
+			"entrada_destino": [
+				1,
+				1
+			],
+			"espejo_x": false,
+			"espejo_y": false,
+			"huella": [
+				1,
+				1
+			],
+			"id": "ventana_01",
+			"offset_px": [
+				0.0,
+				0.0
+			],
+			"rol": "mueble",
+			"rotacion": 0.0,
+			"solido": false,
+			"transicion_tipo": "",
+			"visible": false
+		},
+		{
+			"accion": "Usar",
+			"altura_muro": 1,
+			"asset": "interior.herreria_v1.ventana_oeste",
+			"calibracion": {},
+			"casilla": [
+				0,
+				2
+			],
+			"destino_zona": "",
+			"entrada_destino": [
+				1,
+				1
+			],
+			"espejo_x": false,
+			"espejo_y": false,
+			"huella": [
+				1,
+				1
+			],
+			"id": "ventana_02",
+			"offset_px": [
+				0.0,
+				0.0
+			],
+			"rol": "mueble",
+			"rotacion": 0.0,
+			"solido": false,
+			"transicion_tipo": "",
+			"visible": false
+		},
+		{
+			"accion": "Usar",
+			"altura_muro": 1,
+			"asset": "interior.herreria_v1.muro_norte",
+			"calibracion": {},
+			"casilla": [
+				0,
+				0
+			],
+			"destino_zona": "",
+			"entrada_destino": [
+				1,
+				1
+			],
+			"espejo_x": false,
+			"espejo_y": false,
+			"huella": [
+				1,
+				1
+			],
+			"id": "wall_corner",
+			"offset_px": [
+				0.0,
+				0.0
+			],
+			"rol": "muro",
+			"rotacion": 0.0,
+			"solido": false,
+			"transicion_tipo": "",
+			"visible": false
+		},
+		{
+			"accion": "Usar",
+			"altura_muro": 1,
+			"asset": "interior.herreria_v1.muro_oeste",
+			"calibracion": {},
+			"casilla": [
+				1,
+				0
+			],
+			"destino_zona": "",
+			"entrada_destino": [
+				1,
+				1
+			],
+			"espejo_x": false,
+			"espejo_y": false,
+			"huella": [
+				1,
+				1
+			],
+			"id": "wall_north_01",
+			"offset_px": [
+				0.0,
+				0.0
+			],
+			"rol": "muro",
+			"rotacion": 0.0,
+			"solido": false,
+			"transicion_tipo": "",
+			"visible": false
+		},
+		{
+			"accion": "Usar",
+			"altura_muro": 1,
+			"asset": "interior.herreria_v1.muro_oeste",
+			"calibracion": {},
+			"casilla": [
+				2,
+				0
+			],
+			"destino_zona": "",
+			"entrada_destino": [
+				1,
+				1
+			],
+			"espejo_x": false,
+			"espejo_y": false,
+			"huella": [
+				1,
+				1
+			],
+			"id": "wall_north_02",
+			"offset_px": [
+				0.0,
+				0.0
+			],
+			"rol": "muro",
+			"rotacion": 0.0,
+			"solido": false,
+			"transicion_tipo": "",
+			"visible": false
+		},
+		{
+			"accion": "Usar",
+			"altura_muro": 1,
+			"asset": "interior.herreria_v1.muro_oeste",
+			"calibracion": {},
+			"casilla": [
+				3,
+				0
+			],
+			"destino_zona": "",
+			"entrada_destino": [
+				1,
+				1
+			],
+			"espejo_x": false,
+			"espejo_y": false,
+			"huella": [
+				1,
+				1
+			],
+			"id": "wall_north_03",
+			"offset_px": [
+				0.0,
+				0.0
+			],
+			"rol": "muro",
+			"rotacion": 0.0,
+			"solido": false,
+			"transicion_tipo": "",
+			"visible": false
+		},
+		{
+			"accion": "Usar",
+			"altura_muro": 1,
+			"asset": "interior.herreria_v1.muro_oeste",
+			"calibracion": {},
+			"casilla": [
+				4,
+				0
+			],
+			"destino_zona": "",
+			"entrada_destino": [
+				1,
+				1
+			],
+			"espejo_x": false,
+			"espejo_y": false,
+			"huella": [
+				1,
+				1
+			],
+			"id": "wall_north_04",
+			"offset_px": [
+				0.0,
+				0.0
+			],
+			"rol": "muro",
+			"rotacion": 0.0,
+			"solido": false,
+			"transicion_tipo": "",
+			"visible": false
+		},
+		{
+			"accion": "Usar",
+			"altura_muro": 1,
+			"asset": "interior.herreria_v1.muro_oeste",
+			"calibracion": {},
+			"casilla": [
+				5,
+				0
+			],
+			"destino_zona": "",
+			"entrada_destino": [
+				1,
+				1
+			],
+			"espejo_x": false,
+			"espejo_y": false,
+			"huella": [
+				1,
+				1
+			],
+			"id": "wall_north_05",
+			"offset_px": [
+				0.0,
+				0.0
+			],
+			"rol": "muro",
+			"rotacion": 0.0,
+			"solido": false,
+			"transicion_tipo": "",
+			"visible": false
+		},
+		{
+			"accion": "Usar",
+			"altura_muro": 1,
+			"asset": "interior.herreria_v1.muro_oeste",
+			"calibracion": {},
+			"casilla": [
+				6,
+				0
+			],
+			"destino_zona": "",
+			"entrada_destino": [
+				1,
+				1
+			],
+			"espejo_x": false,
+			"espejo_y": false,
+			"huella": [
+				1,
+				1
+			],
+			"id": "wall_north_06",
+			"offset_px": [
+				0.0,
+				0.0
+			],
+			"rol": "muro",
+			"rotacion": 0.0,
+			"solido": false,
+			"transicion_tipo": "",
+			"visible": false
+		},
+		{
+			"accion": "Usar",
+			"altura_muro": 1,
+			"asset": "interior.herreria_v1.muro_oeste",
+			"calibracion": {},
+			"casilla": [
+				7,
+				0
+			],
+			"destino_zona": "",
+			"entrada_destino": [
+				1,
+				1
+			],
+			"espejo_x": false,
+			"espejo_y": false,
+			"huella": [
+				1,
+				1
+			],
+			"id": "wall_north_07",
+			"offset_px": [
+				0.0,
+				0.0
+			],
+			"rol": "muro",
+			"rotacion": 0.0,
+			"solido": false,
+			"transicion_tipo": "",
+			"visible": false
+		},
+		{
+			"accion": "Usar",
+			"altura_muro": 1,
+			"asset": "interior.herreria_v1.muro_oeste",
+			"calibracion": {},
+			"casilla": [
+				8,
+				0
+			],
+			"destino_zona": "",
+			"entrada_destino": [
+				1,
+				1
+			],
+			"espejo_x": false,
+			"espejo_y": false,
+			"huella": [
+				1,
+				1
+			],
+			"id": "wall_north_08",
+			"offset_px": [
+				0.0,
+				0.0
+			],
+			"rol": "muro",
+			"rotacion": 0.0,
+			"solido": false,
+			"transicion_tipo": "",
+			"visible": false
+		},
+		{
+			"accion": "Usar",
+			"altura_muro": 1,
+			"asset": "interior.herreria_v1.muro_oeste",
+			"calibracion": {},
+			"casilla": [
+				9,
+				0
+			],
+			"destino_zona": "",
+			"entrada_destino": [
+				1,
+				1
+			],
+			"espejo_x": false,
+			"espejo_y": false,
+			"huella": [
+				1,
+				1
+			],
+			"id": "wall_north_09",
+			"offset_px": [
+				0.0,
+				0.0
+			],
+			"rol": "muro",
+			"rotacion": 0.0,
+			"solido": false,
+			"transicion_tipo": "",
+			"visible": false
+		},
+		{
+			"accion": "Usar",
+			"altura_muro": 1,
+			"asset": "interior.herreria_v1.muro_norte",
+			"calibracion": {},
+			"casilla": [
+				0,
+				1
+			],
+			"destino_zona": "",
+			"entrada_destino": [
+				1,
+				1
+			],
+			"espejo_x": false,
+			"espejo_y": false,
+			"huella": [
+				1,
+				1
+			],
+			"id": "wall_west_01",
+			"offset_px": [
+				0.0,
+				0.0
+			],
+			"rol": "muro",
+			"rotacion": 0.0,
+			"solido": false,
+			"transicion_tipo": "",
+			"visible": false
+		},
+		{
+			"accion": "Usar",
+			"altura_muro": 1,
+			"asset": "interior.herreria_v1.muro_norte",
+			"calibracion": {},
+			"casilla": [
+				0,
+				2
+			],
+			"destino_zona": "",
+			"entrada_destino": [
+				1,
+				1
+			],
+			"espejo_x": false,
+			"espejo_y": false,
+			"huella": [
+				1,
+				1
+			],
+			"id": "wall_west_02",
+			"offset_px": [
+				0.0,
+				0.0
+			],
+			"rol": "muro",
+			"rotacion": 0.0,
+			"solido": false,
+			"transicion_tipo": "",
+			"visible": false
+		},
+		{
+			"accion": "Usar",
+			"altura_muro": 1,
+			"asset": "interior.herreria_v1.muro_norte",
+			"calibracion": {},
+			"casilla": [
+				0,
+				3
+			],
+			"destino_zona": "",
+			"entrada_destino": [
+				1,
+				1
+			],
+			"espejo_x": false,
+			"espejo_y": false,
+			"huella": [
+				1,
+				1
+			],
+			"id": "wall_west_03",
+			"offset_px": [
+				0.0,
+				0.0
+			],
+			"rol": "muro",
+			"rotacion": 0.0,
+			"solido": false,
+			"transicion_tipo": "",
+			"visible": false
+		},
+		{
+			"accion": "Usar",
+			"altura_muro": 1,
+			"asset": "interior.herreria_v1.muro_oeste",
+			"calibracion": {},
+			"casilla": [
+				0,
+				4
+			],
+			"destino_zona": "",
+			"entrada_destino": [
+				1,
+				1
+			],
+			"espejo_x": false,
+			"espejo_y": false,
+			"huella": [
+				1,
+				1
+			],
+			"id": "wall_west_04",
+			"offset_px": [
+				0.0,
+				0.0
+			],
+			"rol": "muro",
+			"rotacion": 0.0,
+			"solido": false,
+			"transicion_tipo": "",
+			"visible": false
+		},
+		{
+			"accion": "Usar",
+			"altura_muro": 1,
+			"asset": "interior.herreria_v1.muro_norte",
+			"calibracion": {},
+			"casilla": [
+				0,
+				5
+			],
+			"destino_zona": "",
+			"entrada_destino": [
+				1,
+				1
+			],
+			"espejo_x": false,
+			"espejo_y": false,
+			"huella": [
+				1,
+				1
+			],
+			"id": "wall_west_05",
+			"offset_px": [
+				0.0,
+				0.0
+			],
+			"rol": "muro",
+			"rotacion": 0.0,
+			"solido": false,
+			"transicion_tipo": "",
+			"visible": false
+		},
+		{
+			"accion": "Usar",
+			"altura_muro": 1,
+			"asset": "interior.herreria_v1.muro_oeste",
+			"calibracion": {},
+			"casilla": [
+				0,
+				6
+			],
+			"destino_zona": "",
+			"entrada_destino": [
+				1,
+				1
+			],
+			"espejo_x": true,
+			"espejo_y": false,
+			"huella": [
+				1,
+				1
+			],
+			"id": "wall_west_06",
+			"offset_px": [
+				0.0,
+				0.0
+			],
+			"rol": "muro",
+			"rotacion": 0.0,
+			"solido": false,
+			"transicion_tipo": "",
+			"visible": false
+		},
+		{
+			"accion": "Usar",
+			"altura_muro": 1,
+			"asset": "interior.herreria_v1.muro_norte",
+			"calibracion": {},
+			"casilla": [
+				0,
+				7
+			],
+			"destino_zona": "",
+			"entrada_destino": [
+				1,
+				1
+			],
+			"espejo_x": false,
+			"espejo_y": false,
+			"huella": [
+				1,
+				1
+			],
+			"id": "wall_west_07",
+			"offset_px": [
+				0.0,
+				0.0
+			],
+			"rol": "muro",
+			"rotacion": 0.0,
+			"solido": false,
+			"transicion_tipo": "",
+			"visible": false
+		},
+		{
+			"accion": "Usar",
+			"altura_muro": 1,
+			"asset": "mueble.herreria.yunque",
+			"calibracion": {},
+			"casilla": [
+				4,
+				3
+			],
+			"destino_zona": "",
+			"entrada_destino": [
+				1,
+				1
+			],
+			"espejo_x": false,
+			"espejo_y": false,
+			"huella": [
+				1,
+				1
+			],
+			"id": "yunque_00",
+			"offset_px": [
+				0.0,
+				0.0
+			],
+			"rol": "mueble",
+			"rotacion": 0.0,
+			"solido": true,
+			"transicion_tipo": "",
+			"visible": false
+		}
+	],
+	"interior_id": "interior_herreria_pb",
+	"tamano": [
+		10,
+		8
+	],
+	"version": 2
+}

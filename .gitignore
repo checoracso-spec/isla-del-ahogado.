@@ -7,3 +7,12 @@ assets_raw/
 
 # Restos del intento en 3D descartado el 2026-08-07.
 _archivo_3d/
+
+# Salidas temporales de validación y capturas locales.
+godot/boot_*.log
+godot/test_*.log
+godot/tmp/
+godot/scratch_*
+godot/captura_*
+**/captura_*
+**/__pycache__/

@@ -25,6 +25,7 @@ var defectos: Dictionary = {}
 
 var _assets: Dictionary = {}          ## clave -> Dictionary del manifiesto
 var _texturas: Dictionary = {}        ## clave -> Texture2D (caché)
+var _celdas_atlas: Dictionary = {}    ## clave/indice -> textura aislada
 var _placeholder_cache: Dictionary = {} ## clave -> bool
 var _problemas: Array[String] = []
 
@@ -38,6 +39,7 @@ func _ready() -> void:
 func cargar_manifiesto(ruta: String) -> bool:
 	_assets.clear()
 	_texturas.clear()
+	_celdas_atlas.clear()
 	_placeholder_cache.clear()
 	_problemas.clear()
 
@@ -98,6 +100,26 @@ func textura(clave: String) -> Texture2D:
 		return _marcador(_tam(d))
 	_texturas[clave] = tex
 	return tex
+
+## Devuelve una celda aislada de un atlas. Mantiene la misma API visual, pero
+## evita que el filtrado de GPU lea píxeles de la celda vecina en los bordes.
+func textura_celda(clave: String, indice: int, tamano: Vector2i) -> Texture2D:
+	var clave_cache := "%s#%d#%d#%d" % [clave, indice, tamano.x, tamano.y]
+	if _celdas_atlas.has(clave_cache):
+		return _celdas_atlas[clave_cache] as Texture2D
+	var original := textura(clave)
+	if original == null or tamano.x <= 0 or tamano.y <= 0:
+		return original
+	var origen := Vector2i(indice * tamano.x, 0)
+	var imagen := original.get_image()
+	if imagen == null or imagen.is_empty() or origen.x < 0 \
+		or origen.x + tamano.x > imagen.get_width() \
+		or origen.y + tamano.y > imagen.get_height():
+		return original
+	var recorte := imagen.get_region(Rect2i(origen, tamano))
+	var aislada := ImageTexture.create_from_image(recorte)
+	_celdas_atlas[clave_cache] = aislada
+	return aislada
 
 ## Pivote DECLARADO, en píxeles físicos desde la esquina superior izquierda.
 func pivote(clave: String) -> Vector2:

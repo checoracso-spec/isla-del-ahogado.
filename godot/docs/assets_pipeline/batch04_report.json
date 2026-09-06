@@ -1,0 +1,50 @@
+{
+  "version": 1,
+  "input": "C:\\Users\\checo\\.claude\\medieval-pirates-game\\godot\\assets\\kit_validacion\\interiores\\arte\\herreria_batch_04",
+  "manifest": "C:\\Users\\checo\\.claude\\medieval-pirates-game\\godot\\assets\\kit_validacion\\interiores\\arte\\herreria_batch_04\\manifest_missing.json",
+  "summary": {
+    "files": 3,
+    "errors": 0,
+    "warnings": 0,
+    "manifest_missing_files": 0
+  },
+  "assets": [
+    {
+      "file": "herreria_batch04_muro_norte.png",
+      "width": 128,
+      "height": 144,
+      "mode": "RGBA",
+      "alpha": true,
+      "opaque_pixels": 7423,
+      "magenta_pixels": 0,
+      "black_pixels": 0,
+      "warnings": [],
+      "errors": []
+    },
+    {
+      "file": "herreria_batch04_muro_oeste.png",
+      "width": 128,
+      "height": 144,
+      "mode": "RGBA",
+      "alpha": true,
+      "opaque_pixels": 7423,
+      "magenta_pixels": 0,
+      "black_pixels": 0,
+      "warnings": [],
+      "errors": []
+    },
+    {
+      "file": "herreria_batch04_suelo_piedra_base.png",
+      "width": 128,
+      "height": 64,
+      "mode": "RGBA",
+      "alpha": true,
+      "opaque_pixels": 3297,
+      "magenta_pixels": 0,
+      "black_pixels": 0,
+      "warnings": [],
+      "errors": []
+    }
+  ],
+  "manifest_missing_files": []
+}
