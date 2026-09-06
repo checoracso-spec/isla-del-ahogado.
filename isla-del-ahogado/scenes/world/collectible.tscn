@@ -9,11 +9,10 @@ item_id = "botella_ron"
 item_name = "Botella de ron"
 max_stack = 20
 
-[node name="Collectible" type="Area2D"]
+[node name="Collectible" type="Area2D" groups=["interactable"]]
 script = ExtResource("1_pickup")
 interaction_radius = 105.0
 energy_cost = 10
 interaction_prompt = "E  Recoger"
 item = SubResource("Resource_item_rum")
 quantity = 1
-

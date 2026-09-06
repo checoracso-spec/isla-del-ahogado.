@@ -20,6 +20,7 @@ func _ready() -> void:
 	set_meta("_handles_energy", true)
 	interaction_indicator = Label.new()
 	interaction_indicator.name = "InteractionIndicator"
+	interaction_indicator.z_index = 20
 	interaction_indicator.text = interaction_prompt
 	interaction_indicator.position = Vector2(-44.0, -42.0)
 	interaction_indicator.visible = false

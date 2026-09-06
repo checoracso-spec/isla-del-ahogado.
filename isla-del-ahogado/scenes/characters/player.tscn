@@ -2,7 +2,7 @@
 
 [ext_resource type="Script" path="res://scripts/world/player.gd" id="1_player"]
 
-[node name="Player" type="CharacterBody2D"]
+[node name="Player" type="CharacterBody2D" groups=["player"]]
 z_index = 10
 script = ExtResource("1_player")
 
