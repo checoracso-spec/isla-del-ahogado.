@@ -10,6 +10,8 @@ signal interacted(interactor: Node)
 @export var energy_cost := 5
 @export var interaction_prompt := "E  Interactuar"
 var interaction_indicator: Label
+var nearby_interactor: Node2D
+var last_interaction_msec := -1000
 
 func _ready() -> void:
 	add_to_group("interactable")
@@ -27,12 +29,35 @@ func _ready() -> void:
 	interaction_indicator.add_theme_constant_override("shadow_offset_x", 2)
 	interaction_indicator.add_theme_constant_override("shadow_offset_y", 2)
 	add_child(interaction_indicator)
+	set_process(true)
+
+func _process(_delta: float) -> void:
+	nearby_interactor = _find_player()
+	var available := is_instance_valid(nearby_interactor) and global_position.distance_to(nearby_interactor.global_position) <= interaction_radius
+	set_interaction_available(available)
+	if available and Input.is_action_just_pressed("interact"):
+		interact(nearby_interactor)
+
+func _find_player() -> Node2D:
+	var found := get_tree().get_first_node_in_group("player") as Node2D
+	if is_instance_valid(found):
+		return found
+	var scene := get_tree().current_scene
+	if scene != null:
+		return scene.find_child("Player", true, false) as Node2D
+	return null
 
 func set_interaction_available(available: bool) -> void:
 	if is_instance_valid(interaction_indicator):
 		interaction_indicator.visible = available
 
 func interact(interactor: Node) -> bool:
+	if is_queued_for_deletion():
+		return false
+	var now := Time.get_ticks_msec()
+	if now - last_interaction_msec < 120:
+		return false
+	last_interaction_msec = now
 	if interactor == null or not interactor.has_method("try_spend_energy"):
 		return false
 	if not interactor.try_spend_energy(energy_cost):
