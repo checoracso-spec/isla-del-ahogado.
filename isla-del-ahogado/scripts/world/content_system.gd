@@ -177,7 +177,9 @@ func _build_content_ui() -> void:
 		button.custom_minimum_size = Vector2(0, 32)
 		button.pressed.connect(handle_action.bind(str(entry[1]), null))
 		box.add_child(button)
-	content_panel.visible = not DisplayServer.is_touchscreen_available()
+	# Keep the playfield and the touch interaction button unobstructed. The tab
+	# remains available whenever the player wants to use a system shortcut.
+	content_panel.visible = false
 	_update_content_toggle()
 
 func _make_panel(position: Vector2, panel_size: Vector2) -> PanelContainer:

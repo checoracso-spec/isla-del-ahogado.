@@ -54,6 +54,8 @@ jobs:
           # Godot service worker can still fetch the new export.
           mkdir -p "$PROJECT_DIR/build/web/prompt-3"
           find "$PROJECT_DIR/build/web" -maxdepth 1 -type f -exec cp {} "$PROJECT_DIR/build/web/prompt-3/" \;
+          mkdir -p "$PROJECT_DIR/build/web/release-${GITHUB_SHA}"
+          find "$PROJECT_DIR/build/web" -maxdepth 1 -type f -exec cp {} "$PROJECT_DIR/build/web/release-${GITHUB_SHA}/" \;
 
       - name: Configure Pages
         uses: actions/configure-pages@v5
