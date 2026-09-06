@@ -46,6 +46,9 @@ func _update_touch(position: Vector2) -> void:
 	elif position.distance_to(button_center) <= BUTTON_RADIUS * 1.35:
 		interaction_active = true
 		Input.action_press("interact")
+		var player := get_tree().get_first_node_in_group("player")
+		if is_instance_valid(player) and player.has_method("try_interact_nearest"):
+			player.try_interact_nearest()
 	queue_redraw()
 
 func _joystick_center() -> Vector2:
