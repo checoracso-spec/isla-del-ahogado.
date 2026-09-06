@@ -1,0 +1,66 @@
+[
+  {
+    "id": "merchant_resources",
+    "title": "Madera para el mercader",
+    "description": "Tráele cinco piezas de madera de naufragio.",
+    "npc": "merchant",
+    "objectives": [{"id": "wood", "description": "Reúne madera de naufragio", "type": "collect_item", "target": "madera_naufragio", "required": 5}],
+    "rewards": {"doubloons": 20}
+  },
+  {
+    "id": "merchant_page",
+    "title": "Una página perdida",
+    "description": "Consigue una página de la Bitácora del Capitán.",
+    "npc": "merchant",
+    "objectives": [{"id": "page", "description": "Consigue una página de bitácora", "type": "collect_item", "target": "pagina_bitacora", "required": 1}],
+    "rewards": {"faith": 5}
+  },
+  {
+    "id": "harbor_graves",
+    "title": "Descanso digno",
+    "description": "Entierra tres cuerpos con buena calidad.",
+    "npc": "harbor_master",
+    "objectives": [{"id": "graves", "description": "Entierra cuerpos con calidad buena", "type": "bury_quality", "target": "good", "required": 3}],
+    "rewards": {"doubloons": 30}
+  },
+  {
+    "id": "harbor_temple",
+    "title": "Papeles en regla",
+    "description": "Dona doblones al Templo del Dios Ahogado.",
+    "npc": "harbor_master",
+    "objectives": [{"id": "donation", "description": "Haz una donación al templo", "type": "donate", "target": "temple", "required": 1}],
+    "rewards": {"items": [{"id": "coral_sagrado", "name": "Coral sagrado", "quantity": 1}]}
+  },
+  {
+    "id": "rival_drink",
+    "title": "Brindis incómodo",
+    "description": "Sirve una bebida en tu propia taberna.",
+    "npc": "rival_tavern",
+    "objectives": [{"id": "drink", "description": "Sirve un grog", "type": "serve_drink", "target": "grog", "required": 1}],
+    "rewards": {"reputation": 2}
+  },
+  {
+    "id": "rival_competition",
+    "title": "La guerra del ron",
+    "description": "Sirve tres bebidas y demuestra que tu taberna tiene menos fantasmas.",
+    "npc": "rival_tavern",
+    "objectives": [{"id": "drinks", "description": "Sirve bebidas en la taberna", "type": "serve_drink", "target": "grog", "required": 3}],
+    "rewards": {"doubloons": 25, "reputation": 3}
+  },
+  {
+    "id": "healer_body_item",
+    "title": "Medicina de bolsillo",
+    "description": "Lleva al curandero un objeto personal saqueado de un cuerpo.",
+    "npc": "healer",
+    "objectives": [{"id": "loot", "description": "Saquea un objeto personal", "type": "loot_body", "target": "personal", "required": 1}],
+    "rewards": {"items": [{"id": "cataplasma", "name": "Cataplasma", "quantity": 1}]}
+  },
+  {
+    "id": "healer_recipe",
+    "title": "Receta entre algas",
+    "description": "Fabrica una cataplasma para que el curandero te confíe su receta secreta.",
+    "npc": "healer",
+    "objectives": [{"id": "craft", "description": "Fabrica una cataplasma", "type": "craft_item", "target": "cataplasma", "required": 1}],
+    "rewards": {"unlock_recipe": "tonico_algas"}
+  }
+]

@@ -19,6 +19,8 @@ var status_label: Label
 var panel_root: Control
 var portal: Node2D
 var parrot: Node2D
+var dialogue_text_label: Label
+var dialogue_options_box: VBoxContainer
 
 func _ready() -> void:
 	call_deferred("_build_content")
@@ -29,6 +31,7 @@ func _build_content() -> void:
 	EconomyManager.doubloons_changed.connect(_on_doubloons_changed)
 	FaithManager.faith_changed.connect(_on_faith_changed)
 	AbyssManager.abyss_changed.connect(_on_abyss_changed)
+	QuestManager.quest_completed.connect(_on_quest_completed)
 	_on_abyss_changed(AbyssManager.abyss_unlocked, AbyssManager.active)
 	if EconomyManager.doubloons == 0:
 		EconomyManager.add_doubloons(25)
@@ -90,6 +93,7 @@ func _add_station(action: String, title: String, position: Vector2, color: Color
 func _add_npc(action: String, title: String, position: Vector2, color: Color) -> Node2D:
 	var node := NPC_SCRIPT.new()
 	node.name = action
+	node.npc_id = action
 	node.npc_name = title
 	node.action_id = "npc:" + action
 	node.display_name = title
@@ -231,10 +235,11 @@ func handle_action(action: String, _source: Node2D) -> void:
 		"house": _repair_house()
 		"abyss": _open_abyss()
 		"combat": _open_combat()
-		"merchant", "npc:merchant": _open_merchant()
-		"npc:harbor_master": _show_dialogue("Autoridad del puerto", "Hola, viajero. El mar está cobrando peaje.")
-		"npc:rival_tavern": _show_dialogue("Tabernero rival", "Mi ron tiene menos arena que el tuyo.")
-		"npc:healer": _show_dialogue("Curandero de puerto", "Descansa antes de que te conviertas en ingrediente.")
+		"merchant": _open_merchant()
+		"npc:merchant": _open_npc_dialogue("merchant")
+		"npc:harbor_master": _open_npc_dialogue("harbor_master")
+		"npc:rival_tavern": _open_npc_dialogue("rival_tavern")
+		"npc:healer": _open_npc_dialogue("healer")
 		"quick_resources": _quick_resources()
 		"craft_menu": _open_crafting("Yunque")
 		"tech": _open_tech_tree()
@@ -246,14 +251,15 @@ func _collect_resource(source: Node2D, action: String) -> void:
 	var item_id := str(source.get_meta("item_id", "madera_naufragio"))
 	var item_name := str(source.get_meta("item_name", "Recurso"))
 	InventorySystem.add_item(_item(item_id, item_name), amount)
+	QuestManager.notify_event("collect_item", item_id, amount)
 	_toast_action("Recolectaste %s x%d." % [item_name, amount])
 	source.queue_free()
 
 func _quick_resources() -> void:
-	InventorySystem.add_item(_item("madera_naufragio", "Madera de naufragio"), 2)
-	InventorySystem.add_item(_item("coral_piedra", "Piedra y coral"), 2)
-	InventorySystem.add_item(_item("fibra_vegetal", "Fibra vegetal"), 2)
-	InventorySystem.add_item(_item("chatarra", "Chatarra"), 2)
+	var quick_items := [["madera_naufragio", "Madera de naufragio"], ["coral_piedra", "Piedra y coral"], ["fibra_vegetal", "Fibra vegetal"], ["chatarra", "Chatarra"]]
+	for entry in quick_items:
+		InventorySystem.add_item(_item(str(entry[0]), str(entry[1])), 2)
+		QuestManager.notify_event("collect_item", str(entry[0]), 2)
 	InventorySystem.add_item(_item("hacha", "Hacha"), 1)
 	_toast_action("Recursos de prueba añadidos. Tienes un hacha básica.")
 
@@ -274,6 +280,8 @@ func _loot_body(kind: String) -> void:
 	body_loot_count += 1
 	if kind == "personal":
 		InventorySystem.add_item(_item("pagina_bitacora", "Página de bitácora"), 1)
+		QuestManager.notify_event("collect_item", "pagina_bitacora")
+		QuestManager.notify_event("loot_body", "personal")
 		_toast_action("Encontraste una página de bitácora.", "loot")
 	elif kind == "material":
 		InventorySystem.add_item(_item("chatarra", "Chatarra"), 2)
@@ -290,7 +298,9 @@ func _offer_body_finish() -> void:
 	])
 
 func _bury_body() -> void:
-	if CemeteryManager.bury_body(2 if body_loot_count >= 2 else 1):
+	var quality := 2 if body_loot_count >= 2 else 1
+	if CemeteryManager.bury_body(quality):
+		QuestManager.notify_event("bury_quality", "good" if quality >= 2 else "bad")
 		body_processed = true
 		if is_instance_valid(body_node): body_node.queue_free()
 		_toast_action("Cuerpo enterrado. Favor del mar: %d." % CemeteryManager.cemetery_quality, "bury")
@@ -307,7 +317,10 @@ func _open_crafting(station: String) -> void:
 	match station:
 		"Yunque": recipes = [["Cuchillo oxidado (madera + chatarra)", {"madera_naufragio": 1, "chatarra": 1}, "cuchillo", "Cuchillo oxidado"]]
 		"Alambique": recipes = [["Ron oscuro (fibra + coral)", {"fibra_vegetal": 1, "coral_piedra": 1}, "botella_ron", "Botella de ron"]]
-		"Botica": recipes = [["Cataplasma (fibra + coral)", {"fibra_vegetal": 1, "coral_piedra": 1}, "cataplasma", "Cataplasma"]]
+		"Botica":
+			recipes = [["Cataplasma (fibra + coral)", {"fibra_vegetal": 1, "coral_piedra": 1}, "cataplasma", "Cataplasma"]]
+			if QuestManager.is_recipe_unlocked("tonico_algas"):
+				recipes.append(["Tónico de algas (cataplasma + coral)", {"cataplasma": 1, "coral_piedra": 1}, "tonico_algas", "Tónico de algas"])
 	var options: Array = []
 	for recipe in recipes:
 		options.append([recipe[0], Callable(self, "_craft").bind(recipe[1], recipe[2], recipe[3])])
@@ -321,6 +334,7 @@ func _craft(costs: Dictionary, result_id: String, result_name: String) -> void:
 	for item_id in costs:
 		InventorySystem.remove_item(item_id, int(costs[item_id]))
 	InventorySystem.add_item(_item(result_id, result_name), 1)
+	QuestManager.notify_event("craft_item", result_id)
 	_toast_action("Fabricaste %s." % result_name, "craft")
 
 func _open_tavern() -> void:
@@ -333,6 +347,8 @@ func _serve_grog() -> void:
 	InventorySystem.remove_item("botella_ron", 1)
 	InventorySystem.remove_item("fibra_vegetal", 1)
 	tavern_reputation += 1
+	QuestManager.add_tavern_reputation(1)
+	QuestManager.notify_event("serve_drink", "grog")
 	EconomyManager.add_doubloons(6)
 	_toast_action("Grog servido. Reputación de taberna: %d." % tavern_reputation, "craft")
 
@@ -344,7 +360,9 @@ func _open_merchant() -> void:
 	])
 
 func _buy_page() -> void:
-	if EconomyManager.buy(_item("pagina_bitacora", "Página de bitácora"), 1, 8): _toast_action("Compraste una página de bitácora.")
+	if EconomyManager.buy(_item("pagina_bitacora", "Página de bitácora"), 1, 8):
+		QuestManager.notify_event("collect_item", "pagina_bitacora")
+		_toast_action("Compraste una página de bitácora.")
 	else: _toast_action("No puedes pagar o no tienes espacio.")
 
 func _buy_rum() -> void:
@@ -363,7 +381,9 @@ func _open_temple() -> void:
 	])
 
 func _donate(amount: int) -> void:
-	if FaithManager.donate(amount): _toast_action("Donación aceptada. Favor: %d." % FaithManager.sea_favor, "donate")
+	if FaithManager.donate(amount):
+		QuestManager.notify_event("donate", "temple")
+		_toast_action("Donación aceptada. Favor: %d." % FaithManager.sea_favor, "donate")
 	else: _toast_action("No tienes suficientes doblones.")
 
 func _bless() -> void:
@@ -428,7 +448,76 @@ func _combat_win() -> void:
 func _combat_lose() -> void:
 	if is_instance_valid(GameManager.player) and GameManager.player.has_method("try_spend_energy"):
 		GameManager.player.try_spend_energy(10)
-	_toast_action("El bote rival te golpeó. Pierdes energía.", "combat")
+		_toast_action("El bote rival te golpeó. Pierdes energía.", "combat")
+
+func _open_npc_dialogue(dialogue_id: String) -> void:
+	if not DialogueManager.start_dialogue(dialogue_id):
+		_toast_action("Este NPC todavía está buscando sus palabras.")
+		return
+	_close_modal()
+	modal = _make_panel(Vector2(330, 145), Vector2(620, 430))
+	panel_root.add_child(modal)
+	var margin := MarginContainer.new()
+	margin.add_theme_constant_override("margin_left", 18)
+	margin.add_theme_constant_override("margin_top", 16)
+	margin.add_theme_constant_override("margin_right", 18)
+	margin.add_theme_constant_override("margin_bottom", 16)
+	modal.add_child(margin)
+	var box := VBoxContainer.new()
+	box.add_theme_constant_override("separation", 9)
+	margin.add_child(box)
+	var title := Label.new()
+	title.text = str(DialogueManager.dialogues[dialogue_id].get("npc", "Diálogo"))
+	title.add_theme_font_size_override("font_size", 22)
+	box.add_child(title)
+	var portrait := ColorRect.new()
+	portrait.color = Color("#6d8d9a")
+	portrait.custom_minimum_size = Vector2(72, 58)
+	portrait.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	box.add_child(portrait)
+	var portrait_text := Label.new()
+	portrait_text.text = "RETRATO"
+	portrait_text.position = Vector2(7, 18)
+	portrait.add_child(portrait_text)
+	dialogue_text_label = Label.new()
+	dialogue_text_label.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
+	dialogue_text_label.custom_minimum_size = Vector2(0, 58)
+	box.add_child(dialogue_text_label)
+	dialogue_options_box = VBoxContainer.new()
+	dialogue_options_box.add_theme_constant_override("separation", 6)
+	box.add_child(dialogue_options_box)
+	var close := Button.new()
+	close.text = "Cerrar"
+	close.pressed.connect(_close_dialogue_and_modal)
+	box.add_child(close)
+	_render_dialogue_node()
+
+func _render_dialogue_node() -> void:
+	if not is_instance_valid(dialogue_text_label) or not is_instance_valid(dialogue_options_box):
+		return
+	var node := DialogueManager.get_current_node()
+	dialogue_text_label.text = str(node.get("text", ""))
+	for child in dialogue_options_box.get_children():
+		child.queue_free()
+	var options: Array = node.get("options", [])
+	for index in range(options.size()):
+		var option: Dictionary = options[index]
+		var button := Button.new()
+		button.text = str(option.get("text", "Continuar"))
+		button.custom_minimum_size = Vector2(0, 38)
+		button.pressed.connect(_choose_dialogue_option.bind(index))
+		dialogue_options_box.add_child(button)
+
+func _choose_dialogue_option(index: int) -> void:
+	DialogueManager.choose_option(index)
+	if DialogueManager.active_dialogue_id.is_empty():
+		_close_modal()
+	else:
+		_render_dialogue_node()
+
+func _close_dialogue_and_modal() -> void:
+	DialogueManager.close_dialogue()
+	_close_modal()
 
 func _show_dialogue(who: String, line: String) -> void:
 	_show_modal(who, [[line, Callable(self, "_close_modal")]])
@@ -475,6 +564,10 @@ func _on_doubloons_changed(amount: int) -> void:
 
 func _on_faith_changed(value: int) -> void:
 	_set_status("Favor del mar: %d · Abismo: %s" % [value, "abierto" if AbyssManager.abyss_unlocked else "cerrado"])
+
+func _on_quest_completed(quest_id: String) -> void:
+	var quest := QuestManager.get_quest(quest_id)
+	_toast_action("Misión completada: %s." % str(quest.get("title", quest_id)))
 
 func _item(item_id: String, item_name: String, max_stack := 99) -> Item:
 	var item := Item.new()

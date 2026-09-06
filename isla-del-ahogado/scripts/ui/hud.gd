@@ -8,6 +8,7 @@ var root_control: Control
 var stats_panel: PanelContainer
 var inventory_button: Button
 var sleep_button: Button
+var quest_button: Button
 var pause_button: Button
 var energy_label: Label
 var energy_bar: ProgressBar
@@ -18,6 +19,8 @@ var inventory_panel: PanelContainer
 var inventory_grid: GridContainer
 var slot_buttons: Array[Button] = []
 var pause_panel: PanelContainer
+var quest_panel: PanelContainer
+var quest_list: VBoxContainer
 var toast_label: Label
 var toast_timer: Timer
 
@@ -28,10 +31,12 @@ func _ready() -> void:
 	TimeManager.time_changed.connect(_on_time_changed)
 	EconomyManager.doubloons_changed.connect(_on_doubloons_changed)
 	FaithManager.faith_changed.connect(_on_faith_changed)
+	QuestManager.quests_changed.connect(_refresh_quest_diary)
 	_refresh_inventory()
 	_on_time_changed(TimeManager.day, TimeManager.minute_of_day, TimeManager.get_daylight_factor())
 	_on_doubloons_changed(EconomyManager.doubloons)
 	_on_faith_changed(FaithManager.sea_favor)
+	_refresh_quest_diary()
 
 func _build_ui() -> void:
 	root_control = Control.new()
@@ -75,10 +80,12 @@ func _build_ui() -> void:
 
 	inventory_button = _create_button("Inventario [I]", Vector2(20.0, 142.0), Vector2(160.0, 44.0), _toggle_inventory)
 	sleep_button = _create_button("Dormir [Q]", Vector2(190.0, 142.0), Vector2(140.0, 44.0), _request_sleep)
+	quest_button = _create_button("Misiones [J]", Vector2(16.0, 188.0), Vector2(160.0, 40.0), _toggle_quest_diary)
 	pause_button = _create_button("Pausa [Esc]", Vector2(1140.0, 20.0), Vector2(120.0, 44.0), _toggle_pause, true)
 
 	_build_inventory_panel()
 	_build_pause_panel()
+	_build_quest_panel()
 	_layout_responsive()
 
 	toast_label = Label.new()
@@ -154,6 +161,81 @@ func _build_pause_panel() -> void:
 	exit.pressed.connect(_exit_game)
 	box.add_child(exit)
 
+func _build_quest_panel() -> void:
+	quest_panel = _make_panel(Vector2(300.0, 120.0), Vector2(680.0, 500.0))
+	quest_panel.visible = false
+	root_control.add_child(quest_panel)
+	var margin := MarginContainer.new()
+	margin.add_theme_constant_override("margin_left", 18)
+	margin.add_theme_constant_override("margin_top", 14)
+	margin.add_theme_constant_override("margin_right", 18)
+	margin.add_theme_constant_override("margin_bottom", 14)
+	quest_panel.add_child(margin)
+	var box := VBoxContainer.new()
+	box.add_theme_constant_override("separation", 8)
+	margin.add_child(box)
+	var header := HBoxContainer.new()
+	box.add_child(header)
+	var title := Label.new()
+	title.text = "Diario de misiones"
+	title.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	title.add_theme_font_size_override("font_size", 22)
+	header.add_child(title)
+	var close := Button.new()
+	close.text = "Cerrar"
+	close.pressed.connect(_toggle_quest_diary)
+	header.add_child(close)
+	quest_list = VBoxContainer.new()
+	quest_list.add_theme_constant_override("separation", 7)
+	quest_list.size_flags_vertical = Control.SIZE_EXPAND_FILL
+	box.add_child(quest_list)
+
+func _refresh_quest_diary() -> void:
+	if not is_instance_valid(quest_list):
+		return
+	for child in quest_list.get_children():
+		child.queue_free()
+	var visible_count := 0
+	for quest in QuestManager.get_all_quests():
+		var definition: Dictionary = quest.get("definition", {})
+		var state: Dictionary = quest.get("state", {})
+		var status := str(state.get("status", "no_iniciada"))
+		if status == "no_iniciada":
+			continue
+		visible_count += 1
+		var card := Label.new()
+		card.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
+		var status_text := "ACTIVA" if status == "activa" else "COMPLETADA"
+		var card_text := "%s · %s\n%s\n" % [status_text, str(definition.get("title", quest.get("id", "Misión"))), str(definition.get("description", ""))]
+		var progress: Dictionary = state.get("objectives", {})
+		for objective in definition.get("objectives", []):
+			var objective_id := str(objective.get("id", ""))
+			card_text += "  • %s (%d/%d)\n" % [str(objective.get("description", "Objetivo")), int(progress.get(objective_id, 0)), int(objective.get("required", 1))]
+		card_text += "Recompensa: %s" % _quest_reward_text(definition.get("rewards", {}))
+		card.text = card_text
+		card.custom_minimum_size = Vector2(0, 72)
+		card.add_theme_color_override("font_color", Color("#9be6af") if status == "completada" else Color("#ffe3a6"))
+		quest_list.add_child(card)
+	if visible_count == 0:
+		var empty_label := Label.new()
+		empty_label.text = "No tienes misiones activas. Habla con los NPC que tienen un signo !."
+		empty_label.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
+		quest_list.add_child(empty_label)
+
+func _quest_reward_text(rewards: Dictionary) -> String:
+	var parts: Array[String] = []
+	if int(rewards.get("doubloons", 0)) > 0:
+		parts.append("%d doblones" % int(rewards.doubloons))
+	if int(rewards.get("faith", 0)) > 0:
+		parts.append("%d favor" % int(rewards.faith))
+	if int(rewards.get("reputation", 0)) > 0:
+		parts.append("+%d reputación" % int(rewards.reputation))
+	if not str(rewards.get("unlock_recipe", "")).is_empty():
+		parts.append("receta nueva")
+	for item in rewards.get("items", []):
+		parts.append("%s x%d" % [str(item.get("name", item.get("id", "ítem"))), int(item.get("quantity", 1))])
+	return ", ".join(parts) if not parts.is_empty() else "ninguna"
+
 func _make_panel(position: Vector2, panel_size: Vector2) -> PanelContainer:
 	var panel := PanelContainer.new()
 	panel.position = position
@@ -186,6 +268,9 @@ func _layout_responsive() -> void:
 	if is_instance_valid(sleep_button):
 		sleep_button.position = Vector2(inventory_button.position.x + inventory_button.size.x + 12.0, 136.0)
 		sleep_button.size = Vector2(minf(140.0, maxf(112.0, viewport_width - sleep_button.position.x - 16.0)), 44.0)
+	if is_instance_valid(quest_button):
+		quest_button.position = Vector2(16.0, 188.0)
+		quest_button.size = Vector2(minf(160.0, maxf(120.0, viewport_width - 32.0)), 40.0)
 	if is_instance_valid(pause_button):
 		pause_button.position = Vector2(maxf(16.0, viewport_width - 136.0), 16.0)
 		pause_button.size = Vector2(minf(120.0, viewport_width - 32.0), 44.0)
@@ -195,6 +280,9 @@ func _layout_responsive() -> void:
 	if is_instance_valid(pause_panel):
 		pause_panel.position = Vector2(maxf(12.0, (viewport_width - 340.0) * 0.5), maxf(130.0, (viewport_height - 220.0) * 0.5))
 		pause_panel.size = Vector2(minf(340.0, viewport_width - 24.0), minf(220.0, viewport_height - 150.0))
+	if is_instance_valid(quest_panel):
+		quest_panel.position = Vector2(maxf(12.0, (viewport_width - 680.0) * 0.5), maxf(104.0, (viewport_height - 500.0) * 0.5))
+		quest_panel.size = Vector2(minf(680.0, viewport_width - 24.0), minf(500.0, maxf(300.0, viewport_height - 120.0)))
 	if is_instance_valid(toast_label):
 		toast_label.position = Vector2(16.0, maxf(120.0, viewport_height - 70.0))
 		toast_label.size = Vector2(maxf(0.0, viewport_width - 32.0), 40.0)
@@ -247,12 +335,22 @@ func _unhandled_input(event: InputEvent) -> void:
 	if event.is_action_pressed("open_inventory"):
 		_toggle_inventory()
 		get_viewport().set_input_as_handled()
+	elif event.is_action_pressed("open_quests"):
+		_toggle_quest_diary()
+		get_viewport().set_input_as_handled()
 	elif event.is_action_pressed("pause"):
 		_toggle_pause()
 		get_viewport().set_input_as_handled()
 
 func _toggle_inventory() -> void:
 	inventory_panel.visible = not inventory_panel.visible
+
+func _toggle_quest_diary() -> void:
+	if not is_instance_valid(quest_panel):
+		return
+	quest_panel.visible = not quest_panel.visible
+	if quest_panel.visible:
+		_refresh_quest_diary()
 
 func _request_sleep() -> void:
 	sleep_requested.emit()

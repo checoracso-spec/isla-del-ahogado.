@@ -11,10 +11,15 @@ var blessing_until_day := 0
 func donate(amount: int) -> bool:
 	if amount <= 0 or not EconomyManager.spend_doubloons(amount):
 		return false
-	sea_favor += amount
+	add_favor(amount)
+	return true
+
+func add_favor(amount: int) -> void:
+	if amount == 0:
+		return
+	sea_favor = maxi(0, sea_favor + amount)
 	faith_changed.emit(sea_favor)
 	AbyssManager.check_unlock()
-	return true
 
 func can_activate_blessing() -> bool:
 	return sea_favor >= 10

@@ -1,0 +1,30 @@
+[
+  {"id":"merchant","npc":"Mercader itinerante","start":"root","nodes":{
+    "root":{"text":"Tengo mercancía, deudas y un barco que rechina. ¿Qué encargo aceptas?","options":[
+      {"text":"Aceptar: madera para el mercader","action":{"type":"start_quest","quest_id":"merchant_resources"},"next":"accepted"},
+      {"text":"Aceptar: buscar una página de bitácora","action":{"type":"start_quest","quest_id":"merchant_page"},"next":"accepted"},
+      {"text":"Solo estoy mirando","next":"close"}]},
+    "accepted":{"text":"Perfecto. Vuelve cuando el trabajo esté hecho y no me traigas madera mordida.","options":[{"text":"Cerrar diálogo","next":"close"}]}
+  }},
+  {"id":"harbor_master","npc":"Autoridad del puerto","start":"root","nodes":{
+    "root":{"text":"El puerto huele a sal, papeleo y cadáveres sin registrar. Puedes ayudar con eso.","options":[
+      {"text":"Aceptar: dar descanso digno","action":{"type":"start_quest","quest_id":"harbor_graves"},"next":"accepted"},
+      {"text":"Aceptar: donar al templo","action":{"type":"start_quest","quest_id":"harbor_temple"},"next":"accepted"},
+      {"text":"No quiero problemas","next":"close"}]},
+    "accepted":{"text":"Queda anotado. Si preguntas, yo nunca vi ese cuerpo.","options":[{"text":"Cerrar diálogo","next":"close"}]}
+  }},
+  {"id":"rival_tavern","npc":"Tabernero rival","start":"root","nodes":{
+    "root":{"text":"Tu taberna compite con la mía. Qué tragedia para los clientes y qué negocio para nosotros.","options":[
+      {"text":"Aceptar: brindar en mi taberna","action":{"type":"start_quest","quest_id":"rival_drink"},"next":"accepted"},
+      {"text":"Aceptar: ganar la guerra del ron","action":{"type":"start_quest","quest_id":"rival_competition"},"next":"accepted"},
+      {"text":"Prefiero que discutamos mañana","next":"close"}]},
+    "accepted":{"text":"Sirve algo fuerte. La competencia es más divertida cuando nadie recuerda el resultado.","options":[{"text":"Cerrar diálogo","next":"close"}]}
+  }},
+  {"id":"healer","npc":"Curandero de puerto","start":"root","nodes":{
+    "root":{"text":"Traes cara de necesitar una cura y bolsillos de necesitar trabajo.","options":[
+      {"text":"Aceptar: medicina de bolsillo","action":{"type":"start_quest","quest_id":"healer_body_item"},"next":"accepted"},
+      {"text":"Aceptar: receta entre algas","action":{"type":"start_quest","quest_id":"healer_recipe"},"next":"accepted"},
+      {"text":"Solo quería saludar","next":"close"}]},
+    "accepted":{"text":"Hazlo rápido. Los pacientes muertos son muy malos clientes.","options":[{"text":"Cerrar diálogo","next":"close"}]}
+  }}
+]
