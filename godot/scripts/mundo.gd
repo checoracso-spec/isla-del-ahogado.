@@ -7,6 +7,7 @@ const PanelTabernaScript := preload("res://scripts/ui/panel_taberna.gd")
 const PanelMuelleScript := preload("res://scripts/ui/panel_muelle.gd")
 const PanelMapaGlobalScript := preload("res://scripts/ui/panel_mapa_global.gd")
 const PuestoMuelleScript := preload("res://scripts/interiores/puesto_muelle.gd")
+const DialogoNpcTabernaScript := preload("res://scripts/interiores/dialogo_npc_taberna.gd")
 const FuenteRecursoScript := preload("res://scripts/mapa/fuente_recurso.gd")
 const ParcelaCultivoScript := preload("res://scripts/mapa/parcela_cultivo.gd")
 const RecolectorCultivoScript := preload("res://scripts/mapa/recolector_cultivo.gd")
@@ -738,6 +739,18 @@ func _montar_logistica() -> void:
 			semilla, "tripulacion", Vector2i(-1, -1), "marinero_%d" % i)
 		piratas.append(p)
 		semilla += 31
+
+	_montar_dialogo_taberna()
+
+func _montar_dialogo_taberna() -> void:
+	for p: Pirata in piratas:
+		if p.id_personaje != "calico_jack":
+			continue
+		var dialogo := DialogoNpcTabernaScript.new()
+		dialogo.name = "DialogoNpcTaberna"
+		p.add_child(dialogo)
+		dialogo.dialogo_mostrado.connect(_apuntar)
+		return
 
 func _personajes_con_puesto() -> Array[String]:
 	var ids: Array[String] = []

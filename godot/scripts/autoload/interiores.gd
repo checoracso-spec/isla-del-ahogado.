@@ -23,6 +23,8 @@ var _edificio_definicion: String = ""
 var _edificio_instancia: String = ""
 var _casilla_exterior: Vector2i
 var _puerta_instancia: String = ""
+var _npc_taberna: Node = null
+var _npc_taberna_retorno := Vector2.ZERO
 
 ## Lo llama `mundo.gd` al arrancar.
 func usar_exterior(mundo: Node2D, contenedor: Node2D) -> void:
@@ -78,6 +80,7 @@ func entrar(puerta: Puerta, jugador: Jugador,
 		puerta.edificio_definicion, puerta.edificio_instancia, identidad)
 	Entidades.vincular(identidad, activo)
 	_conectar_interior(activo, jugador)
+	_mover_npc_taberna(activo)
 
 	_apagar_exterior()
 	var destino := activo.entrada() if pos_destino == Vector2.INF else pos_destino
@@ -139,6 +142,7 @@ func salir(jugador: Jugador) -> bool:
 	# del interior.
 	var zoom_exterior: Vector2 = _retorno.get("zoom", _zoom_actual())
 
+	_devolver_npc_taberna()
 	_encender_exterior()
 	# Se habla con el exterior por nombre de método y no con `as Mundo` a
 	# propósito: `mundo.gd` ya depende de este autoload, y referenciar su clase
@@ -160,6 +164,8 @@ func salir(jugador: Jugador) -> bool:
 	_edificio_definicion = ""
 	_edificio_instancia = ""
 	_puerta_instancia = ""
+	_npc_taberna = null
+	_npc_taberna_retorno = Vector2.ZERO
 
 	Ubicacion.volver_al_exterior(jugador.pos_tile)
 	_restaurar_zoom_exterior(zoom_exterior)
@@ -180,6 +186,28 @@ func _conectar_interior(interior: InteriorEscena, jugador: Jugador) -> void:
 		interior.puerta_salida.atravesada.connect(_al_pedir_salida.bind(jugador))
 	interior.cofre_abierto.connect(func(c: Cofre): cofre_abierto.emit(c))
 	interior.transicion_solicitada.connect(_al_pedir_transicion)
+
+func _mover_npc_taberna(interior: InteriorEscena) -> void:
+	if _edificio_definicion != "taberna" or _exterior == null:
+		return
+	var piratas: Variant = _exterior.get("piratas")
+	if not piratas is Array:
+		return
+	for npc in piratas:
+		if npc == null or not is_instance_valid(npc) \
+				or str(npc.get("id_personaje")) != "calico_jack":
+			continue
+		_npc_taberna = npc
+		_npc_taberna_retorno = npc.get("pos_tile")
+		interior.recibir(npc, Vector2(6.5, 2.5))
+		return
+
+func _devolver_npc_taberna() -> void:
+	if _npc_taberna == null or not is_instance_valid(_npc_taberna):
+		return
+	var zona_exterior := _exterior.get("zona_exterior") as Zona
+	if zona_exterior != null:
+		zona_exterior.recibir(_npc_taberna, _npc_taberna_retorno)
 
 ## Mantiene la clave histórica de la planta baja para no cambiar los IDs de
 ## sus cofres. Las plantas adicionales incorporan su id y son independientes.
