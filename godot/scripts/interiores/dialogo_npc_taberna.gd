@@ -7,19 +7,21 @@ extends Interactuable
 ## taberna. El estado de la misión sigue siendo propiedad de Misiones.
 
 const MISION_ID := "marea_009_naufragio"
-const ITEM_ID := "madera_naufragio"
-const CANTIDAD_REQUERIDA := 2
-const RECOMPENSA_DOBLONES := 25
 
 signal dialogo_mostrado(texto: String)
 
 func _ready() -> void:
 	alcance = 1.6
 	super()
+	var definicion := BaseDeDatos.mision(MISION_ID)
+	if definicion == null:
+		push_error("No existe la definición de misión '%s'." % MISION_ID)
+		return
 	if not Misiones.ids().has(MISION_ID):
 		Misiones.registrar(MISION_ID)
 	if Misiones.objetivo_item(MISION_ID).is_empty():
-		Misiones.registrar_objetivo_item(MISION_ID, ITEM_ID, CANTIDAD_REQUERIDA)
+		Misiones.registrar_objetivo_item(MISION_ID,
+			definicion.objetivo_item_id, definicion.objetivo_cantidad)
 
 func texto_accion() -> String:
 	match Misiones.estado(MISION_ID):
@@ -39,8 +41,10 @@ func interactuar(_quien: Node) -> void:
 			_dialogar("Calico Jack: La marea sigue trayendo madera. No tardes.")
 		Misiones.QuestState.OBJECTIVE_COMPLETE:
 			if Misiones.entregar(MISION_ID):
-				Bolsa.ingresar(RECOMPENSA_DOBLONES)
-				_dialogar("Calico Jack: Buen trabajo. Aquí tienes %d doblones." % RECOMPENSA_DOBLONES)
+				var definicion := BaseDeDatos.mision(MISION_ID)
+				var recompensa := definicion.recompensa_doblones if definicion != null else 0
+				Bolsa.ingresar(recompensa)
+				_dialogar("Calico Jack: Buen trabajo. Aquí tienes %d doblones." % recompensa)
 		Misiones.QuestState.TURNED_IN:
 			_dialogar("Calico Jack: Que corra el ron, compañero.")
 

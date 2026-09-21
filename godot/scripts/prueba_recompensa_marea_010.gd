@@ -56,7 +56,7 @@ func _ejecutar() -> void:
 	_comprobar("la entrega alcanza TURNED_IN",
 		Misiones.estado(MISION_ID) == Misiones.QuestState.TURNED_IN)
 	_comprobar("la entrega concede los doblones observables",
-		Bolsa.oro == oro_antes + DialogoNpcTaberna.RECOMPENSA_DOBLONES)
+		Bolsa.oro == oro_antes + BaseDeDatos.mision(MISION_ID).recompensa_doblones)
 	var oro_concedido := Bolsa.oro
 	dialogo.interactuar(mundo.jugador)
 	_comprobar("reinteractuar no duplica la recompensa", Bolsa.oro == oro_concedido)
