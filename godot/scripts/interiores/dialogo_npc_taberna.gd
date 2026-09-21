@@ -9,6 +9,7 @@ extends Interactuable
 const MISION_ID := "marea_009_naufragio"
 const ITEM_ID := "madera_naufragio"
 const CANTIDAD_REQUERIDA := 2
+const RECOMPENSA_DOBLONES := 25
 
 signal dialogo_mostrado(texto: String)
 
@@ -38,7 +39,8 @@ func interactuar(_quien: Node) -> void:
 			_dialogar("Calico Jack: La marea sigue trayendo madera. No tardes.")
 		Misiones.QuestState.OBJECTIVE_COMPLETE:
 			if Misiones.entregar(MISION_ID):
-				_dialogar("Calico Jack: Buen trabajo. El encargo queda saldado.")
+				Bolsa.ingresar(RECOMPENSA_DOBLONES)
+				_dialogar("Calico Jack: Buen trabajo. Aquí tienes %d doblones." % RECOMPENSA_DOBLONES)
 		Misiones.QuestState.TURNED_IN:
 			_dialogar("Calico Jack: Que corra el ron, compañero.")
 
