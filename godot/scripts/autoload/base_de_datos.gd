@@ -6,6 +6,7 @@ const RutaGlobalDataScript := preload("res://scripts/datos/ruta_global_data.gd")
 const BarcoDataScript := preload("res://scripts/datos/barco_data.gd")
 const NecesidadDataScript := preload("res://scripts/datos/necesidad_data.gd")
 const EventoMundoDataScript := preload("res://scripts/datos/evento_mundo_data.gd")
+const MisionDataScript := preload("res://scripts/datos/mision_data.gd")
 ## AUTOLOAD: BaseDeDatos
 ##
 ## Todo el contenido del juego vive aquí, en tablas de diccionarios.
@@ -701,6 +702,12 @@ const TABLA_EVENTOS := [
 	  "desc": "Una corriente trae restos a las costas y abarata la madera." },
 ]
 
+const TABLA_MISIONES := [
+	{ "id": "marea_009_naufragio", "nombre": "Restos del Naufragio",
+	  "objetivo_item_id": "madera_naufragio", "objetivo_cantidad": 2,
+	  "recompensa_doblones": 25 },
+]
+
 const TABLA_HORARIOS := [
 	{ "id": "tripulacion", "nombre": "Rutina de tripulación",
 	  "tramos": [
@@ -773,6 +780,7 @@ var rutas: Dictionary = {}        ## id -> RutaGlobalData
 var barcos: Dictionary = {}       ## id -> BarcoData
 var necesidades: Dictionary = {}  ## id -> NecesidadData
 var eventos: Dictionary = {}      ## id -> EventoMundoData
+var misiones: Dictionary = {}     ## id -> MisionData
 
 func _ready() -> void:
 	for d in TABLA_ITEMS:
@@ -817,6 +825,9 @@ func _ready() -> void:
 	for d in TABLA_EVENTOS:
 		var evento = EventoMundoDataScript.desde_dic(d)
 		eventos[evento.id] = evento
+	for d in TABLA_MISIONES:
+		var mision = MisionDataScript.desde_dic(d)
+		misiones[mision.id] = mision
 	_validar()
 	print("[BaseDeDatos] %d ítems, %d recetas, %d edificios, %d personajes, %d animales."
 		% [items.size(), recetas.size(), edificios.size(), personajes.size(), animales.size()])
@@ -844,6 +855,16 @@ func _validar() -> void:
 		if ent != n.entrada:
 			push_warning("Interior '%s': la entrada %s cae en la pared; se usará %s"
 				% [n.id, n.entrada, ent])
+	for m: MisionData in misiones.values():
+		if m.objetivo_item_id.is_empty() or not items.has(m.objetivo_item_id):
+			push_warning("Misión '%s' apunta a un objeto inexistente: '%s'"
+				% [m.id, m.objetivo_item_id])
+		if m.objetivo_cantidad <= 0:
+			push_warning("Misión '%s' tiene una cantidad de objetivo inválida: %d"
+				% [m.id, m.objetivo_cantidad])
+		if m.recompensa_doblones < 0:
+			push_warning("Misión '%s' tiene una recompensa negativa: %d"
+				% [m.id, m.recompensa_doblones])
 
 # --- accesos cómodos (devuelven null si no existe, nunca revientan) ---
 
@@ -888,6 +909,9 @@ func barco(id: String):
 
 func evento(id: String):
 	return eventos.get(id)
+
+func mision(id: String) -> MisionData:
+	return misiones.get(id)
 
 func nombre_item(id: String) -> String:
 	var it: ItemData = items.get(id)
