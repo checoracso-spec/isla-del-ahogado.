@@ -42,7 +42,7 @@ const SECCIONES := {
 	"animales": false,
 	"edificios": false,
 	"economia": false,
-	"misiones": false,
+	"misiones": true,
 	"eventos": true,
 }
 
