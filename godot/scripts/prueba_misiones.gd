@@ -5,9 +5,11 @@ const MISION_ID := "marea_007_prueba"
 
 var correctas := 0
 var fallos := 0
+var cargas_recibidas := 0
 
 func _ready() -> void:
 	print("\n=== PRUEBAS DE ESTADO DE MISIONES ===\n")
+	Guardado.partida_cargada.connect(_al_cargar_partida)
 	Misiones.reiniciar()
 
 	_comprobar("registra una mision nueva", Misiones.registrar(MISION_ID))
@@ -33,6 +35,15 @@ func _ready() -> void:
 	_comprobar("restaura la mision guardada",
 		Misiones.estado(MISION_ID) == Misiones.QuestState.TURNED_IN)
 
+	Guardado.borrar(7)
+	_comprobar("guarda la mision en disco", Guardado.guardar(7))
+	Misiones.reiniciar()
+	_comprobar("carga la mision desde disco", Guardado.cargar(7))
+	_comprobar("restaura el estado desde disco",
+		Misiones.estado(MISION_ID) == Misiones.QuestState.TURNED_IN)
+	_comprobar("emite la señal de partida cargada", cargas_recibidas == 1)
+	Guardado.borrar(7)
+
 	print("=== %d/%d comprobaciones de misiones ===" % [correctas, correctas + fallos])
 	get_tree().quit(1 if fallos > 0 else 0)
 
@@ -43,3 +54,6 @@ func _comprobar(nombre: String, condicion: bool) -> void:
 	else:
 		fallos += 1
 		push_error("FALLO: %s" % nombre)
+
+func _al_cargar_partida(_ranura: int) -> void:
+	cargas_recibidas += 1
