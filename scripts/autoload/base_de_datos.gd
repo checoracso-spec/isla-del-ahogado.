@@ -711,6 +711,14 @@ const TABLA_MISIONES := [
 	  "dialogo_progreso": "La marea sigue trayendo madera. No tardes.",
 	  "dialogo_entrega": "Buen trabajo. Aquí tienes %d doblones.",
 	  "dialogo_completada": "Que corra el ron, compañero." },
+	{ "id": "marea_014_raciones_tripulacion", "nombre": "Raciones para la Tripulación",
+	  "npc_id": "black_sam",
+	  "objetivo_item_id": "raciones", "objetivo_cantidad": 3,
+	  "recompensa_doblones": 30,
+	  "dialogo_aceptacion": "Consigue tres raciones para que nadie se acueste con el estómago vacío.",
+	  "dialogo_progreso": "La tripulación sigue esperando esas raciones.",
+	  "dialogo_entrega": "Así se habla. Toma %d doblones para el siguiente reparto.",
+	  "dialogo_completada": "Mientras haya comida, habrá esperanza." },
 ]
 
 const TABLA_HORARIOS := [
