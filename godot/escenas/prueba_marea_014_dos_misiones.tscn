@@ -1,0 +1,6 @@
+[gd_scene load_steps=2 format=3]
+
+[ext_resource type="Script" path="res://scripts/prueba_marea_014_dos_misiones.gd" id="1"]
+
+[node name="PruebaMarea014DosMisiones" type="Node"]
+script = ExtResource("1")

@@ -704,8 +704,21 @@ const TABLA_EVENTOS := [
 
 const TABLA_MISIONES := [
 	{ "id": "marea_009_naufragio", "nombre": "Restos del Naufragio",
+	  "npc_id": "calico_jack",
 	  "objetivo_item_id": "madera_naufragio", "objetivo_cantidad": 2,
-	  "recompensa_doblones": 25 },
+	  "recompensa_doblones": 25,
+	  "dialogo_aceptacion": "Trae dos maderos de naufragio y hablamos.",
+	  "dialogo_progreso": "La marea sigue trayendo madera. No tardes.",
+	  "dialogo_entrega": "Buen trabajo. Aquí tienes %d doblones.",
+	  "dialogo_completada": "Que corra el ron, compañero." },
+	{ "id": "marea_014_raciones_tripulacion", "nombre": "Raciones para la Tripulación",
+	  "npc_id": "black_sam",
+	  "objetivo_item_id": "raciones", "objetivo_cantidad": 3,
+	  "recompensa_doblones": 30,
+	  "dialogo_aceptacion": "Consigue tres raciones para que nadie se acueste con el estómago vacío.",
+	  "dialogo_progreso": "La tripulación sigue esperando esas raciones.",
+	  "dialogo_entrega": "Así se habla. Toma %d doblones para el siguiente reparto.",
+	  "dialogo_completada": "Mientras haya comida, habrá esperanza." },
 ]
 
 const TABLA_HORARIOS := [
@@ -856,6 +869,9 @@ func _validar() -> void:
 			push_warning("Interior '%s': la entrada %s cae en la pared; se usará %s"
 				% [n.id, n.entrada, ent])
 	for m: MisionData in misiones.values():
+		if m.npc_id.is_empty() or not personajes.has(m.npc_id):
+			push_warning("Misión '%s' apunta a un NPC inexistente: '%s'"
+				% [m.id, m.npc_id])
 		if m.objetivo_item_id.is_empty() or not items.has(m.objetivo_item_id):
 			push_warning("Misión '%s' apunta a un objeto inexistente: '%s'"
 				% [m.id, m.objetivo_item_id])
@@ -912,6 +928,12 @@ func evento(id: String):
 
 func mision(id: String) -> MisionData:
 	return misiones.get(id)
+
+func mision_de_npc(npc_id: String) -> MisionData:
+	for mision_definicion: MisionData in misiones.values():
+		if mision_definicion.npc_id == npc_id:
+			return mision_definicion
+	return null
 
 func nombre_item(id: String) -> String:
 	var it: ItemData = items.get(id)

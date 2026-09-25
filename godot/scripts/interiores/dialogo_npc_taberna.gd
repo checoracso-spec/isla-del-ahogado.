@@ -6,47 +6,61 @@ extends Interactuable
 ## detección [E] de Interactuable y se mueve con el NPC al entrar en la
 ## taberna. El estado de la misión sigue siendo propiedad de Misiones.
 
-const MISION_ID := "marea_009_naufragio"
-
 signal dialogo_mostrado(texto: String)
+
+var mision_id: String = ""
+var definicion: MisionData = null
+
+func _init(p_mision_id: String = "", p_definicion: MisionData = null) -> void:
+	mision_id = p_mision_id.strip_edges()
+	definicion = p_definicion
 
 func _ready() -> void:
 	alcance = 1.6
 	super()
-	var definicion := BaseDeDatos.mision(MISION_ID)
+	if definicion == null and not mision_id.is_empty():
+		definicion = BaseDeDatos.mision(mision_id)
+	# Compatibilidad con el MAREA-012 caller que construía el componente sin
+	# argumentos. No fija una misión concreta: sólo usa la única definición
+	# disponible mientras el contenido siga teniendo una sola misión.
+	if definicion == null and mision_id.is_empty() and BaseDeDatos.misiones.size() == 1:
+		definicion = BaseDeDatos.misiones.values()[0]
 	if definicion == null:
-		push_error("No existe la definición de misión '%s'." % MISION_ID)
+		push_error("No existe la definición de misión '%s'." % mision_id)
 		return
-	if not Misiones.ids().has(MISION_ID):
-		Misiones.registrar(MISION_ID)
-	if Misiones.objetivo_item(MISION_ID).is_empty():
-		Misiones.registrar_objetivo_item(MISION_ID,
+	mision_id = definicion.id
+	if mision_id.is_empty():
+		push_error("La definición de misión no tiene id.")
+		return
+	if not Misiones.ids().has(mision_id):
+		Misiones.registrar(mision_id)
+	if Misiones.objetivo_item(mision_id).is_empty():
+		Misiones.registrar_objetivo_item(mision_id,
 			definicion.objetivo_item_id, definicion.objetivo_cantidad)
 
 func texto_accion() -> String:
-	match Misiones.estado(MISION_ID):
+	match Misiones.estado(mision_id):
 		Misiones.QuestState.AVAILABLE:
-			return "Hablar con Calico Jack · Encargo"
+			return "Hablar con %s · Encargo" % _nombre_npc()
 		Misiones.QuestState.OBJECTIVE_COMPLETE:
-			return "Hablar con Calico Jack · Entregar"
+			return "Hablar con %s · Entregar" % _nombre_npc()
 		_:
-			return "Hablar con Calico Jack"
+			return "Hablar con %s" % _nombre_npc()
 
 func interactuar(_quien: Node) -> void:
-	match Misiones.estado(MISION_ID):
+	match Misiones.estado(mision_id):
 		Misiones.QuestState.AVAILABLE:
-			if Misiones.aceptar(MISION_ID):
-				_dialogar("Calico Jack: Trae dos maderos de naufragio y hablamos.")
+			if Misiones.aceptar(mision_id):
+				_dialogar(definicion.dialogo_aceptacion)
 		Misiones.QuestState.ACCEPTED:
-			_dialogar("Calico Jack: La marea sigue trayendo madera. No tardes.")
+			_dialogar(definicion.dialogo_progreso)
 		Misiones.QuestState.OBJECTIVE_COMPLETE:
-			if Misiones.entregar(MISION_ID):
-				var definicion := BaseDeDatos.mision(MISION_ID)
-				var recompensa := definicion.recompensa_doblones if definicion != null else 0
+			if Misiones.entregar(mision_id):
+				var recompensa := definicion.recompensa_doblones
 				Bolsa.ingresar(recompensa)
-				_dialogar("Calico Jack: Buen trabajo. Aquí tienes %d doblones." % recompensa)
+				_dialogar(definicion.dialogo_entrega % recompensa)
 		Misiones.QuestState.TURNED_IN:
-			_dialogar("Calico Jack: Que corra el ron, compañero.")
+			_dialogar(definicion.dialogo_completada)
 
 ## El componente es hijo del Pirata, así que su posición local no representa
 ## la casilla del NPC. Reutiliza la misma búsqueda de objetivos del jugador.
@@ -54,5 +68,17 @@ func distancia_interaccion(pos_tile: Vector2) -> float:
 	var npc := get_parent() as Actor
 	return pos_tile.distance_to(npc.pos_tile) if npc != null else super(pos_tile)
 
+func _nombre_npc() -> String:
+	var pirata := get_parent() as Pirata
+	if pirata != null and not pirata.nombre_mostrado.is_empty():
+		return pirata.nombre_mostrado
+	if definicion != null and not definicion.npc_id.is_empty():
+		var datos := BaseDeDatos.personaje(definicion.npc_id)
+		if datos != null:
+			return datos.nombre
+	return "NPC"
+
 func _dialogar(texto: String) -> void:
-	dialogo_mostrado.emit(texto)
+	if texto.is_empty():
+		return
+	dialogo_mostrado.emit("%s: %s" % [_nombre_npc(), texto])
