@@ -119,12 +119,27 @@ func _ready() -> void:
 	_comprobar(suelo != null, "existe un suelo editable")
 	_comprobar(muro != null, "existe un muro editable")
 	_comprobar(mueble != null, "existe un mueble editable")
-	if editor != null and suelo != null and mueble != null:
+	if editor != null and suelo != null and muro != null and mueble != null:
+		# El layout persistido puede guardar objetos ocultos. Esta prueba necesita
+		# una precondicion visible para medir que ocultar la base no altera objetos.
+		editor._mostrar_assets_muros = true
+		for nodo_fixture in [suelo, muro, mueble]:
+			nodo_fixture.visible = true
+			nodo_fixture.process_mode = Node.PROCESS_MODE_INHERIT
+			nodo_fixture.set_meta("layout_oculto_por_boton", false)
+		editor._actualizar_visibilidad_capas()
+		_comprobar(is_equal_approx(suelo.self_modulate.a, 1.0) and is_equal_approx(muro.self_modulate.a, 1.0),
+			"suelo y muro parten opacos antes del toggle de capa")
 		editor._alternar_visibilidad_capa("base")
 		_comprobar(not editor._capa_visible_para_editor(suelo), "la capa base puede ocultarse sin borrar el suelo")
+		_comprobar(is_zero_approx(suelo.self_modulate.a) and is_zero_approx(muro.self_modulate.a),
+			"ocultar la capa base vuelve transparentes suelo y muro")
 		_comprobar(mueble.visible, "ocultar base conserva visibles los objetos")
+		_comprobar(is_equal_approx(mueble.self_modulate.a, 1.0), "ocultar base no altera la visibilidad visual de los objetos")
 		editor._alternar_visibilidad_capa("base")
 		_comprobar(editor._capa_visible_para_editor(suelo), "la capa base puede restaurarse")
+		_comprobar(is_equal_approx(suelo.self_modulate.a, 1.0) and is_equal_approx(muro.self_modulate.a, 1.0),
+			"restaurar la capa base restaura opacidad de suelo y muro")
 	if muro != null:
 		var sprite_muro := _sprite_principal(muro)
 		var escala_muro_original := sprite_muro.scale.y if sprite_muro != null else 0.0
@@ -199,6 +214,16 @@ func _ready() -> void:
 		_finalizar(comparador)
 		return
 
+	# Aislar el contrato de BORRAR BASE del estado de visibilidad que el usuario
+	# haya guardado para esta escena de diseño.
+	for nodo_fixture in [suelo, muro, mueble]:
+		nodo_fixture.visible = true
+		nodo_fixture.process_mode = Node.PROCESS_MODE_INHERIT
+		nodo_fixture.set_meta("layout_oculto_por_boton", false)
+	editor._actualizar_visibilidad_capas()
+	_comprobar(suelo.visible and muro.visible and mueble.visible, "la prueba prepara base y mueble visibles antes de borrarlos")
+	_comprobar(is_equal_approx(suelo.self_modulate.a, 1.0) and is_equal_approx(muro.self_modulate.a, 1.0),
+		"suelo y muro parten opacos antes de borrar la base")
 	editor._pedir_borrado_modo(0)
 	await get_tree().process_frame
 	_comprobar(editor.is_inside_tree(), "el editor sigue vivo tras borrar la base")
@@ -206,6 +231,7 @@ func _ready() -> void:
 	_comprobar(not suelo.visible, "el suelo se quita de la edición")
 	_comprobar(not muro.visible, "el muro se quita de la edición")
 	_comprobar(mueble.visible, "los muebles siguen visibles al borrar la base")
+	_comprobar(mueble.process_mode == Node.PROCESS_MODE_INHERIT, "borrar la base conserva el procesamiento del mueble")
 
 	var cantidad_antes_reemplazo: int = editor._elementos.size()
 	var suelo_reemplazado: Node2D = editor._colocar_asset_en_tile(
