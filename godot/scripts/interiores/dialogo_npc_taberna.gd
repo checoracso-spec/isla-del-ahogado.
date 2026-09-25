@@ -8,6 +8,9 @@ extends Interactuable
 
 signal dialogo_mostrado(texto: String)
 
+const CENTRO_MARCADOR := Vector2(0.0, -76.0)
+const FONDO_MARCADOR := Color("171b24")
+
 var mision_id: String = ""
 var definicion: MisionData = null
 
@@ -37,6 +40,52 @@ func _ready() -> void:
 	if Misiones.objetivo_item(mision_id).is_empty():
 		Misiones.registrar_objetivo_item(mision_id,
 			definicion.objetivo_item_id, definicion.objetivo_cantidad)
+	Misiones.estado_cambiado.connect(_al_cambiar_estado_mision)
+	queue_redraw()
+
+## El marcador es una vista derivada: nunca guarda estado propio ni altera la
+## posición lógica (pies) del NPC.
+func estado_marcador() -> String:
+	if definicion == null or not Misiones.ids().has(mision_id):
+		return "oculto"
+	match Misiones.estado(mision_id):
+		Misiones.QuestState.AVAILABLE:
+			return "disponible" if Misiones.puede_aceptar(mision_id) else "bloqueada"
+		Misiones.QuestState.OBJECTIVE_COMPLETE:
+			return "entrega"
+		_:
+			return "oculto"
+
+func _al_cambiar_estado_mision(_id: String, _estado: int) -> void:
+	# Una misión puede desbloquear a otro NPC, por eso se refresca ante cualquier
+	# transición global y no sólo cuando cambia mision_id.
+	queue_redraw()
+
+func _draw() -> void:
+	var estado := estado_marcador()
+	if estado == "oculto":
+		return
+	var acento := Color("e8bd63") if estado == "disponible" else Color("82d8c5")
+	if estado == "bloqueada":
+		acento = Color("aab0b8")
+	draw_circle(CENTRO_MARCADOR, 10.0, FONDO_MARCADOR)
+	draw_arc(CENTRO_MARCADOR, 9.0, 0.0, TAU, 32, acento, 1.5, true)
+	match estado:
+		"disponible":
+			draw_string(ThemeDB.fallback_font, CENTRO_MARCADOR + Vector2(-3.3, 5.0),
+				"!", HORIZONTAL_ALIGNMENT_LEFT, -1.0, 14, acento)
+		"bloqueada":
+			# Candado geométrico: evita depender de glifos de fuentes externas.
+			draw_arc(CENTRO_MARCADOR + Vector2(0.0, -2.0), 3.0,
+				PI, TAU, 12, acento, 1.7, true)
+			draw_rect(Rect2(CENTRO_MARCADOR + Vector2(-4.0, -1.0), Vector2(8.0, 7.0)),
+				acento, true)
+			draw_circle(CENTRO_MARCADOR + Vector2(0.0, 2.0), 0.8, FONDO_MARCADOR)
+		"entrega":
+			draw_line(CENTRO_MARCADOR + Vector2(-4.0, 0.0),
+				CENTRO_MARCADOR + Vector2(-1.0, 3.0), acento, 2.2, true)
+			draw_line(CENTRO_MARCADOR + Vector2(-1.0, 3.0),
+				CENTRO_MARCADOR + Vector2(4.5, -3.0), acento, 2.2, true)
 
 func texto_accion() -> String:
 	match Misiones.estado(mision_id):

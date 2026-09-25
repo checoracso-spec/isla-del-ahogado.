@@ -34,7 +34,7 @@ foreach ($scene in $scenes) {
 
     $process.Refresh()
     $text = (Get-Content -LiteralPath $output -Raw -ErrorAction SilentlyContinue) + "`n" + (Get-Content -LiteralPath $errorLog -Raw -ErrorAction SilentlyContinue)
-    $errorFound = $text -match "SCRIPT ERROR|Parse Error|Invalid call|Invalid access|Assertion failed|ERROR:"
+    $errorFound = $text -match "(?im)^\s*FAIL\s|SCRIPT ERROR|Parse Error|Invalid call|Invalid access|Assertion failed|ERROR:"
     $summaryLines = @($text -split "`r?`n" | Where-Object { $_ -match "correctas|LISTO|comprobaciones" })
     $summary = if ($summaryLines.Count -gt 0) { $summaryLines[-1].Trim() } else { "sin resumen" }
     $exitCode = $process.ExitCode
