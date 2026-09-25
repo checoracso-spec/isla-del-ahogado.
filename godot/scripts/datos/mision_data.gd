@@ -15,6 +15,7 @@ extends Resource
 @export var dialogo_progreso: String = ""
 @export var dialogo_entrega: String = ""
 @export var dialogo_completada: String = ""
+@export var requisito_mision_id: String = ""
 
 static func desde_dic(d: Dictionary) -> MisionData:
 	var mision := MisionData.new()
@@ -28,5 +29,6 @@ static func desde_dic(d: Dictionary) -> MisionData:
 	mision.dialogo_progreso = str(d.get("dialogo_progreso", ""))
 	mision.dialogo_entrega = str(d.get("dialogo_entrega", ""))
 	mision.dialogo_completada = str(d.get("dialogo_completada", ""))
+	mision.requisito_mision_id = str(d.get("requisito_mision_id", ""))
 	mision.resource_name = mision.nombre
 	return mision

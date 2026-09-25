@@ -5,6 +5,10 @@ param(
 $ErrorActionPreference = "Stop"
 $godot = "C:\Users\checo\Downloads\Godot_v4.7.1-stable_win64.exe\Godot_v4.7.1-stable_win64_console.exe"
 $root = (Get-Location).Path
+$testProfile = Join-Path $env:TEMP ("marea-godot-tests-" + [guid]::NewGuid().ToString("N"))
+$env:APPDATA = Join-Path $testProfile "Roaming"
+$env:LOCALAPPDATA = Join-Path $testProfile "Local"
+New-Item -ItemType Directory -Force -Path $env:APPDATA, $env:LOCALAPPDATA | Out-Null
 $scenes = Get-ChildItem -Path (Join-Path $root "escenas") -Filter "prueba_*.tscn" | Sort-Object Name
 $results = @()
 
@@ -42,6 +46,7 @@ foreach ($scene in $scenes) {
 
 $results | Format-Table -AutoSize
 $failed = @($results | Where-Object { $_.Exit -ne 0 -or $_.Error })
+Write-Output ("ISOLATED_USER_DATA=" + $testProfile)
 Write-Output ("TOTAL_ESCENAS=" + $scenes.Count)
 Write-Output ("FALLAS=" + $failed.Count)
 if ($failed.Count -gt 0) {

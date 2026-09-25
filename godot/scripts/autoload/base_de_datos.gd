@@ -713,6 +713,7 @@ const TABLA_MISIONES := [
 	  "dialogo_completada": "Que corra el ron, compañero." },
 	{ "id": "marea_014_raciones_tripulacion", "nombre": "Raciones para la Tripulación",
 	  "npc_id": "black_sam",
+	  "requisito_mision_id": "marea_009_naufragio",
 	  "objetivo_item_id": "raciones", "objetivo_cantidad": 3,
 	  "recompensa_doblones": 30,
 	  "dialogo_aceptacion": "Consigue tres raciones para que nadie se acueste con el estómago vacío.",
@@ -881,6 +882,10 @@ func _validar() -> void:
 		if m.recompensa_doblones < 0:
 			push_warning("Misión '%s' tiene una recompensa negativa: %d"
 				% [m.id, m.recompensa_doblones])
+		if not m.requisito_mision_id.is_empty() \
+				and (m.requisito_mision_id == m.id or not misiones.has(m.requisito_mision_id)):
+			push_warning("Misión '%s' apunta a un requisito inexistente o a sí misma: '%s'"
+				% [m.id, m.requisito_mision_id])
 
 # --- accesos cómodos (devuelven null si no existe, nunca revientan) ---
 

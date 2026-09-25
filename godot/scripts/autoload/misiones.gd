@@ -33,7 +33,18 @@ func ids() -> Array[String]:
 func estado(mision_id: String) -> int:
 	return int(_estados.get(mision_id, QuestState.AVAILABLE))
 
+func puede_aceptar(mision_id: String) -> bool:
+	if not _estados.has(mision_id) or estado(mision_id) != QuestState.AVAILABLE:
+		return false
+	var definicion: MisionData = BaseDeDatos.mision(mision_id)
+	if definicion == null or definicion.requisito_mision_id.is_empty():
+		return true
+	var requisito_id := definicion.requisito_mision_id
+	return _estados.has(requisito_id) and estado(requisito_id) == QuestState.TURNED_IN
+
 func aceptar(mision_id: String) -> bool:
+	if not puede_aceptar(mision_id):
+		return false
 	var aceptada := _transicionar(mision_id, QuestState.AVAILABLE, QuestState.ACCEPTED)
 	if aceptada:
 		_evaluar_objetivo(mision_id)
