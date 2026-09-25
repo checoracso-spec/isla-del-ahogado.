@@ -96,8 +96,18 @@ func _repintar() -> void:
 			var actual := mini(Bolsa.mochila.cantidad(item_id), requerido)
 			texto_objetivo = "%s: %d/%d" % [BaseDeDatos.nombre_item(item_id), actual, requerido]
 		lineas.append("%s\nSolicitante: %s\nEstado: %s\nObjetivo: %s" % [
-			definicion.nombre, nombre_npc, _nombre_estado(Misiones.estado(id)), texto_objetivo])
+			definicion.nombre, nombre_npc, _texto_estado(definicion), texto_objetivo])
 	_resumen.text = "\n\n".join(lineas) if not lineas.is_empty() else "Sin misiones registradas."
+
+func _texto_estado(definicion: MisionData) -> String:
+	if Misiones.estado(definicion.id) == Misiones.QuestState.AVAILABLE \
+			and not definicion.requisito_mision_id.is_empty() \
+			and not Misiones.puede_aceptar(definicion.id):
+		var requisito: MisionData = BaseDeDatos.mision(definicion.requisito_mision_id)
+		if requisito != null:
+			return "Bloqueada: completa «%s»" % requisito.nombre
+		return "Bloqueada: requisito no disponible"
+	return _nombre_estado(Misiones.estado(definicion.id))
 
 func _nombre_estado(estado: int) -> String:
 	match estado:

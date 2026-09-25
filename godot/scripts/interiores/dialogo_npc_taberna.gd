@@ -41,6 +41,8 @@ func _ready() -> void:
 func texto_accion() -> String:
 	match Misiones.estado(mision_id):
 		Misiones.QuestState.AVAILABLE:
+			if not Misiones.puede_aceptar(mision_id):
+				return "Hablar con %s · Encargo bloqueado" % _nombre_npc()
 			return "Hablar con %s · Encargo" % _nombre_npc()
 		Misiones.QuestState.OBJECTIVE_COMPLETE:
 			return "Hablar con %s · Entregar" % _nombre_npc()
@@ -50,6 +52,9 @@ func texto_accion() -> String:
 func interactuar(_quien: Node) -> void:
 	match Misiones.estado(mision_id):
 		Misiones.QuestState.AVAILABLE:
+			if not Misiones.puede_aceptar(mision_id):
+				_dialogar(_texto_requisito())
+				return
 			if Misiones.aceptar(mision_id):
 				_dialogar(definicion.dialogo_aceptacion)
 		Misiones.QuestState.ACCEPTED:
@@ -77,6 +82,16 @@ func _nombre_npc() -> String:
 		if datos != null:
 			return datos.nombre
 	return "NPC"
+
+func _texto_requisito() -> String:
+	if definicion == null or definicion.requisito_mision_id.is_empty():
+		return "Este encargo todavía no está disponible."
+	var requisito: MisionData = BaseDeDatos.mision(definicion.requisito_mision_id)
+	if requisito == null:
+		return "Este encargo todavía no está disponible."
+	var npc_requisito: PersonajeData = BaseDeDatos.personaje(requisito.npc_id)
+	var nombre_requisito := npc_requisito.nombre if npc_requisito != null else "el otro tabernero"
+	return "Primero completa el encargo de %s: %s." % [nombre_requisito, requisito.nombre]
 
 func _dialogar(texto: String) -> void:
 	if texto.is_empty():

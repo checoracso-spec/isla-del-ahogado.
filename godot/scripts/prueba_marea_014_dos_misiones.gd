@@ -10,6 +10,10 @@ var fallos := 0
 var mundo: Mundo
 
 func _ready() -> void:
+	if not _perfil_de_prueba_aislado():
+		push_error("MAREA-014 requiere un APPDATA temporal aislado; ejecuta tools/run-tests.ps1.")
+		get_tree().quit(1)
+		return
 	Guardado.borrar(RANURA)
 	Misiones.reiniciar()
 	Bolsa.mochila.vaciar()
@@ -52,6 +56,27 @@ func _ejecutar() -> void:
 	_comprobar("ambas misiones empiezan disponibles",
 		Misiones.estado(MISION_CALICO) == Misiones.QuestState.AVAILABLE
 		and Misiones.estado(MISION_BLACK_SAM) == Misiones.QuestState.AVAILABLE)
+	_comprobar("Calico se puede aceptar primero",
+		Misiones.puede_aceptar(MISION_CALICO))
+	_comprobar("Black Sam está bloqueado hasta entregar a Calico",
+		not Misiones.puede_aceptar(MISION_BLACK_SAM)
+		and not Misiones.aceptar(MISION_BLACK_SAM))
+	_comprobar("el bloqueo no cambia el estado de Black Sam",
+		Misiones.estado(MISION_BLACK_SAM) == Misiones.QuestState.AVAILABLE)
+	_comprobar("el indicador de interacción explica el bloqueo",
+		"bloqueado" in dialogo_black_sam.texto_accion().to_lower())
+	var textos_bloqueo: Array[String] = []
+	dialogo_black_sam.dialogo_mostrado.connect(func(texto: String): textos_bloqueo.append(texto))
+	dialogo_black_sam.interactuar(mundo.jugador)
+	_comprobar("Black Sam explica que primero hay que completar a Calico",
+		not textos_bloqueo.is_empty()
+		and "Restos del Naufragio" in textos_bloqueo[0])
+	mundo.panel_diario_misiones.abrir()
+	var etiqueta_resumen := mundo.panel_diario_misiones.find_child("ResumenMisiones", true, false) as Label
+	var resumen_diario := etiqueta_resumen.text if etiqueta_resumen != null else ""
+	_comprobar("el diario muestra el requisito de Black Sam",
+		"Bloqueada" in resumen_diario and "Restos del Naufragio" in resumen_diario)
+	mundo.panel_diario_misiones.cerrar_panel()
 
 	# Calico: aceptar, completar y entregar no altera el estado de Black Sam.
 	dialogo_calico.interactuar(mundo.jugador)
@@ -69,6 +94,8 @@ func _ejecutar() -> void:
 	_comprobar("Calico no duplica la recompensa", Bolsa.oro == oro_despues_calico)
 
 	# Black Sam: su propia misión sigue una transición y recompensa separadas.
+	_comprobar("entregar a Calico desbloquea a Black Sam",
+		Misiones.puede_aceptar(MISION_BLACK_SAM))
 	dialogo_black_sam.interactuar(mundo.jugador)
 	_comprobar("Black Sam acepta su misión", Misiones.estado(MISION_BLACK_SAM) == Misiones.QuestState.ACCEPTED)
 	_comprobar("Calico sigue entregada", Misiones.estado(MISION_CALICO) == Misiones.QuestState.TURNED_IN)
@@ -110,3 +137,9 @@ func _comprobar(nombre: String, condicion: bool) -> void:
 	else:
 		fallos += 1
 		push_error("FALLO: %s" % nombre)
+
+func _perfil_de_prueba_aislado() -> bool:
+	var raiz_temporal := OS.get_environment("TEMP").replace("\\", "/").trim_suffix("/").to_lower()
+	var ruta_partida := ProjectSettings.globalize_path(Guardado.ruta(RANURA)) \
+		.replace("\\", "/").to_lower()
+	return not raiz_temporal.is_empty() and ruta_partida.begins_with(raiz_temporal + "/")
