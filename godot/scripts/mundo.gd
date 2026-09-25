@@ -744,13 +744,13 @@ func _montar_logistica() -> void:
 
 func _montar_dialogo_taberna() -> void:
 	for p: Pirata in piratas:
-		if p.id_personaje != "calico_jack":
+		var definicion := BaseDeDatos.mision_de_npc(p.id_personaje)
+		if definicion == null:
 			continue
-		var dialogo := DialogoNpcTabernaScript.new()
+		var dialogo := DialogoNpcTabernaScript.new(definicion.id, definicion)
 		dialogo.name = "DialogoNpcTaberna"
 		p.add_child(dialogo)
 		dialogo.dialogo_mostrado.connect(_apuntar)
-		return
 
 func _personajes_con_puesto() -> Array[String]:
 	var ids: Array[String] = []

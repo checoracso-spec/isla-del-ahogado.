@@ -25,7 +25,7 @@ func _ready() -> void:
 		and definicion.objetivo_cantidad == 2)
 	_comprobar("conserva la recompensa de MAREA-010", definicion.recompensa_doblones == 25)
 
-	dialogo = DialogoNpcTaberna.new()
+	dialogo = DialogoNpcTaberna.new(MISION_ID, definicion)
 	dialogo.name = "DialogoNpcTaberna"
 	add_child(dialogo)
 	await get_tree().process_frame
