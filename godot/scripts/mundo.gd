@@ -2,6 +2,7 @@ class_name Mundo
 extends Node2D
 const PanelCrafteoScript := preload("res://scripts/ui/panel_crafteo.gd")
 const PanelMochilaScript := preload("res://scripts/ui/panel_mochila.gd")
+const PanelDiarioMisionesScript := preload("res://scripts/ui/panel_diario_misiones.gd")
 const PanelMercadoScript := preload("res://scripts/ui/panel_mercado.gd")
 const PanelTabernaScript := preload("res://scripts/ui/panel_taberna.gd")
 const PanelMuelleScript := preload("res://scripts/ui/panel_muelle.gd")
@@ -890,6 +891,7 @@ var _lbl_accion: Label
 var panel_cofre: PanelCofre
 var panel_crafteo
 var panel_mochila
+var panel_diario_misiones
 var panel_mercado
 var panel_taberna
 var panel_muelle
@@ -1007,6 +1009,13 @@ func _montar_hud() -> void:
 	panel_mochila.position = Vector2(-180, -185)
 	_hud.add_child(panel_mochila)
 	Interiores.salio.connect(func(_i): panel_mochila.cerrar_panel())
+
+	# El diario sólo presenta el estado que ya poseen Misiones y Bolsa.
+	panel_diario_misiones = PanelDiarioMisionesScript.new()
+	panel_diario_misiones.set_anchors_preset(Control.PRESET_CENTER, true)
+	panel_diario_misiones.position = Vector2(-260, -200)
+	_hud.add_child(panel_diario_misiones)
+	Interiores.salio.connect(func(_i): panel_diario_misiones.cerrar_panel())
 
 	panel_mercado = PanelMercadoScript.new()
 	panel_mercado.set_anchors_preset(Control.PRESET_CENTER, true)
@@ -1344,6 +1353,16 @@ func _puede_tocar_partida() -> bool:
 	return Time.get_ticks_msec() - _ultima_partida_ms > int(ESPERA_ENTRE_PARTIDAS * 1000.0)
 
 func _unhandled_input(evento: InputEvent) -> void:
+	if evento.is_action_pressed("diario_misiones"):
+		if panel_diario_misiones.abierto():
+			panel_diario_misiones.cerrar_panel()
+		else:
+			panel_cofre.cerrar_panel()
+			panel_crafteo.cerrar_panel()
+			panel_mochila.cerrar_panel()
+			panel_diario_misiones.abrir()
+		get_viewport().set_input_as_handled()
+		return
 	if evento.is_action_pressed("inventario"):
 		if panel_mochila.abierto():
 			panel_mochila.cerrar_panel()
@@ -1373,5 +1392,5 @@ func _unhandled_input(evento: InputEvent) -> void:
 	if evento is InputEventKey and evento.pressed and not evento.echo:
 		if evento.keycode == KEY_SPACE:
 			Reloj.pausado = not Reloj.pausado
-		elif evento.keycode == KEY_ESCAPE and not panel_cofre.abierto() and not panel_crafteo.abierto() and not panel_mochila.abierto() and not panel_mercado.abierto() and not panel_taberna.abierto() and not panel_muelle.abierto() and not panel_mapa_global.abierto():
+		elif evento.keycode == KEY_ESCAPE and not panel_cofre.abierto() and not panel_crafteo.abierto() and not panel_mochila.abierto() and not panel_diario_misiones.abierto() and not panel_mercado.abierto() and not panel_taberna.abierto() and not panel_muelle.abierto() and not panel_mapa_global.abierto():
 			get_tree().quit()

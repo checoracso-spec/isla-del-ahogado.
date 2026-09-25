@@ -19,6 +19,7 @@ const ACCIONES := {
 	"correr":          [KEY_SHIFT],
 	"pausa":           [KEY_SPACE],
 	"inventario":      [KEY_I, KEY_TAB],
+	"diario_misiones": [KEY_J],
 	"guardar_rapido":  [KEY_F5],
 	"cargar_rapido":   [KEY_F9],
 }
