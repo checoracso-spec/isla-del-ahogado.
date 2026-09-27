@@ -16,3 +16,5 @@ godot/scratch_*
 godot/captura_*
 **/captura_*
 **/__pycache__/
+# Iris screenshot and run artifacts are local QA evidence, not game assets.
+.iris/
